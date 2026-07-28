@@ -7,10 +7,17 @@ let generatedWeeklyMenu = {};
 export function initMealPlanner() {
   setupDayNavigation();
   setupDietaryControls();
+  
+  // Load saved allergies text from LocalStorage
+  const savedAllergies = localStorage.getItem('fitexpert_allergies');
+  const inputElem = document.getElementById('customAllergiesInput');
+  if (savedAllergies && inputElem) {
+    inputElem.value = savedAllergies;
+  }
+
   generatePersonalizedMenu();
   setupGroceryModal();
 
-  // Listen for profile changes from Calculator tab
   window.addEventListener('profileUpdated', () => {
     generatePersonalizedMenu();
   });
@@ -37,35 +44,47 @@ function setupDietaryControls() {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    // Save custom typed allergies to LocalStorage
+    const inputElem = document.getElementById('customAllergiesInput');
+    if (inputElem) {
+      localStorage.setItem('fitexpert_allergies', inputElem.value.trim());
+    }
+
     generatePersonalizedMenu();
   });
 }
 
 export function generatePersonalizedMenu() {
-  // Read Calculator profile
   const savedProfileStr = localStorage.getItem('fitexpert_profile');
   let profile = null;
   if (savedProfileStr) {
     try { profile = JSON.parse(savedProfileStr); } catch (e) {}
   }
 
-  const goal = profile ? profile.fitnessGoal : 'deficit_moderate';
-  const targetKcal = profile && profile.macroResults ? profile.macroResults.targetCalories : 2100;
-
-  // Read Dietary Controls from Form (if user touched checkboxes)
   const menuStyle = document.getElementById('menuStyle') ? document.getElementById('menuStyle').value : 'all';
-  const allergyGluten = document.getElementById('allergyGluten') ? document.getElementById('allergyGluten').checked : false;
-  const allergyLactose = document.getElementById('allergyLactose') ? document.getElementById('allergyLactose').checked : false;
-  const allergyNuts = document.getElementById('allergyNuts') ? document.getElementById('allergyNuts').checked : false;
-  const isVeg = document.getElementById('dietVeg') ? document.getElementById('dietVeg').checked : false;
+  
+  // Read custom typed allergies line
+  const customAllergiesInput = document.getElementById('customAllergiesInput');
+  const typedText = customAllergiesInput ? customAllergiesInput.value.trim() : (localStorage.getItem('fitexpert_allergies') || '');
+  
+  // Split user typed allergies by commas, spaces, or semicolons
+  const allergyTerms = typedText.toLowerCase().split(/[,;]+/).map(s => s.trim()).filter(s => s.length > 0);
 
-  // Filter recipes based on allergies & preferences
+  // Filter recipes dynamically
   const filterRecipe = (recipe) => {
     if (menuStyle !== 'all' && recipe.style !== menuStyle) return false;
-    if (allergyGluten && recipe.allergies.includes('sin-gluten') === false && recipe.allergies.includes('gluten')) return false;
-    if (allergyLactose && recipe.allergies.includes('sin-lactosa') === false) return false;
-    if (allergyNuts && recipe.allergies.includes('sin-frutos-secos') === false) return false;
-    if (isVeg && !recipe.allergies.includes('vegetariano')) return false;
+
+    if (allergyTerms.length > 0) {
+      const recipeText = (recipe.name + ' ' + recipe.ingredients.join(' ') + ' ' + recipe.allergies.join(' ')).toLowerCase();
+      
+      // If recipe contains any of the forbidden allergy words, exclude it!
+      for (const term of allergyTerms) {
+        if (recipeText.includes(term)) {
+          return false;
+        }
+      }
+    }
     return true;
   };
 
@@ -74,7 +93,7 @@ export function generatePersonalizedMenu() {
   const snacks = MEAL_DATABASE.filter(m => m.category === 'Merienda' && filterRecipe(m));
   const dinners = MEAL_DATABASE.filter(m => m.category === 'Cena' && filterRecipe(m));
 
-  // Fallbacks if filter is too strict
+  // Safe fallbacks if custom allergy filters exclude all specific recipes
   const bList = breakfasts.length > 0 ? breakfasts : MEAL_DATABASE.filter(m => m.category === 'Desayuno');
   const lList = lunches.length > 0 ? lunches : MEAL_DATABASE.filter(m => m.category === 'Comida');
   const sList = snacks.length > 0 ? snacks : MEAL_DATABASE.filter(m => m.category === 'Merienda');
@@ -149,7 +168,6 @@ function renderActiveDayMenu() {
     gridContainer.appendChild(card);
   });
 
-  // Update Summary Header Badge
   const summaryContainer = document.getElementById('activeDayMacroSummary');
   if (summaryContainer) {
     summaryContainer.innerHTML = `

@@ -314,11 +314,17 @@
 
       <!-- Personalized Dietary Preferences Filter Card -->
       <div class="card glass-card mb-3">
-        <h3 class="card-title"><i class="fa-solid fa-filter"></i> Preferencias Nutricionales & Alergias</h3>
+        <h3 class="card-title"><i class="fa-solid fa-filter"></i> Configuración de Alergias & Estilo Nutricional</h3>
         <form id="dietaryControlsForm">
           <div class="grid grid-2-sm">
             <div class="form-group">
-              <label for="menuStyle"><i class="fa-solid fa-utensils"></i> Estilo de Menú</label>
+              <label for="customAllergiesInput"><i class="fa-solid fa-shield-halved"></i> Mis Alergias / Intolerancias / Alimentos a Excluir</label>
+              <input type="text" id="customAllergiesInput" class="form-control" placeholder="Escribe aquí separado por comas (ej: Gluten, Lactosa, Mariscos, Nueces...)" value="">
+              <small class="form-text">La app excluirá automáticamente cualquier plato que contenga estos ingredientes.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="menuStyle"><i class="fa-solid fa-utensils"></i> Estilo de Cocina / Gustos</label>
               <select id="menuStyle" class="form-control">
                 <option value="all" selected>Variado (Todos los estilos)</option>
                 <option value="healthy">Healthy Fitness / Proteico Clean</option>
@@ -327,28 +333,10 @@
                 <option value="keto">Keto / Bajo en Carbohidratos</option>
               </select>
             </div>
-
-            <div class="form-group">
-              <label><i class="fa-solid fa-shield-halved"></i> Alergias / Intolerancias</label>
-              <div style="display:flex; flex-wrap:wrap; gap:10px; padding-top:6px;">
-                <label style="font-size:12px; font-weight:normal; color:var(--text-main); display:flex; align-items:center; gap:4px;">
-                  <input type="checkbox" id="allergyGluten"> Sin Gluten
-                </label>
-                <label style="font-size:12px; font-weight:normal; color:var(--text-main); display:flex; align-items:center; gap:4px;">
-                  <input type="checkbox" id="allergyLactose"> Sin Lactosa
-                </label>
-                <label style="font-size:12px; font-weight:normal; color:var(--text-main); display:flex; align-items:center; gap:4px;">
-                  <input type="checkbox" id="allergyNuts"> Sin Frutos Secos
-                </label>
-                <label style="font-size:12px; font-weight:normal; color:var(--text-main); display:flex; align-items:center; gap:4px;">
-                  <input type="checkbox" id="dietVeg"> Vegetariano
-                </label>
-              </div>
-            </div>
           </div>
 
           <button type="submit" class="btn btn-emerald btn-block mt-2">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Generar Nuevo Menú Personalizado
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Actualizar Alergias & Generar Nuevo Menú
           </button>
         </form>
       </div>
@@ -427,7 +415,6 @@
         </div>
       </div>
 
-      <!-- Quick Action Chips -->
       <div class="chat-chips-bar" id="aiQuickChips">
         <button class="chat-chip" data-msg="Tengo intolerancia a la lactosa, ajusta mi menú">
           <i class="fa-solid fa-shield-halved"></i> Sin Lactosa
@@ -446,17 +433,15 @@
         </button>
       </div>
 
-      <!-- Messages Stream -->
       <div class="chat-messages-container" id="aiChatMessages">
         <div class="chat-msg ai">
           <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
           <div class="chat-bubble">
-            ¡Hola! Soy tu <strong>Entrenadora & Nutricionista IA FitExpert</strong>. Dime qué alergias o preferencias tienes (ej: <em>"Tengo alergia al gluten"</em>, <em>"Soy vegetariano"</em>) o si deseas cambiar algún ejercicio o plato en tiempo real.
+            ¡Hola! Soy tu <strong>Entrenadora & Nutricionista IA FitExpert</strong>. Dime qué alergias o preferencias tienes (ej: <em>"Tengo alergia al gluten"</em>, <em>"No como marisco"</em>) o si deseas cambiar algún ejercicio o plato en tiempo real.
           </div>
         </div>
       </div>
 
-      <!-- Chat Input Form -->
       <form id="aiChatForm" class="chat-input-form">
         <input type="text" id="aiChatInput" class="form-control" placeholder="Escribe tu alergia, duda o ejercicio a cambiar..." autocomplete="off">
         <button type="submit" class="btn btn-purple">
