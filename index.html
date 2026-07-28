@@ -50,22 +50,6 @@
         </div>
       </div>
 
-      <!-- Navigation Tabs (Desktop) -->
-      <nav class="nav-tabs desktop-only-nav" id="mainNav">
-        <button class="nav-btn active" data-tab="tab-calculator" id="btnTabCalc">
-          <i class="fa-solid fa-calculator"></i> Calculadora
-        </button>
-        <button class="nav-btn" data-tab="tab-workouts" id="btnTabWorkouts">
-          <i class="fa-solid fa-dumbbell"></i> Rutinas
-        </button>
-        <button class="nav-btn" data-tab="tab-meals" id="btnTabMeals">
-          <i class="fa-solid fa-utensils"></i> Menú Semanal
-        </button>
-        <button class="nav-btn" data-tab="tab-science" id="btnTabScience">
-          <i class="fa-solid fa-book-journal-whills"></i> Evidencia
-        </button>
-      </nav>
-
       <!-- User Profile Security Actions -->
       <div class="header-actions">
         <!-- Security Status Badge -->
@@ -74,7 +58,7 @@
         </span>
 
         <button class="btn btn-purple btn-sm" id="btnSetupPassword" title="Proteger Perfil con Contraseña">
-          <i class="fa-solid fa-key"></i> <span class="desktop-text">Proteger Perfil</span>
+          <i class="fa-solid fa-key"></i>
         </button>
 
         <button class="btn btn-outline btn-sm" id="btnLockAppNow" title="Bloquear Pantalla">
@@ -503,8 +487,8 @@
     </div>
   </div>
 
-  <!-- FULLSCREEN LOCK SCREEN OVERLAY -->
-  <div class="modal-overlay" id="appLockScreen" style="z-index:99999; background:#0b0f19;">
+  <!-- FULLSCREEN LOCK SCREEN OVERLAY (DISPLAY: NONE BY DEFAULT) -->
+  <div class="modal-overlay" id="appLockScreen" style="z-index:99999; background:#0b0f19; display:none;">
     <div class="modal-card" style="max-width:340px; text-align:center; padding:24px;">
       <div style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, var(--accent-purple), #6d28d9); color:#fff; display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 12px auto;">
         <i class="fa-solid fa-lock"></i>
@@ -525,7 +509,7 @@
   </div>
 
   <!-- FLOATING WIDGET: Rest Timer Overlay -->
-  <div class="modal-overlay" id="restTimerWidget" style="background:rgba(11,15,25,0.7);">
+  <div class="modal-overlay" id="restTimerWidget" style="background:rgba(11,15,25,0.7); display:none;">
     <div class="modal-card" style="max-width:320px; text-align:center; padding:20px;">
       <button class="modal-close" id="btnCloseTimer">&times;</button>
       <i class="fa-solid fa-stopwatch" style="font-size:36px; color:var(--accent-cyan); margin-bottom:8px;"></i>

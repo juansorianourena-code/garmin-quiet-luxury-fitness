@@ -6,9 +6,6 @@ export function initAuthStorage() {
   checkAppLockState();
 }
 
-/**
- * Requests browser persistent storage to prevent Safari / Chrome from purging LocalStorage during low disk cleanup.
- */
 async function requestSafariPersistentStorage() {
   if (navigator.storage && navigator.storage.persist) {
     const isPersisted = await navigator.storage.persisted();
@@ -28,13 +25,15 @@ function setupAuthUI() {
   const formUnlock = document.getElementById('unlockAppForm');
 
   if (btnSetupPass) {
-    btnSetupPass.addEventListener('click', () => {
+    btnSetupPass.addEventListener('click', (e) => {
+      e.preventDefault();
       if (modal) modal.classList.add('active');
     });
   }
 
   if (btnLockNow) {
-    btnLockNow.addEventListener('click', () => {
+    btnLockNow.addEventListener('click', (e) => {
+      e.preventDefault();
       lockApp();
     });
   }
@@ -53,7 +52,7 @@ function setupAuthUI() {
       localStorage.setItem('fitexpert_auth_pass', hashPassword(pass));
       localStorage.setItem('fitexpert_auth_hint', hint);
       
-      alert('¡Perfil protegido con contraseña correctamente! Tu app ahora requerirá esta clave para ingresar.');
+      alert('¡Perfil protegido con contraseña correctamente!');
       if (modal) modal.classList.remove('active');
       updateAuthBadgeUI();
     });
@@ -67,7 +66,10 @@ function setupAuthUI() {
 
       if (hashPassword(enteredPass) === savedHash) {
         document.getElementById('unlockPassInput').value = '';
-        if (lockScreen) lockScreen.style.display = 'none';
+        if (lockScreen) {
+          lockScreen.style.display = 'none';
+          lockScreen.classList.remove('active');
+        }
         sessionStorage.setItem('fitexpert_unlocked', 'true');
       } else {
         const errorElem = document.getElementById('unlockErrorText');
@@ -88,13 +90,16 @@ function checkAppLockState() {
 
   if (savedHash && !isUnlocked) {
     lockApp();
+  } else {
+    const lockScreen = document.getElementById('appLockScreen');
+    if (lockScreen) lockScreen.style.display = 'none';
   }
 }
 
 export function lockApp() {
   const savedHash = localStorage.getItem('fitexpert_auth_pass');
   if (!savedHash) {
-    alert('Primero debes configurar una contraseña pulsando el botón "Proteger Perfil".');
+    alert('Primero debes configurar una contraseña pulsando el botón de la llave 🔑.');
     return;
   }
 
@@ -102,7 +107,10 @@ export function lockApp() {
   const lockScreen = document.getElementById('appLockScreen');
   const errorElem = document.getElementById('unlockErrorText');
   if (errorElem) errorElem.textContent = '';
-  if (lockScreen) lockScreen.style.display = 'flex';
+  if (lockScreen) {
+    lockScreen.style.display = 'flex';
+    lockScreen.classList.add('active');
+  }
 }
 
 function updateAuthBadgeUI() {
@@ -112,17 +120,14 @@ function updateAuthBadgeUI() {
   if (badge) {
     if (savedHash) {
       badge.className = 'badge badge-emerald';
-      badge.innerHTML = `<i class="fa-solid fa-lock"></i> Perfil Protegido`;
+      badge.innerHTML = `<i class="fa-solid fa-lock"></i> Protegido`;
     } else {
       badge.className = 'badge badge-purple';
-      badge.innerHTML = `<i class="fa-solid fa-lock-open"></i> Sin Contraseña`;
+      badge.innerHTML = `<i class="fa-solid fa-lock-open"></i> Sin Clave`;
     }
   }
 }
 
-/**
- * Simple hash mechanism for local security check.
- */
 function hashPassword(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
