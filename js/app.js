@@ -6,24 +6,59 @@ import { initScienceHub } from './scienceHub.js';
 import { initAITrainerChat } from './aiTrainer.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Setup Tab Navigation
-  setupTabNavigation();
+  // 1. Setup Navigation Event Listeners
+  try {
+    setupTabNavigation();
+  } catch (err) {
+    console.error('Error setting up navigation:', err);
+  }
 
-  // Setup Auto Reload on App Launch / Foreground & Top-Right Reload Button
-  setupAutoReloadSystem();
+  // 2. Setup Auto Reload & Update System
+  try {
+    setupAutoReloadSystem();
+  } catch (err) {
+    console.error('Error setting up reload system:', err);
+  }
 
-  // Initialize Modules
-  initCalorieCalculator((profileData) => {
-    console.log('Profile updated:', profileData);
-  });
+  // 3. Initialize Modules Safely
+  try {
+    initCalorieCalculator((profileData) => {
+      console.log('Profile updated:', profileData);
+    });
+  } catch (err) {
+    console.error('Error initCalorieCalculator:', err);
+  }
 
-  initWorkoutPlanner();
-  initMealPlanner();
-  initScienceHub();
-  initAITrainerChat();
+  try {
+    initWorkoutPlanner();
+  } catch (err) {
+    console.error('Error initWorkoutPlanner:', err);
+  }
 
-  // Export / Reset Data Actions
-  setupDataActions();
+  try {
+    initMealPlanner();
+  } catch (err) {
+    console.error('Error initMealPlanner:', err);
+  }
+
+  try {
+    initScienceHub();
+  } catch (err) {
+    console.error('Error initScienceHub:', err);
+  }
+
+  try {
+    initAITrainerChat();
+  } catch (err) {
+    console.error('Error initAITrainerChat:', err);
+  }
+
+  // 4. Setup Data Actions
+  try {
+    setupDataActions();
+  } catch (err) {
+    console.error('Error setting up data actions:', err);
+  }
 });
 
 function setupTabNavigation() {
@@ -31,14 +66,27 @@ function setupTabNavigation() {
   const tabContents = document.querySelectorAll('.tab-content');
 
   allNavBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
       const targetTabId = btn.getAttribute('data-tab');
 
+      // If button triggers AI Chat Modal directly
+      if (targetTabId === 'tab-ai-chat' || btn.id === 'btnMobileAIChat') {
+        e.preventDefault();
+        const aiModal = document.getElementById('aiChatModal');
+        if (aiModal) aiModal.classList.add('active');
+        return;
+      }
+
+      if (!targetTabId) return;
+
+      // Deactivate all buttons across header & mobile nav
       allNavBtns.forEach(b => b.classList.remove('active'));
       tabContents.forEach(tc => tc.classList.remove('active'));
 
+      // Activate all matching tab buttons for targetTabId
       document.querySelectorAll(`[data-tab="${targetTabId}"]`).forEach(b => b.classList.add('active'));
 
+      // Activate target tab section
       const targetContent = document.getElementById(targetTabId);
       if (targetContent) {
         targetContent.classList.add('active');
@@ -65,7 +113,7 @@ function setupAutoReloadSystem() {
       setTimeout(() => {
         const cleanUrl = window.location.href.split('?')[0];
         window.location.href = `${cleanUrl}?v=${Date.now()}`;
-      }, 350);
+      }, 300);
     });
   }
 

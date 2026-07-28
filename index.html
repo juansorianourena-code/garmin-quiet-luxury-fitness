@@ -52,29 +52,32 @@
 
       <!-- Navigation Tabs (Desktop) -->
       <nav class="nav-tabs desktop-only-nav" id="mainNav">
-        <button class="nav-btn active" data-tab="tab-calculator">
+        <button class="nav-btn active" data-tab="tab-calculator" id="btnTabCalc">
           <i class="fa-solid fa-calculator"></i> Calculadora
         </button>
-        <button class="nav-btn" data-tab="tab-workouts">
+        <button class="nav-btn" data-tab="tab-workouts" id="btnTabWorkouts">
           <i class="fa-solid fa-dumbbell"></i> Rutinas
         </button>
-        <button class="nav-btn" data-tab="tab-meals">
+        <button class="nav-btn" data-tab="tab-meals" id="btnTabMeals">
           <i class="fa-solid fa-utensils"></i> Menú Semanal
         </button>
-        <button class="nav-btn" data-tab="tab-science">
+        <button class="nav-btn" data-tab="tab-science" id="btnTabScience">
           <i class="fa-solid fa-book-journal-whills"></i> Evidencia
         </button>
       </nav>
 
       <!-- User Profile Badge & Top-Right Actions -->
       <div class="header-actions">
-        <!-- AI Trainer Button (Visible on both Desktop & Mobile) -->
+        <!-- AI Trainer Button -->
         <button class="btn btn-purple btn-sm" id="btnOpenAIChat" title="Entrenadora IA - Cambiar Ejercicios o Rutinas">
           <i class="fa-solid fa-robot"></i> <span>Entrenadora IA</span>
         </button>
         <!-- Force Reload Button -->
         <button class="btn btn-emerald btn-sm btn-reload-glow" id="btnForceReload" title="Buscar Actualizaciones">
           <i class="fa-solid fa-arrows-rotate" id="reloadIcon"></i>
+        </button>
+        <button class="btn btn-outline btn-sm" id="btnExportData" title="Copia de Seguridad">
+          <i class="fa-solid fa-download"></i>
         </button>
       </div>
     </div>
@@ -228,7 +231,7 @@
           <p>Ejercicios por estímulo muscular, RPE y gráfico de volumen total.</p>
         </div>
         <div class="header-buttons">
-          <button class="btn btn-purple btn-sm" onclick="document.getElementById('btnOpenAIChat').click()">
+          <button class="btn btn-purple btn-sm" id="btnWorkoutAIChat">
             <i class="fa-solid fa-robot"></i> Cambiar Ejercicios
           </button>
           <button class="btn btn-emerald btn-sm" id="btnSelectTemplate">
@@ -354,7 +357,7 @@
       <i class="fa-solid fa-dumbbell"></i>
       <span>Rutinas</span>
     </button>
-    <button class="mobile-nav-btn" onclick="document.getElementById('btnOpenAIChat').click()">
+    <button class="mobile-nav-btn" data-tab="tab-ai-chat" id="btnMobileAIChat">
       <i class="fa-solid fa-robot" style="color:var(--accent-purple);"></i>
       <span>Entrenadora</span>
     </button>
