@@ -3,6 +3,7 @@ import { initCalorieCalculator } from './calorieCalculator.js';
 import { initWorkoutPlanner } from './workoutPlanner.js';
 import { initMealPlanner } from './mealPlanner.js';
 import { initScienceHub } from './scienceHub.js';
+import { initAITrainerChat } from './aiTrainer.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Setup Tab Navigation
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initWorkoutPlanner();
   initMealPlanner();
   initScienceHub();
+  initAITrainerChat();
 
   // Export / Reset Data Actions
   setupDataActions();
@@ -50,12 +52,10 @@ function setupAutoReloadSystem() {
   const btnReload = document.getElementById('btnForceReload');
   const icon = document.getElementById('reloadIcon');
 
-  // Manual Reload Button Click handler
   if (btnReload) {
     btnReload.addEventListener('click', () => {
       if (icon) icon.classList.add('fa-spin');
 
-      // Clear session cache and reload with timestamp cache-buster
       if ('caches' in window) {
         caches.keys().then(names => {
           names.forEach(name => caches.delete(name));
@@ -69,12 +69,10 @@ function setupAutoReloadSystem() {
     });
   }
 
-  // Force auto-refresh when opening app or returning from background (iOS PWA foreground event)
   let lastFocusedTime = Date.now();
 
   const handleForegroundCheck = () => {
     const timePassed = Date.now() - lastFocusedTime;
-    // If user returned to the app after 30+ seconds, refresh cache silently
     if (timePassed > 30000) {
       lastFocusedTime = Date.now();
       const cleanUrl = window.location.href.split('?')[0];

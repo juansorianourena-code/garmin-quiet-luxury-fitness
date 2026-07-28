@@ -18,9 +18,6 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <!-- SEO & Meta -->
-  <meta name="description" content="Plataforma de generación de rutinas de gimnasio con sobrecarga progresiva, calculadora científica de metabolismo basal (Mifflin-St Jeor), déficit calórico e itinerario de menús semanales.">
-  
   <!-- Fonts: Outfit & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,7 +37,7 @@
   <div class="bg-glow glow-2"></div>
   <div class="bg-glow glow-3"></div>
 
-  <!-- Header Navigation Bar (Desktop & Mobile Top Bar) -->
+  <!-- Header Navigation Bar -->
   <header class="app-header">
     <div class="header-container">
       <div class="brand">
@@ -71,15 +68,16 @@
 
       <!-- User Profile Badge & Top-Right Actions -->
       <div class="header-actions">
-        <!-- Force Reload / Search Updates Button -->
-        <button class="btn btn-emerald btn-sm btn-reload-glow" id="btnForceReload" title="Buscar Actualizaciones y Recargar App">
-          <i class="fa-solid fa-arrows-rotate" id="reloadIcon"></i> <span class="desktop-text">Actualizar</span>
+        <!-- AI Trainer Button -->
+        <button class="btn btn-purple btn-sm" id="btnOpenAIChat" title="Entrenadora IA - Cambiar Ejercicios o Rutinas">
+          <i class="fa-solid fa-robot"></i> <span class="desktop-text">Entrenadora IA</span>
         </button>
-        <button class="btn btn-outline btn-sm" id="btnExportData" title="Exportar Copia de Seguridad">
+        <!-- Force Reload Button -->
+        <button class="btn btn-emerald btn-sm btn-reload-glow" id="btnForceReload" title="Buscar Actualizaciones">
+          <i class="fa-solid fa-arrows-rotate" id="reloadIcon"></i>
+        </button>
+        <button class="btn btn-outline btn-sm" id="btnExportData" title="Copia de Seguridad">
           <i class="fa-solid fa-download"></i>
-        </button>
-        <button class="btn btn-outline btn-sm" id="btnResetData" title="Reiniciar Datos">
-          <i class="fa-solid fa-rotate-right"></i>
         </button>
       </div>
     </div>
@@ -99,7 +97,6 @@
       </div>
 
       <div class="grid grid-2">
-        <!-- Form Inputs -->
         <div class="card glass-card">
           <h3 class="card-title"><i class="fa-solid fa-sliders"></i> Datos Antropométricos</h3>
           <form id="calculatorForm">
@@ -164,11 +161,9 @@
           </form>
         </div>
 
-        <!-- Results Display Card -->
         <div class="card glass-card result-card" id="calcResultsContainer">
           <h3 class="card-title"><i class="fa-solid fa-chart-pie"></i> Diagnóstico Metabólico</h3>
 
-          <!-- Summary Metric Cards -->
           <div class="metrics-grid">
             <div class="metric-box box-bmr">
               <span class="metric-label">BMR</span>
@@ -187,12 +182,10 @@
             </div>
           </div>
 
-          <!-- Macros Chart & Table -->
           <div class="chart-wrapper">
             <canvas id="macrosChart" height="180"></canvas>
           </div>
 
-          <!-- Macronutrient Breakdown -->
           <div class="macro-cards">
             <div class="macro-card macro-prot">
               <div class="macro-header">
@@ -238,8 +231,11 @@
           <p>Ejercicios por estímulo muscular, RPE y gráfico de volumen total.</p>
         </div>
         <div class="header-buttons">
+          <button class="btn btn-purple btn-sm" onclick="document.getElementById('btnOpenAIChat').click()">
+            <i class="fa-solid fa-robot"></i> Hablar con Entrenadora IA (Cambiar Ejercicios)
+          </button>
           <button class="btn btn-emerald btn-sm" id="btnSelectTemplate">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Cambiar Plantilla (PPL / Torso-Pierna)
+            <i class="fa-solid fa-rotate"></i> Renovar Rutina
           </button>
         </div>
       </div>
@@ -370,6 +366,56 @@
       <span>Ciencia</span>
     </button>
   </nav>
+
+  <!-- MODAL: AI Trainer Interactive Chat Assistant -->
+  <div class="modal-overlay" id="aiChatModal">
+    <div class="modal-card chat-modal-card">
+      <button class="modal-close" id="btnCloseAIChat">&times;</button>
+      <div class="ai-chat-header">
+        <div class="ai-avatar-badge">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div>
+          <h3>Entrenadora Personal IA</h3>
+          <span class="badge badge-purple"><i class="fa-solid fa-circle"></i> Biomecánica & Adaptación en Vivo</span>
+        </div>
+      </div>
+
+      <!-- Quick Action Chips -->
+      <div class="chat-chips-bar" id="aiQuickChips">
+        <button class="chat-chip" data-msg="Me he cansado de esta rutina, quiero renovarla entera">
+          <i class="fa-solid fa-rotate"></i> Renovar rutina completa
+        </button>
+        <button class="chat-chip" data-msg="Me molesta el press de banca, sustitúyelo por otro ejercicio">
+          <i class="fa-solid fa-triangle-exclamation"></i> Me molesta la banca
+        </button>
+        <button class="chat-chip" data-msg="Sustituye la sentadilla por otro ejercicio de piernas más cómodo">
+          <i class="fa-solid fa-person-dots-from-line"></i> Cambiar sentadilla
+        </button>
+        <button class="chat-chip" data-msg="¿Cómo aplico la sobrecarga progresiva esta semana?">
+          <i class="fa-solid fa-chart-line"></i> ¿Cómo progresar?
+        </button>
+      </div>
+
+      <!-- Messages Stream -->
+      <div class="chat-messages-container" id="aiChatMessages">
+        <div class="chat-msg ai">
+          <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
+          <div class="chat-bubble">
+            ¡Hola! Soy tu <strong>Entrenadora IA FitExpert</strong>. Dime si algún ejercicio te produce molestias o dolor (ej: <em>"Me molesta la banca"</em> o <em>"Cambia el peso muerto"</em>) y lo sustituiré en tu rutina en tiempo real manteniendo el estímulo muscular. También puedes pedirme renovar tu rutina entera si te has cansado de ella.
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Form -->
+      <form id="aiChatForm" class="chat-input-form">
+        <input type="text" id="aiChatInput" class="form-control" placeholder="Escribe aquí tu duda o ejercicio a cambiar..." autocomplete="off">
+        <button type="submit" class="btn btn-purple">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- Modal: Exercise Detail Guide -->
   <div class="modal-overlay" id="exerciseModal">
