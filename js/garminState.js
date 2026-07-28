@@ -1,26 +1,45 @@
 /**
- * Garmin State Manager & Dynamic Calculator
+ * Garmin State Manager & Dynamic Calculator (Medical Grade Sports Science)
  * Handles simulated live Garmin Connect API feed, real garmin_data.json sync,
  * Auto-regulation logic, and BMR + Active Calories Dynamic Deficit calculations.
+ * Estética Quiet Luxury (0 Emojis, alta precisión clínica).
  */
 
 class GarminState {
   constructor() {
-    // Initial Garmin data
+    // Initial Garmin data (Medical Grade Precision Metrics)
     this.data = {
-      sleepScore: 84, // 0 - 100
+      sleepScore: 88, // 0 - 100
       sleepTotalHours: 7.8,
       sleepDeepHours: 2.1,
       sleepRemHours: 1.9,
+      sleepLightHours: 3.8,
+      sleepAwakeMinutes: 12,
+      sleepEfficiency: 94, // %
       
       bodyBattery: 88, // 0 - 100
       stressLevel: 24, // 0 - 100 (Average daily)
+      stressCharge: 72,
+      stressDrain: -65,
       
-      rhr: 52, // bpm
+      rhr: 50, // bpm (Resting Heart Rate)
       hrv: 68, // ms (HRV Status: Balanced)
+      hrvBaseline: "62 - 74 ms",
+      hrvNightly7dAvg: 66,
+      
+      spo2Avg: 98, // % SpO2
+      spo2Min: 95,
+      respirationRate: 13.5, // rpm
+      
+      vo2Max: 54.5, // ml/kg/min
+      fitnessAge: 21, // Fitness Age (years)
+      lactateThresholdPace: "4:15 min/km",
+      lactateThresholdHr: 168, // bpm
       
       activeCalories: 640, // kcal burned from movement/workouts today
       recoveryHours: 14, // Estimated recovery hours remaining
+      stepsToday: 11420,
+      distanceKm: 8.4,
       
       userBmr: 1820, // Basal Metabolic Rate (kcal/day)
       targetDeficit: 500, // Target deficit (kcal/day)
@@ -45,7 +64,6 @@ class GarminState {
             isRealSync: true,
             lastSyncTime: payload.lastSync
           });
-          console.log('✅ Sincronizados datos reales de Garmin Connect desde garmin_data.json!');
         }
       }
     } catch (e) {
@@ -69,7 +87,6 @@ class GarminState {
     const targetIntake = totalExpenditure - this.data.targetDeficit;
     
     // Auto-regulation evaluation
-    // High fatigue trigger: Body Battery < 30 OR Stress > 75 OR Sleep Score < 55
     const isHighFatigue = this.data.bodyBattery < 30 || this.data.stressLevel > 75 || this.data.sleepScore < 55;
     const suggestedVolumeReduction = isHighFatigue ? 20 : 0; // -20% volume
 
