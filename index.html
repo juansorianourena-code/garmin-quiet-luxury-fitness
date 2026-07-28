@@ -37,7 +37,7 @@
   <div class="bg-glow glow-2"></div>
   <div class="bg-glow glow-3"></div>
 
-  <!-- Header Navigation Bar -->
+  <!-- Header Navigation Bar (Ultra-Compact Native Mobile Header) -->
   <header class="app-header">
     <div class="header-container">
       <div class="brand">
@@ -46,35 +46,17 @@
         </div>
         <div class="brand-text">
           <h1>FitExpert <span class="accent-text">Studio</span></h1>
-          <span class="brand-tagline"><i class="fa-solid fa-graduation-cap"></i> Evidencia Científica</span>
         </div>
       </div>
 
-      <!-- User Profile Security Actions -->
+      <!-- Clean Header Top Action Bar (Only 2 Essential Quick Buttons) -->
       <div class="header-actions">
-        <!-- Security Status Badge -->
-        <span id="authStatusBadge" class="badge badge-purple" style="cursor:pointer;" title="Configurar Seguridad">
-          <i class="fa-solid fa-lock-open"></i> Sin Contraseña
-        </span>
-
+        <!-- Security Setup Key Button -->
         <button class="btn btn-purple btn-sm" id="btnSetupPassword" title="Proteger Perfil con Contraseña">
           <i class="fa-solid fa-key"></i>
         </button>
 
-        <button class="btn btn-outline btn-sm" id="btnLockAppNow" title="Bloquear Pantalla">
-          <i class="fa-solid fa-lock"></i>
-        </button>
-
-        <!-- Backup & Restore Data Buttons -->
-        <button class="btn btn-outline btn-sm" id="btnExportData" title="Descargar Copia de Seguridad">
-          <i class="fa-solid fa-download"></i>
-        </button>
-        <button class="btn btn-outline btn-sm" id="btnImportData" title="Restaurar Copia de Seguridad">
-          <i class="fa-solid fa-upload"></i>
-        </button>
-        <input type="file" id="importFileInput" accept=".json" style="display:none;">
-
-        <!-- Force Reload Button -->
+        <!-- Force Reload Button (Now Fully Visible with Zero Clipping!) -->
         <button class="btn btn-emerald btn-sm btn-reload-glow" id="btnForceReload" title="Buscar Actualizaciones">
           <i class="fa-solid fa-arrows-rotate" id="reloadIcon"></i>
         </button>
@@ -82,7 +64,7 @@
     </div>
   </header>
 
-  <!-- Main Content Container -->
+  <!-- Main Content Container (Full Width Mobile Shell) -->
   <main class="main-container">
 
     <!-- ==================== TAB 1: CALCULADORA MÉTRICA & DÉFICIT ==================== -->
@@ -267,6 +249,29 @@
           <div id="measurementsHistoryContainer"></div>
         </div>
       </div>
+
+      <!-- NEW: Dedicated Profile Security & Backup Management Card -->
+      <div class="card glass-card mt-3">
+        <h3 class="card-title"><i class="fa-solid fa-shield-halved" style="color:var(--accent-purple);"></i> Seguridad de Perfil & Copia de Seguridad</h3>
+        <p class="text-muted fs-sm mb-3">Tus datos están protegidos y guardados en el almacenamiento inmune de tu teléfono.</p>
+        
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <span id="authStatusBadge" class="badge badge-purple" style="font-size:12px; padding:6px 12px; align-self:center;">
+            <i class="fa-solid fa-lock-open"></i> Sin Contraseña
+          </span>
+          <button class="btn btn-outline btn-sm" id="btnLockAppNow">
+            <i class="fa-solid fa-lock"></i> Bloquear Pantalla
+          </button>
+          <button class="btn btn-outline btn-sm" id="btnExportData">
+            <i class="fa-solid fa-download"></i> Guardar Copia (JSON)
+          </button>
+          <button class="btn btn-outline btn-sm" id="btnImportData">
+            <i class="fa-solid fa-upload"></i> Restaurar Copia
+          </button>
+          <input type="file" id="importFileInput" accept=".json" style="display:none;">
+        </div>
+      </div>
+
     </section>
 
     <!-- ==================== TAB 2: RUTINAS DE GIMNASIO & TRACKER ==================== -->
@@ -487,7 +492,7 @@
     </div>
   </div>
 
-  <!-- FULLSCREEN LOCK SCREEN OVERLAY (DISPLAY: NONE BY DEFAULT) -->
+  <!-- FULLSCREEN LOCK SCREEN OVERLAY -->
   <div class="modal-overlay" id="appLockScreen" style="z-index:99999; background:#0b0f19; display:none;">
     <div class="modal-card" style="max-width:340px; text-align:center; padding:24px;">
       <div style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, var(--accent-purple), #6d28d9); color:#fff; display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 12px auto;">

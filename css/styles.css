@@ -1,6 +1,5 @@
 /* ==========================================================================
    FITEXPERT STUDIO - 100% DEDICATED MOBILE APP SYSTEM (NATIVE IPHONE UI)
-   Forces Native Mobile App UX unconditionally on all screens, Safari & Devices
    ========================================================================== */
 
 :root {
@@ -34,7 +33,6 @@
   --transition: all 0.2s ease;
 }
 
-/* STRICT MOBILE APP GLOBAL BOUNDARIES */
 *, *::before, *::after {
   box-sizing: border-box !important;
   margin: 0;
@@ -77,13 +75,11 @@ input, select, textarea {
   user-select: text;
 }
 
-/* UNCONDITIONAL HIDE OF ALL DESKTOP NAVIGATION ELEMENTS */
 .desktop-only-nav,
 .desktop-text {
   display: none !important;
 }
 
-/* Background Glow Orbs */
 .bg-glow {
   position: fixed;
   border-radius: 50%;
@@ -106,14 +102,14 @@ input, select, textarea {
   border-bottom: 1px solid var(--border-color);
   padding-top: max(10px, env(safe-area-inset-top));
   padding-bottom: 8px;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
   width: 100% !important;
 }
 
 .header-container {
   width: 100% !important;
-  max-width: 480px !important;
+  max-width: 100% !important;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -130,13 +126,12 @@ input, select, textarea {
 }
 .brand-text h1 { font-family: var(--font-heading); font-size: 15px; font-weight: 800; line-height: 1; }
 .accent-text { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.brand-tagline { font-size: 9px; color: var(--accent-emerald); font-weight: 600; display: block; }
 
-.header-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .btn-purple { background: linear-gradient(135deg, var(--accent-purple), #6d28d9); color: #fff; }
 .btn-reload-glow { background: linear-gradient(135deg, var(--accent-emerald), #047857); color: #fff; }
 
-/* Native Bottom Mobile Tab Bar (100% Visible Always) */
+/* Native Bottom Mobile Tab Bar */
 .mobile-bottom-nav {
   display: flex !important;
   position: fixed;
@@ -167,10 +162,10 @@ input, select, textarea {
 .mobile-nav-btn i { font-size: 16px; }
 .mobile-nav-btn.active { color: var(--accent-cyan); font-weight: 700; }
 
-/* Dedicated Mobile App Container (Centered 480px Smartphone Shell) */
+/* Full-Width Fluid Mobile App Container */
 .main-container {
   width: 100% !important;
-  max-width: 480px !important;
+  max-width: 100% !important;
   margin: 6px auto calc(70px + env(safe-area-inset-bottom)) auto !important;
   padding: 0 8px !important;
 }
@@ -182,7 +177,6 @@ input, select, textarea {
 .section-header h2 { font-family: var(--font-heading); font-size: 16px; font-weight: 700; line-height: 1.2; }
 .section-header p { color: var(--text-muted); font-size: 11px; }
 
-/* 100% Single-Column Mobile Grids */
 .grid, .grid-2, .grid-3-1, .grid-2-sm, .grid-3-sm {
   display: grid;
   grid-template-columns: 1fr !important;
@@ -224,7 +218,6 @@ input, select, textarea {
 .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px; }
 .form-control { width: 100% !important; background: rgba(11, 15, 25, 0.7); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 10px; color: var(--text-main); font-size: 14px; outline: none; min-height: 40px; }
 
-/* Metrics Stacked Cleanly for Mobile Displays */
 .metrics-grid { display: grid; grid-template-columns: 1fr !important; gap: 6px; margin-bottom: 10px; width: 100% !important; }
 .metric-box { background: rgba(11, 15, 25, 0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px !important; text-align: center; overflow: hidden !important; }
 .metric-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; }
