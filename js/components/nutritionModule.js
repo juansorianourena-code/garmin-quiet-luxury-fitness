@@ -7,7 +7,7 @@
 import { appState } from '../appState.js';
 import { garminState } from '../garminState.js';
 
-export function renderNutritionModule(container) {
+export function renderNutritionModule(container, isBiometricsOpen = false) {
   const nState = appState.nutrition;
   const totals = appState.getTotals();
   const gData = garminState.getData();
@@ -72,7 +72,7 @@ export function renderNutritionModule(container) {
       </div>
 
       <!-- FORMS DESPLEGABLE INLINE -->
-      <div id="biometrics-accordion-body" class="accordion-wrapper" style="margin-top: 14px;">
+      <div id="biometrics-accordion-body" class="accordion-wrapper ${isBiometricsOpen ? 'expanded' : ''}" style="margin-top: 14px;">
         <div style="background: var(--bg-main); padding: 16px; border: 1px solid var(--border-line-strong); border-radius: var(--radius-md);">
           
           <!-- 1. DATOS FÍSICOS -->
@@ -358,7 +358,7 @@ export function renderNutritionModule(container) {
     btn.addEventListener('click', (e) => {
       const allergyId = e.currentTarget.getAttribute('data-allergy-id');
       appState.toggleAllergy(allergyId);
-      renderNutritionModule(container);
+      renderNutritionModule(container, true);
     });
   });
 
@@ -367,7 +367,7 @@ export function renderNutritionModule(container) {
     btn.addEventListener('click', (e) => {
       const dietType = e.currentTarget.getAttribute('data-diet');
       appState.updateUserProfile({ dietType });
-      renderNutritionModule(container);
+      renderNutritionModule(container, true);
     });
   });
 
@@ -376,7 +376,7 @@ export function renderNutritionModule(container) {
     btn.addEventListener('click', (e) => {
       const goal = e.currentTarget.getAttribute('data-goal');
       appState.updateUserProfile({ goal });
-      renderNutritionModule(container);
+      renderNutritionModule(container, true);
     });
   });
 
