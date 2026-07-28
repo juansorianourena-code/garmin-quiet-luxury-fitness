@@ -66,12 +66,30 @@
         </button>
       </nav>
 
-      <!-- User Profile Badge & Top-Right Actions -->
+      <!-- User Profile Security Actions -->
       <div class="header-actions">
-        <!-- AI Trainer Button -->
-        <button class="btn btn-purple btn-sm" id="btnOpenAIChat" title="Entrenadora & Nutricionista IA">
-          <i class="fa-solid fa-robot"></i> <span>Asistente IA</span>
+        <!-- Security Status Badge -->
+        <span id="authStatusBadge" class="badge badge-purple" style="cursor:pointer;" title="Configurar Seguridad">
+          <i class="fa-solid fa-lock-open"></i> Sin Contraseña
+        </span>
+
+        <button class="btn btn-purple btn-sm" id="btnSetupPassword" title="Proteger Perfil con Contraseña">
+          <i class="fa-solid fa-key"></i> <span class="desktop-text">Proteger Perfil</span>
         </button>
+
+        <button class="btn btn-outline btn-sm" id="btnLockAppNow" title="Bloquear Pantalla">
+          <i class="fa-solid fa-lock"></i>
+        </button>
+
+        <!-- Backup & Restore Data Buttons -->
+        <button class="btn btn-outline btn-sm" id="btnExportData" title="Descargar Copia de Seguridad">
+          <i class="fa-solid fa-download"></i>
+        </button>
+        <button class="btn btn-outline btn-sm" id="btnImportData" title="Restaurar Copia de Seguridad">
+          <i class="fa-solid fa-upload"></i>
+        </button>
+        <input type="file" id="importFileInput" accept=".json" style="display:none;">
+
         <!-- Force Reload Button -->
         <button class="btn btn-emerald btn-sm btn-reload-glow" id="btnForceReload" title="Buscar Actualizaciones">
           <i class="fa-solid fa-arrows-rotate" id="reloadIcon"></i>
@@ -219,7 +237,7 @@
         </div>
       </div>
 
-      <!-- NEW: Hydration Tracker & Body Measurements Grid -->
+      <!-- Hydration Tracker & Body Measurements Grid -->
       <div class="grid grid-2 mt-3">
         <!-- Water & Electrolytes Tracker Card -->
         <div class="card glass-card">
@@ -236,7 +254,7 @@
           </div>
         </div>
 
-        <!-- Body Measurements & Antropometry Card -->
+        <!-- Body Measurements Card -->
         <div class="card glass-card">
           <h3 class="card-title"><i class="fa-solid fa-ruler-combined" style="color:var(--accent-emerald);"></i> Medidas Corporales (cm)</h3>
           <form id="bodyMeasurementsForm">
@@ -334,7 +352,7 @@
             </form>
           </div>
 
-          <!-- NEW: 1RM Strength Calculator Card -->
+          <!-- 1RM Strength Calculator Card -->
           <div class="card glass-card mb-3">
             <h3 class="card-title"><i class="fa-solid fa-calculator" style="color:var(--accent-cyan);"></i> Calculadora de 1RM (Fuerza Máxima)</h3>
             <form id="oneRepMaxForm">
@@ -450,10 +468,10 @@
         <span class="badge badge-purple"><i class="fa-solid fa-graduation-cap"></i> Peer-Reviewed</span>
       </div>
 
-      <!-- NEW: Evidence-Based Supplementation Protocol -->
+      <!-- Evidence-Based Supplementation Protocol -->
       <div class="card glass-card mb-3">
         <h3 class="card-title"><i class="fa-solid fa-capsules" style="color:var(--accent-purple);"></i> Dosis de Suplementación Calculada (ISSN)</h3>
-        <p class="text-muted fs-sm mb-3">Protocolos de suplementación ertogénica ajustados a tu peso corporal exacto.</p>
+        <p class="text-muted fs-sm mb-3">Protocolos de suplementación ergogénica ajustados a tu peso corporal exacto.</p>
         <div id="supplementationContainer"></div>
       </div>
 
@@ -461,6 +479,50 @@
     </section>
 
   </main>
+
+  <!-- MODAL: Password Configuration Modal -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-card" style="max-width:400px;">
+      <button class="modal-close" onclick="document.getElementById('authModal').classList.remove('active')">&times;</button>
+      <h3><i class="fa-solid fa-key" style="color:var(--accent-purple);"></i> Proteger Mi Perfil con Contraseña</h3>
+      <p class="text-muted fs-sm mb-3">Establece una clave de acceso personal. Tus datos de rutinas, fotos y nutrición quedarán bloqueados para terceros.</p>
+      
+      <form id="setupPasswordForm">
+        <div class="form-group">
+          <label for="newPassInput">Nueva Contraseña / PIN</label>
+          <input type="password" id="newPassInput" class="form-control" placeholder="Ej: 1234 o mi_clave_fit" required>
+        </div>
+        <div class="form-group">
+          <label for="newPassHintInput">Pista de Contraseña (Opcional)</label>
+          <input type="text" id="newPassHintInput" class="form-control" placeholder="Ej: Fecha de nacimiento, ciudad...">
+        </div>
+        <button type="submit" class="btn btn-purple btn-block mt-3">
+          <i class="fa-solid fa-shield-halved"></i> Guardar y Activar Protección
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN LOCK SCREEN OVERLAY -->
+  <div class="modal-overlay" id="appLockScreen" style="z-index:99999; background:#0b0f19;">
+    <div class="modal-card" style="max-width:340px; text-align:center; padding:24px;">
+      <div style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, var(--accent-purple), #6d28d9); color:#fff; display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 12px auto;">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <h2 style="font-family:var(--font-heading); margin-bottom:4px;">FitExpert Protegido</h2>
+      <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">Introduce tu contraseña para acceder a tus datos privados.</p>
+
+      <form id="unlockAppForm">
+        <div class="form-group mb-2">
+          <input type="password" id="unlockPassInput" class="form-control" placeholder="Introduce tu contraseña..." required style="text-align:center; font-size:16px;">
+        </div>
+        <div id="unlockErrorText" style="color:var(--accent-rose); font-size:11px; margin-bottom:8px; font-weight:600;"></div>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fa-solid fa-unlock"></i> Desbloquear Perfil
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- FLOATING WIDGET: Rest Timer Overlay -->
   <div class="modal-overlay" id="restTimerWidget" style="background:rgba(11,15,25,0.7);">

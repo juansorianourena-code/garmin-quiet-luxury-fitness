@@ -5,29 +5,33 @@ import { initMealPlanner } from './mealPlanner.js';
 import { initScienceHub } from './scienceHub.js';
 import { initAITrainerChat } from './aiTrainer.js';
 
-// New ES Modules
+// Premium Modules
 import { initRestTimer } from './restTimer.js';
 import { initOneRepMaxCalc } from './oneRepMaxCalc.js';
 import { initSupplementation } from './supplementation.js';
 import { initHydrationTracker } from './hydrationTracker.js';
 import { initBodyMeasurements } from './bodyMeasurements.js';
 import { initWhatsAppExport } from './whatsappExport.js';
+import { initAuthStorage } from './authStorage.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Setup Navigation Event Listeners (Click + Touchstart)
+  // 1. Initialize Profile Security & Persistence
+  try { initAuthStorage(); } catch (err) { console.error('Error initAuthStorage:', err); }
+
+  // 2. Setup Navigation Event Listeners
   try { setupTabNavigation(); } catch (err) { console.error('Error setupTabNavigation:', err); }
 
-  // 2. Setup Auto Reload & Update System
+  // 3. Setup Auto Reload System
   try { setupAutoReloadSystem(); } catch (err) { console.error('Error setupAutoReloadSystem:', err); }
 
-  // 3. Initialize Core Modules
+  // 4. Initialize Core Modules
   try { initCalorieCalculator(); } catch (err) { console.error('Error initCalorieCalculator:', err); }
   try { initWorkoutPlanner(); } catch (err) { console.error('Error initWorkoutPlanner:', err); }
   try { initMealPlanner(); } catch (err) { console.error('Error initMealPlanner:', err); }
   try { initScienceHub(); } catch (err) { console.error('Error initScienceHub:', err); }
   try { initAITrainerChat(); } catch (err) { console.error('Error initAITrainerChat:', err); }
 
-  // 4. Initialize New Premium Features
+  // 5. Initialize Premium Modules
   try { initRestTimer(); } catch (err) { console.error('Error initRestTimer:', err); }
   try { initOneRepMaxCalc(); } catch (err) { console.error('Error initOneRepMaxCalc:', err); }
   try { initSupplementation(); } catch (err) { console.error('Error initSupplementation:', err); }
@@ -35,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   try { initBodyMeasurements(); } catch (err) { console.error('Error initBodyMeasurements:', err); }
   try { initWhatsAppExport(); } catch (err) { console.error('Error initWhatsAppExport:', err); }
 
-  // 5. Setup Data Actions
+  // 6. Setup Data Import/Export Actions
   try { setupDataActions(); } catch (err) { console.error('Error setupDataActions:', err); }
 });
 
@@ -48,7 +52,6 @@ function setupTabNavigation() {
 
     const targetTabId = btn.getAttribute('data-tab');
 
-    // If button triggers AI Chat Modal
     if (targetTabId === 'tab-ai-chat' || btn.id === 'btnMobileAIChat') {
       const aiModal = document.getElementById('aiChatModal');
       if (aiModal) aiModal.classList.add('active');
@@ -57,11 +60,9 @@ function setupTabNavigation() {
 
     if (!targetTabId) return;
 
-    // Deactivate all nav buttons
     allNavBtns.forEach(b => b.classList.remove('active'));
     tabContents.forEach(tc => tc.classList.remove('active'));
 
-    // Activate target buttons & content
     document.querySelectorAll(`[data-tab="${targetTabId}"]`).forEach(b => b.classList.add('active'));
 
     const targetContent = document.getElementById(targetTabId);
@@ -72,10 +73,7 @@ function setupTabNavigation() {
   };
 
   allNavBtns.forEach(btn => {
-    // Handle Click
     btn.addEventListener('click', (e) => handleTabSwitch(btn, e));
-
-    // Handle TouchStart for Instant iOS Response
     btn.addEventListener('touchstart', (e) => handleTabSwitch(btn, e), { passive: false });
   });
 }
@@ -106,6 +104,9 @@ function setupAutoReloadSystem() {
 
 function setupDataActions() {
   const btnExport = document.getElementById('btnExportData');
+  const btnImport = document.getElementById('btnImportData');
+  const fileInput = document.getElementById('importFileInput');
+
   if (btnExport) {
     btnExport.addEventListener('click', () => {
       const exportData = {
@@ -113,6 +114,9 @@ function setupDataActions() {
         workoutLogs: localStorage.getItem('fitexpert_workout_logs'),
         waterLogs: localStorage.getItem('fitexpert_water_ml'),
         bodyMeasurements: localStorage.getItem('fitexpert_body_measurements'),
+        allergies: localStorage.getItem('fitexpert_allergies'),
+        authPass: localStorage.getItem('fitexpert_auth_pass'),
+        authHint: localStorage.getItem('fitexpert_auth_hint'),
         exportDate: new Date().toISOString()
       };
 
@@ -123,6 +127,34 @@ function setupDataActions() {
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
+    });
+  }
+
+  if (btnImport && fileInput) {
+    btnImport.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (imported.profile) localStorage.setItem('fitexpert_profile', imported.profile);
+          if (imported.workoutLogs) localStorage.setItem('fitexpert_workout_logs', imported.workoutLogs);
+          if (imported.waterLogs) localStorage.setItem('fitexpert_water_ml', imported.waterLogs);
+          if (imported.bodyMeasurements) localStorage.setItem('fitexpert_body_measurements', imported.bodyMeasurements);
+          if (imported.allergies) localStorage.setItem('fitexpert_allergies', imported.allergies);
+          if (imported.authPass) localStorage.setItem('fitexpert_auth_pass', imported.authPass);
+          if (imported.authHint) localStorage.setItem('fitexpert_auth_hint', imported.authHint);
+
+          alert('¡Copia de seguridad restaurada al 100%! La aplicación se recargará ahora.');
+          window.location.reload();
+        } catch (err) {
+          alert('El archivo seleccionado no es un archivo de copia de seguridad válido de FitExpert.');
+        }
+      };
+      reader.readAsText(file);
     });
   }
 }
