@@ -1,7 +1,7 @@
 /**
- * Módulo 3: Nutrición y Balance Energético
- * Planificador de Menús, Calculadora Biométrica BMR/TDEE, Alergias/Intolerancias y Estilo de Dieta.
- * Diseño Quiet Luxury estricto (0 Emojis, tipografía limpia e iconos vectoriales finos).
+ * Módulo 3: Nutrición & Diario Semanal (7 Días x 5 Comidas Diarias)
+ * Filtrado Implacable de Alérgenos, Intercambio de Platos y Generador de Lista de la Compra.
+ * Diseño Quiet Luxury estricta (0 Emojis, tipografía limpia e iconos vectoriales finos).
  */
 
 import { appState } from '../appState.js';
@@ -42,20 +42,26 @@ export function renderNutritionModule(container, isBiometricsOpen = false) {
   ];
 
   const userAllergies = p.allergies || [];
+  const activeDayIndex = nState.activeWeekDayIndex || 0;
+  const weeklyPlan = nState.weeklyPlan || [];
+  const currentDayPlan = weeklyPlan[activeDayIndex] || weeklyPlan[0] || { dayName: "Lunes", meals: [] };
+
+  // Grocery list generated
+  const groceryList = appState.generateGroceryList();
 
   container.innerHTML = `
     <!-- Header -->
-    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
       <div>
-        <div class="card-title-sm">Módulo 3: Nutrición & Balance Energético</div>
-        <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Perfil Biométrico, Alergias & Dieta</h2>
+        <div class="card-title-sm">Módulo 3: Nutrición & Plan Semanal</div>
+        <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Planificador de 7 Días & 5 Comidas</h2>
       </div>
       <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--accent-optimal); background: var(--bg-card); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border-line);">
         Meta: ${p.targetCalories} kcal/día
       </span>
     </div>
 
-    <!-- ACCORDEÓN DESPLEGABLE: CALCULADORA BIOMÉTRICA, ALERGIAS & DIETA (SIN MODALES / SIN EMOJIS) -->
+    <!-- ACCORDEÓN DESPLEGABLE: CONFIGURACIÓN BIOMÉTRICA, ALERGIAS & TIPO DE DIETA -->
     <div class="card" style="border: 1px solid var(--border-line-strong); background-color: rgba(27, 38, 59, 0.02); margin-bottom: 20px;">
       <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" id="btn-toggle-biometrics">
         <div>
@@ -63,11 +69,11 @@ export function renderNutritionModule(container, isBiometricsOpen = false) {
             Configuración Nutricional: Datos, Alergias & Tipo de Dieta
           </div>
           <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">
-            ${p.weight} kg · ${p.height} cm | <strong>${dietLabels[p.dietType] || 'Omnívora'}</strong> | ${userAllergies.length > 0 ? `<span style="color: var(--accent-fatigue); font-weight: 600;">${userAllergies.length} Alergia(s) Activas</span>` : 'Sin Alergias'}
+            ${p.weight} kg · ${p.height} cm | <strong>${dietLabels[p.dietType] || 'Omnívora'}</strong> | ${userAllergies.length > 0 ? `<span style="color: var(--accent-fatigue); font-weight: 600;">${userAllergies.length} Alergia(s) Excluidas</span>` : 'Sin Alergias Excluidas'}
           </div>
         </div>
         <button class="inline-btn inline-btn-secondary" style="padding: 4px 10px; font-size: 0.72rem;">
-          Configurar Perfil / Objetivo
+          Configurar Perfil / Alergias
         </button>
       </div>
 
@@ -115,7 +121,7 @@ export function renderNutritionModule(container, isBiometricsOpen = false) {
             </div>
           </div>
 
-          <!-- 2. ALERGIAS E INTOLERANCIAS ALIMENTARIAS -->
+          <!-- 2. ALERGIAS E INTOLERANCIAS ALIMENTARIAS (FILTRADO EN TIEMPO REAL) -->
           <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px; letter-spacing: 0.05em;">
             2. Alergias e Intolerancias (Filtra Platos y Recetas Automáticamente):
           </div>
@@ -136,9 +142,9 @@ export function renderNutritionModule(container, isBiometricsOpen = false) {
             <input type="text" id="input-profile-custom-allergies" placeholder="Ej: Fructosa, Sorbitol, Mariscos específicos..." value="${p.customAllergies || ''}" class="garmin-text-input" style="padding: 8px 10px;" />
           </div>
 
-          <!-- 3. TIPO / ESTILO DE DIETA -->
+          <!-- 3. TIPO DE DIETA Y OBJETIVO -->
           <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px; letter-spacing: 0.05em;">
-            3. Tipo de Dieta Preferida:
+            3. Tipo de Dieta & Objetivo Calórico:
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 16px;">
@@ -149,43 +155,23 @@ export function renderNutritionModule(container, isBiometricsOpen = false) {
             `).join('')}
           </div>
 
-          <!-- 4. OBJETIVO / FINALIDAD PRINCIPAL -->
-          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px; letter-spacing: 0.05em;">
-            4. Objetivo Principal (Finalidad):
-          </div>
-
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 16px;">
             <button class="inline-btn btn-goal-option ${p.goal === 'fat_loss' ? 'active' : 'inline-btn-secondary'}" data-goal="fat_loss" style="padding: 10px; font-size: 0.8rem; text-align: center;">
-              Perder Grasa<br><span style="font-size: 0.7rem; font-weight: 400; opacity: 0.8;">Déficit (-500 kcal)</span>
+              Perder Grasa (-500 kcal)
             </button>
-
             <button class="inline-btn btn-goal-option ${p.goal === 'recomp' ? 'active' : 'inline-btn-secondary'}" data-goal="recomp" style="padding: 10px; font-size: 0.8rem; text-align: center;">
-              Recomposición<br><span style="font-size: 0.7rem; font-weight: 400; opacity: 0.8;">Mantenimiento Calórico</span>
+              Recomposición (Mantenimiento)
             </button>
-
             <button class="inline-btn btn-goal-option ${p.goal === 'muscle_gain' ? 'active' : 'inline-btn-secondary'}" data-goal="muscle_gain" style="padding: 10px; font-size: 0.8rem; text-align: center;">
-              Ganar Músculo<br><span style="font-size: 0.7rem; font-weight: 400; opacity: 0.8;">Superávit (+350 kcal)</span>
+              Ganar Músculo (+350 kcal)
             </button>
-          </div>
-
-          <!-- RESULTADOS EN TIEMPO REAL -->
-          <div style="background: var(--bg-card); padding: 12px 14px; border: 1px solid var(--border-line); border-radius: var(--radius-sm); font-size: 0.8rem;">
-            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-family: var(--font-mono);">
-              <span>BMR: <strong>${p.bmr} kcal</strong></span>
-              <span>TDEE Base: <strong>${p.tdee} kcal</strong></span>
-              <span>Objetivo Diario: <strong style="color: var(--accent-optimal);">${p.targetCalories} kcal</strong></span>
-            </div>
-            <div style="margin-top: 6px; font-size: 0.75rem; color: var(--text-muted);">
-              Macros adaptados: <strong>${p.targetProtein}g Proteína</strong> | <strong>${p.targetCarbs}g Carbos</strong> | <strong>${p.targetFat}g Grasas</strong>
-            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Resumen de Macros -->
+    <!-- RESUMEN DE MACRONUTRIENTES DIARIOS -->
     <div class="fine-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
-      <!-- Proteínas -->
       <div class="grid-cell accent-optimal-border">
         <div class="card-title-sm" style="color: var(--accent-optimal);">Proteínas</div>
         <div class="metric-number-md">${totals.protein}<span class="unit">/ ${nState.targets.protein}g</span></div>
@@ -194,7 +180,6 @@ export function renderNutritionModule(container, isBiometricsOpen = false) {
         </div>
       </div>
 
-      <!-- Carbohidratos -->
       <div class="grid-cell accent-navy-border">
         <div class="card-title-sm">Carbohidratos</div>
         <div class="metric-number-md">${totals.carbs}<span class="unit">/ ${nState.targets.carbs}g</span></div>
@@ -203,7 +188,6 @@ export function renderNutritionModule(container, isBiometricsOpen = false) {
         </div>
       </div>
 
-      <!-- Grasas -->
       <div class="grid-cell accent-fatigue-border">
         <div class="card-title-sm" style="color: var(--accent-fatigue);">Grasas</div>
         <div class="metric-number-md">${totals.fat}<span class="unit">/ ${nState.targets.fat}g</span></div>
@@ -213,49 +197,116 @@ export function renderNutritionModule(container, isBiometricsOpen = false) {
       </div>
     </div>
 
-    <!-- PLANIFICADOR Y INTERCAMBIO DE PLATOS ADAPTADOS A ALERGIAS -->
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
-        <div class="card-title-sm" style="margin-bottom: 0;">Planificador Adaptado (Sin Alérgenos & Dieta ${dietLabels[p.dietType] || ''})</div>
-        ${userAllergies.length > 0 ? `<span style="font-size: 0.72rem; padding: 2px 8px; background: rgba(158, 107, 85, 0.15); color: var(--accent-fatigue); border-radius: 4px; font-weight: 600;">Platos Filtrados para ${userAllergies.length} Alergias</span>` : ''}
+    <!-- SELECTOR NAVEGABLE DE 7 DÍAS DE LA SEMANA -->
+    <div style="margin-bottom: 16px;">
+      <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 6px; letter-spacing: 0.05em;">
+        Selecciona el Día de la Semana:
       </div>
-
-      <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 12px;">
-        ${nState.mealPlans.map((plan, idx) => `
-          <div style="background: var(--bg-main); padding: 14px 18px; border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
-              <div>
-                <span style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">${plan.meal}</span>
-                <div style="font-weight: 500; color: var(--text-main); margin-top: 2px;">${plan.current}</div>
-              </div>
-              <button class="inline-btn inline-btn-secondary btn-toggle-meal-swap" data-plan-idx="${idx}" style="padding: 4px 10px; font-size: 0.75rem; white-space: nowrap;">
-                Intercambiar Plato
-              </button>
-            </div>
-
-            <!-- ACORDEÓN INLINE DESPLEGABLE DE INTERCAMBIO -->
-            <div id="meal-accordion-${idx}" class="accordion-wrapper">
-              <div class="accordion-content" style="margin-top: 10px; padding: 12px 14px;">
-                <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">Alternativas Seguras con Equivalencia Exacta:</div>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                  ${plan.alternatives.map(alt => `
-                    <div class="substitute-item btn-select-meal-alt" data-plan-idx="${idx}" data-alt-text="${alt}" style="padding: 10px 14px;">
-                      <span style="font-size: 0.85rem; color: var(--text-main);">${alt}</span>
-                      <span class="inline-btn inline-btn-secondary" style="padding: 2px 8px; font-size: 0.72rem;">Aplicar</span>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-            </div>
+      <div class="days-frequency-selector">
+        ${weeklyPlan.map((d, idx) => `
+          <div class="day-pill btn-select-weekday ${activeDayIndex === idx ? 'active' : ''}" data-day-idx="${idx}">
+            ${d.dayName}
           </div>
         `).join('')}
       </div>
     </div>
 
-    <!-- REGISTRO DE ALIMENTOS DIARIOS E INLINE ADD -->
+    <!-- PLANIFICADOR SEMANAL DE 5 COMIDAS DIARIAS -->
+    <div class="card" style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+        <div>
+          <div class="card-title-sm" style="margin-bottom: 0;">Menú Diario: ${currentDayPlan.dayName} (5 Comidas Completas)</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Dieta ${dietLabels[p.dietType] || 'Omnívora'} · Total Día: <strong>${currentDayPlan.meals.reduce((sum, m) => sum + m.calories, 0)} kcal</strong></div>
+        </div>
+        ${userAllergies.length > 0 ? `<span style="font-size: 0.72rem; padding: 3px 8px; background: rgba(158, 107, 85, 0.15); color: var(--accent-fatigue); border-radius: 4px; font-weight: 600;">Filtrado Activo: ${userAllergies.length} Alergias</span>` : ''}
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        ${currentDayPlan.meals.map((m, mIdx) => {
+          const isSafe = appState.isMealSafe(m);
+          return `
+            <div style="background: var(--bg-main); padding: 14px 16px; border: 1px solid var(--border-line); border-radius: var(--radius-sm); position: relative;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+                <div style="flex: 1;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-optimal);">${m.meal}</span>
+                    ${!isSafe ? `<span style="font-size: 0.65rem; padding: 1px 6px; background: var(--accent-fatigue); color: white; border-radius: 3px; font-weight: 600;">Contiene Alérgeno Excluido</span>` : ''}
+                  </div>
+                  <div style="font-weight: 600; color: var(--text-main); margin-top: 4px; font-size: 0.95rem;">${m.title}</div>
+                  
+                  <div style="margin-top: 6px; font-size: 0.76rem; color: var(--text-muted);">
+                    <strong>Ingredientes:</strong> ${(m.ingredients || []).join(' · ')}
+                  </div>
+
+                  <div style="margin-top: 6px; font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-main);">
+                    <strong>${m.calories} kcal</strong> | ${m.p}g Proteína | ${m.c}g Carbos | ${m.f}g Grasas
+                  </div>
+                </div>
+
+                <button class="inline-btn inline-btn-secondary btn-toggle-meal-accordion" data-meal-idx="${mIdx}" style="padding: 4px 10px; font-size: 0.75rem; white-space: nowrap;">
+                  Intercambiar Plato
+                </button>
+              </div>
+
+              <!-- ACORDEÓN DESPLEGABLE DE ALTERNATIVAS LIBRES DE ALÉRGENOS -->
+              <div id="weekly-meal-accordion-${mIdx}" class="accordion-wrapper">
+                <div class="accordion-content" style="margin-top: 12px; padding: 12px; background: var(--bg-card); border-radius: var(--radius-sm);">
+                  <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">Alternativas 100% Seguras y Libres de Alérgenos:</div>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    ${(m.alternatives || []).map((alt, altIdx) => {
+                      const isAltSafe = appState.isMealSafe(alt);
+                      if (!isAltSafe) return ''; // Ocultar alternativas no seguras
+                      return `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
+                          <div>
+                            <div style="font-size: 0.85rem; font-weight: 500; color: var(--text-main);">${alt.title}</div>
+                            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">${(alt.ingredients || []).join(' · ')}</div>
+                            <div style="font-size: 0.72rem; font-family: var(--font-mono); margin-top: 2px;">${alt.calories} kcal | ${alt.p}g P | ${alt.c}g C | ${alt.f}g G</div>
+                          </div>
+                          <button class="inline-btn inline-btn-accent btn-apply-weekly-alt" data-day-idx="${activeDayIndex}" data-meal-idx="${mIdx}" data-alt-idx="${altIdx}" style="padding: 4px 10px; font-size: 0.72rem;">
+                            Aplicar
+                          </button>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- LISTA DE LA COMPRA SEMANAL CONSOLIDADA (0 ALÉRGENOS) -->
+    <div class="card" style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" id="btn-toggle-grocery">
+        <div>
+          <div class="card-title-sm" style="margin-bottom: 0;">Lista de la Compra Semanal Consolidada (${groceryList.length} Ingredientes)</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Calculada automáticamente para los 7 días de la semana sin ningún alérgeno prohibido</div>
+        </div>
+        <button class="inline-btn inline-btn-secondary" style="padding: 4px 10px; font-size: 0.72rem;">
+          Ver Lista de la Compra
+        </button>
+      </div>
+
+      <div id="grocery-accordion-body" class="accordion-wrapper">
+        <div style="margin-top: 14px; background: var(--bg-main); padding: 14px; border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px;">
+            ${groceryList.map(item => `
+              <div style="padding: 6px 10px; background: var(--bg-card); border: 1px solid var(--border-line); border-radius: 4px; font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-main);">
+                ${item}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTRO DIARIO REAL DE ALIMENTOS INGESTIONADOS -->
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <div class="card-title-sm" style="margin-bottom: 0;">Alimentos Registrados Hoy (${totals.calories} kcal)</div>
+        <div class="card-title-sm" style="margin-bottom: 0;">Registro Diario Real (${totals.calories} kcal consumidas hoy)</div>
         <button id="btn-toggle-add-food" class="inline-btn" style="padding: 6px 12px; font-size: 0.78rem;">
           + Agregar Alimento Inline
         </button>
@@ -293,7 +344,7 @@ export function renderNutritionModule(container, isBiometricsOpen = false) {
         </div>
       </div>
 
-      <!-- Lista de alimentos guardados -->
+      <!-- Lista de alimentos guardados hoy -->
       <div style="display: flex; flex-direction: column; gap: 8px;">
         ${nState.loggedFood.length === 0 ? `
           <div style="font-size: 0.82rem; color: var(--text-muted); padding: 16px; text-align: center; background: var(--bg-main); border: 1px dashed var(--border-line-strong); border-radius: var(--radius-sm);">
@@ -380,24 +431,48 @@ export function renderNutritionModule(container, isBiometricsOpen = false) {
     });
   });
 
+  // Attach Select Week Day Pills
+  container.querySelectorAll('.btn-select-weekday').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      const dayIdx = parseInt(e.currentTarget.getAttribute('data-day-idx'));
+      appState.setNutritionActiveWeekDay(dayIdx);
+      renderNutritionModule(container);
+    });
+  });
+
   // Attach Meal Swap Accordion Toggles
-  container.querySelectorAll('.btn-toggle-meal-swap').forEach(btn => {
+  container.querySelectorAll('.btn-toggle-meal-accordion').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const idx = e.currentTarget.getAttribute('data-plan-idx');
-      const accordion = container.querySelector(`#meal-accordion-${idx}`);
+      const mIdx = e.currentTarget.getAttribute('data-meal-idx');
+      const accordion = container.querySelector(`#weekly-meal-accordion-${mIdx}`);
       if (accordion) accordion.classList.toggle('expanded');
     });
   });
 
-  // Attach Meal Alternative Selection
-  container.querySelectorAll('.btn-select-meal-alt').forEach(item => {
-    item.addEventListener('click', (e) => {
-      const idx = parseInt(e.currentTarget.getAttribute('data-plan-idx'));
-      const altText = e.currentTarget.getAttribute('data-alt-text');
-      appState.swapMealPlan(idx, altText);
-      renderNutritionModule(container);
+  // Attach Apply Alternative Meal Selection
+  container.querySelectorAll('.btn-apply-weekly-alt').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const dayIdx = parseInt(e.currentTarget.getAttribute('data-day-idx'));
+      const mealIdx = parseInt(e.currentTarget.getAttribute('data-meal-idx'));
+      const altIdx = parseInt(e.currentTarget.getAttribute('data-alt-idx'));
+      
+      const day = appState.nutrition.weeklyPlan[dayIdx];
+      if (day && day.meals[mealIdx] && day.meals[mealIdx].alternatives[altIdx]) {
+        const altObj = day.meals[mealIdx].alternatives[altIdx];
+        appState.swapWeeklyMeal(dayIdx, mealIdx, altObj);
+        renderNutritionModule(container);
+      }
     });
   });
+
+  // Toggle Grocery List Accordion
+  const btnToggleGrocery = container.querySelector('#btn-toggle-grocery');
+  if (btnToggleGrocery) {
+    btnToggleGrocery.addEventListener('click', () => {
+      const body = container.querySelector('#grocery-accordion-body');
+      if (body) body.classList.toggle('expanded');
+    });
+  }
 
   // Toggle Add Food Accordion
   const btnToggleAdd = container.querySelector('#btn-toggle-add-food');

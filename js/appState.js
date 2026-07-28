@@ -1,3 +1,11 @@
+/**
+ * AppState - Central State Management Engine
+ * Incluye Sistema de Autenticación, Base de Datos Histórica (IndexedDB),
+ * Programa de Entrenamiento Personalizable (30-90min, 3-8 ex) y Plan Nutricional de 7 Días x 5 Comidas
+ * con Filtrado Implacable de Alérgenos y Generador de Lista de la Compra.
+ * Estética Quiet Luxury estricta: 0 Emojis.
+ */
+
 import { authService } from './services/authService.js';
 import { dbService } from './services/dbService.js';
 
@@ -5,27 +13,40 @@ class AppState {
   constructor() {
     this.listeners = [];
 
-    // Biometric Profile & Goal Calculator
-    const currentUser = authService.getCurrentUser();
-    const userProfileKey = `aura_user_profile_${currentUser.id}`;
-    const savedProfile = localStorage.getItem(userProfileKey) || localStorage.getItem('aura_user_profile');
+    // User Profile & Biometrics
+    this.userProfile = {
+      height: 178, // cm
+      weight: 74.5, // kg
+      age: 28,
+      gender: "male",
+      activityLevel: 1.55,
+      goal: "fat_loss", // 'fat_loss' | 'recomp' | 'muscle_gain'
+      dietType: "omnivore", // 'omnivore' | 'mediterranean' | 'keto' | 'vegetarian' | 'vegan' | 'high_protein'
+      allergies: [], // ['lactosa', 'gluten', 'frutos_secos', 'huevo', 'pescado', 'soya']
+      customAllergies: "", // Texto libre
+      bmr: 1750,
+      tdee: 2712,
+      targetCalories: 2212,
+      targetProtein: 175,
+      targetCarbs: 215,
+      targetFat: 58
+    };
 
+    const savedProfile = localStorage.getItem("aura_user_profile");
     if (savedProfile) {
       try {
-        this.userProfile = JSON.parse(savedProfile);
-      } catch (e) {
-        this.initDefaultProfile();
-      }
+        this.userProfile = { ...this.userProfile, ...JSON.parse(savedProfile) };
+      } catch (e) {}
     } else {
       this.initDefaultProfile();
     }
 
     // Frequency, Duration, Exercise Count & Real Biomechanical Routines
     this.workoutProgram = {
-      daysCount: 4, // 3, 4, 5, 6 days option
-      targetDurationMinutes: 60, // 30, 45, 60, 75, 90 min
-      targetExerciseCount: 5, // 3, 4, 5, 6, 7, 8 exercises
-      equipment: "full_gym", // "full_gym" | "dumbbells" | "bodyweight" | "cables_machines"
+      daysCount: 4,
+      targetDurationMinutes: 60,
+      targetExerciseCount: 5,
+      equipment: "full_gym",
       activeDayIndex: 0,
       availableSplits: [
         { id: "torso_pierna", name: "Torso / Pierna (4 Días)", daysCount: 4 },
@@ -331,27 +352,437 @@ class AppState {
       }
     ];
 
-    // Daily Nutrition Planner: STRICT ZERO PRE-LOAD (0 kcal / 0% initial bars)
+    // Daily & Weekly Nutrition Planner (7 Días x 5 Comidas Diarias con Filtrado de Alérgenos)
     this.nutrition = {
+      activeWeekDayIndex: 0, // 0: Lunes, 1: Martes, 2: Miércoles, 3: Jueves, 4: Viernes, 5: Sábado, 6: Domingo
       targets: { calories: 1960, protein: 175, carbs: 215, fat: 58 },
-      loggedFood: [], // REGLA ESTRICTA: 0 ALIMENTOS REGISTRADOS POR DEFECTO
-      mealPlans: [
+      loggedFood: [], // REGLA ESTRICTA: 0 ALIMENTOS REGISTRADOS POR DEFECTO PARA EL DÍA
+      weeklyPlan: [
+        // DÍA 0: LUNES
         {
-          title: "Desayuno Proteico de Lento Grado",
-          meal: "Desayuno",
-          current: "Tostada de Masa Madre con Huevos Pochados & Aguacate (480 kcal | 26g P | 42g C | 22g F)",
-          alternatives: [
-            "Porridge de Avena Orgánica con Proteína Isolada y Mantequilla de Almendra (480 kcal | 27g P | 44g C | 20g F)",
-            "Omelette de 3 Claras y 1 Huevo con Salmón Ahumado y Pan de Centeno (475 kcal | 30g P | 38g C | 21g F)"
+          dayName: "Lunes",
+          meals: [
+            {
+              meal: "Desayuno",
+              title: "Omelette de 3 Claras y 1 Huevo con Espinacas y Pan de Centeno",
+              allergens: ["huevo", "gluten"],
+              ingredients: ["Claras de Huevo (150g)", "Huevo Entero (1 ud)", "Pan de Centeno Orgánico (60g)", "Espinacas Frescas (50g)", "Aceite de Oliva EV (5g)"],
+              calories: 420, p: 32, c: 38, f: 14,
+              alternatives: [
+                { title: "Porridge de Avena con Proteína Vegetal, Chía y Frambuesas", allergens: [], ingredients: ["Avena en Copos (60g)", "Proteína Isolate Vegetal (30g)", "Semillas de Chía (15g)", "Frambuesas Frescas (80g)"], calories: 425, p: 31, c: 42, f: 12 },
+                { title: "Revuelto de Tofu con Cúrcuma, Aguacate y Pan de Arroz Sin Gluten", allergens: ["soya"], ingredients: ["Tofu Firme (180g)", "Aguacate (50g)", "Pan de Arroz Sin Gluten (60g)", "Tomate (80g)"], calories: 415, p: 28, c: 36, f: 16 }
+              ]
+            },
+            {
+              meal: "Media Mañana",
+              title: "Yogur Griego 0% con Frutos Rojos y Nueces de Brasil",
+              allergens: ["lactosa", "frutos_secos"],
+              ingredients: ["Yogur Griego 0% (200g)", "Arándanos (60g)", "Nueces de Brasil (15g)"],
+              calories: 240, p: 22, c: 18, f: 8,
+              alternatives: [
+                { title: "Batido de Proteína Isolada sin Lactosa con Manzana Verde", allergens: [], ingredients: ["Proteína Whey Isolada Cero Lactosa (30g)", "Manzana Verde (150g)"], calories: 210, p: 26, c: 20, f: 2 },
+                { title: "Pudín de Chía con Leche de Coco y Semillas de Calabaza", allergens: [], ingredients: ["Semillas de Chía (25g)", "Leche de Coco (150ml)", "Semillas de Calabaza (15g)"], calories: 235, p: 12, c: 15, f: 14 }
+              ]
+            },
+            {
+              meal: "Almuerzo",
+              title: "Pechuga de Pollo a la Plancha con Quinoa y Espárragos Verdes",
+              allergens: [],
+              ingredients: ["Pechuga de Pollo (200g)", "Quinoa Cocida (180g)", "Espárragos Verdes (120g)", "Aceite de Oliva EV (8g)"],
+              calories: 580, p: 52, c: 54, f: 12,
+              alternatives: [
+                { title: "Lomo de Ternera Magra al Horno con Boniato Asado", allergens: [], ingredients: ["Ternera Magra (190g)", "Boniato/Camote (200g)", "Brócoli al Vapor (150g)"], calories: 575, p: 54, c: 52, f: 13 },
+                { title: "Filete de Merluza a la Plancha con Arroz Basmati e Hinojo", allergens: ["pescado"], ingredients: ["Filete de Merluza (220g)", "Arroz Basmati Cocido (180g)", "Hinojo y Calabacín (150g)"], calories: 560, p: 48, c: 56, f: 10 }
+              ]
+            },
+            {
+              meal: "Merienda",
+              title: "Tostada Integral con Atún Claro al Natural y Pimientos de Padrón",
+              allergens: ["gluten", "pescado"],
+              ingredients: ["Pan Integral de Masa Madre (60g)", "Atún Claro al Natural (110g)", "Pimientos (80g)"],
+              calories: 290, p: 28, c: 32, f: 5,
+              alternatives: [
+                { title: "Tortitas de Arroz Sin Gluten con Pechuga de Pavo Extramagra", allergens: [], ingredients: ["Tortitas de Arroz Integral (4 uds)", "Fiambre de Pavo 95% (100g)"], calories: 260, p: 25, c: 28, f: 3 },
+                { title: "Hummus Tradicional de Garbanzos con Bastones de Zanahoria", allergens: [], ingredients: ["Hummus de Garbanzo (80g)", "Zanahoria Fresca (150g)"], calories: 270, p: 10, c: 32, f: 11 }
+              ]
+            },
+            {
+              meal: "Cena",
+              title: "Filete de Salmón Salvaje al Horno con Crema de Calabacín",
+              allergens: ["pescado"],
+              ingredients: ["Salmón Salvaje (180g)", "Calabacín (200g)", "Cebolla (50g)", "Aceite de Oliva EV (5g)"],
+              calories: 440, p: 38, c: 14, f: 22,
+              alternatives: [
+                { title: "Pechuga de Pavo a la Plancha con Ensalada Canónigos y Semillas", allergens: [], ingredients: ["Pechuga de Pavo (200g)", "Canónigos (100g)", "Semillas de Girasol (15g)"], calories: 410, p: 44, c: 10, f: 12 },
+                { title: "Revuelto de Claras con Champiñones Portobello y Aguacate", allergens: ["huevo"], ingredients: ["Claras de Huevo (200g)", "Champiñones (150g)", "Aguacate (50g)"], calories: 390, p: 32, c: 12, f: 15 }
+              ]
+            }
           ]
         },
+        // DÍA 1: MARTES
         {
-          title: "Almuerzo Anabólico Equilibrado",
-          meal: "Almuerzo",
-          current: "Pechuga de Pollo a la Plancha con Quinoa y Verduras (590 kcal | 52g P | 58g C | 14g F)",
-          alternatives: [
-            "Lomo de Ternera Magra al Horno con Camote Asado (585 kcal | 54g P | 55g C | 15g F)",
-            "Filete de Salmón Salvaje con Arroz Basmati e Hinojo (595 kcal | 48g P | 56g C | 18g F)"
+          dayName: "Martes",
+          meals: [
+            {
+              meal: "Desayuno",
+              title: "Porridge de Avena Orgánica con Proteína Whey Isolada y Plátano",
+              allergens: ["lactosa", "gluten"],
+              ingredients: ["Avena (60g)", "Proteína Whey Isolada (30g)", "Plátano (100g)", "Agua o Leche"],
+              calories: 430, p: 32, c: 56, f: 6,
+              alternatives: [
+                { title: "Tortilla de Claras con Salmón Ahumado y Pan Sin Gluten", allergens: ["huevo", "pescado"], ingredients: ["Claras (180g)", "Salmón Ahumado (50g)", "Pan Sin Gluten (50g)"], calories: 410, p: 35, c: 30, f: 12 },
+                { title: "Batido de Proteína Vegetal de Guisante con Frutos Rojos y Chía", allergens: [], ingredients: ["Proteína de Guisante (35g)", "Frutos Rojos (100g)", "Semillas Chía (15g)"], calories: 395, p: 30, c: 38, f: 10 }
+              ]
+            },
+            {
+              meal: "Media Mañana",
+              title: "Fiambre de Pavo 95% con Almendras Tostadas Naturales",
+              allergens: ["frutos_secos"],
+              ingredients: ["Pechuga de Pavo (100g)", "Almendras Tostadas Sin Sal (20g)"],
+              calories: 230, p: 25, c: 4, f: 12,
+              alternatives: [
+                { title: "Manzana Verde con Proteína en Polvo Cero Lactosa", allergens: [], ingredients: ["Manzana (150g)", "Proteína aislada en agua (30g)"], calories: 200, p: 25, c: 20, f: 1 },
+                { title: "Queso Fresco Batido 0% con Pipas de Calabaza", allergens: ["lactosa"], ingredients: ["Queso Batido 0% (200g)", "Pipas de Calabaza (15g)"], calories: 220, p: 24, c: 10, f: 8 }
+              ]
+            },
+            {
+              meal: "Almuerzo",
+              title: "Lomo de Ternera Magra a la Plancha con Arroz Basmati y Brócoli",
+              allergens: [],
+              ingredients: ["Ternera Magra (190g)", "Arroz Basmati (180g)", "Brócoli al Vapor (150g)"],
+              calories: 590, p: 54, c: 56, f: 12,
+              alternatives: [
+                { title: "Pechuga de Pollo con Patata Asada y Ensalada Mixta", allergens: [], ingredients: ["Pollo (200g)", "Patata Asada (220g)", "Lechuga y Tomate (150g)"], calories: 570, p: 50, c: 58, f: 10 },
+                { title: "Garbanzos Estofados con Verduras y Bacalao Desmigado", allergens: ["pescado"], ingredients: ["Garbanzos Cocidos (200g)", "Bacalao (150g)", "Espinacas y Pimientos (150g)"], calories: 580, p: 46, c: 60, f: 11 }
+              ]
+            },
+            {
+              meal: "Merienda",
+              title: "Batido Pre-Entreno con Proteína Isolada y Harina de Avena",
+              allergens: ["lactosa", "gluten"],
+              ingredients: ["Proteína Isolada (30g)", "Harina de Avena (40g)", "Agua (300ml)"],
+              calories: 280, p: 28, c: 32, f: 4,
+              alternatives: [
+                { title: "Latita de Atún al Natural con Tortitas de Maíz Sin Gluten", allergens: ["pescado"], ingredients: ["Atún (100g)", "Tortitas de Maíz (4 uds)"], calories: 245, p: 26, c: 24, f: 3 },
+                { title: "Crema de Cacahuete Natural sobre Bastones de Manzana", allergens: ["frutos_secos"], ingredients: ["Crema de Cacahuete (25g)", "Manzana Verde (150g)"], calories: 250, p: 7, c: 24, f: 14 }
+              ]
+            },
+            {
+              meal: "Cena",
+              title: "Filete de Dorada al Horno con Salteado de Setas y Asparagus",
+              allergens: ["pescado"],
+              ingredients: ["Dorada (200g)", "Setas variadas (150g)", "Espárragos (100g)"],
+              calories: 420, p: 40, c: 12, f: 16,
+              alternatives: [
+                { title: "Pechuga de Pollo a la Parrilla con Puré de Calabaza", allergens: [], ingredients: ["Pollo (200g)", "Calabaza Asada (250g)"], calories: 390, p: 45, c: 22, f: 8 },
+                { title: "Hamburguesa de Pavo Casera con Ensalada de Pepino y Aguacate", allergens: [], ingredients: ["Carne de Pavo (180g)", "Pepino (150g)", "Aguacate (40g)"], calories: 410, p: 38, c: 10, f: 18 }
+              ]
+            }
+          ]
+        },
+        // DÍA 2: MIÉRCOLES
+        {
+          dayName: "Miércoles",
+          meals: [
+            {
+              meal: "Desayuno",
+              title: "Tostadas de Pan Centeno con Aguacate y Pechuga de Pavo",
+              allergens: ["gluten"],
+              ingredients: ["Pan Centeno (60g)", "Aguacate (50g)", "Fiambre Pavo 95% (80g)"],
+              calories: 410, p: 26, c: 38, f: 16,
+              alternatives: [
+                { title: "Pancakes Proteicos de Avena y Claras con Arándanos", allergens: ["huevo", "gluten"], ingredients: ["Harina Avena (50g)", "Claras (150g)", "Arándanos (50g)"], calories: 390, p: 30, c: 45, f: 5 },
+                { title: "Bowl de Chía y Proteína de Arroz con Leche de Almendras", allergens: [], ingredients: ["Chía (20g)", "Proteína Arroz (30g)", "Leche Almendra (200ml)"], calories: 380, p: 28, c: 35, f: 12 }
+              ]
+            },
+            {
+              meal: "Media Mañana",
+              title: "Proteína Whey en Agua con Nueces de Nogal",
+              allergens: ["lactosa", "frutos_secos"],
+              ingredients: ["Whey Isolate (30g)", "Nueces (15g)"],
+              calories: 220, p: 25, c: 4, f: 10,
+              alternatives: [
+                { title: "Huevos Cocidos (2 uds) con Tomates Cherry", allergens: ["huevo"], ingredients: ["Huevos Cocidos (2 uds)", "Tomates Cherry (100g)"], calories: 170, p: 14, c: 4, f: 11 },
+                { title: "Edamame al Vapor con Sal Escamada", allergens: ["soya"], ingredients: ["Vainas de Edamame (150g)"], calories: 180, p: 17, c: 14, f: 8 }
+              ]
+            },
+            {
+              meal: "Almuerzo",
+              title: "Solomillo de Pavo al Ajillo con Arroz Integral y Salteado de Verduras",
+              allergens: [],
+              ingredients: ["Solomillo Pavo (200g)", "Arroz Integral (170g)", "Verduras (150g)"],
+              calories: 575, p: 52, c: 55, f: 11,
+              alternatives: [
+                { title: "Tacos de Atún Rojo a la Plancha con Sésamo y Quinoa", allergens: ["pescado"], ingredients: ["Atún Rojo (180g)", "Quinoa (170g)", "Sésamo (10g)"], calories: 585, p: 50, c: 48, f: 16 },
+                { title: "Lentejas Pardinas Guisadas con Hortalizas y Tofu", allergens: ["soya"], ingredients: ["Lentejas Cocidas (220g)", "Tofu (100g)", "Zanahoria y Cebolla (150g)"], calories: 550, p: 38, c: 65, f: 10 }
+              ]
+            },
+            {
+              meal: "Merienda",
+              title: "Yogur Proteico Cero Grasa con Semillas de Lino",
+              allergens: ["lactosa"],
+              ingredients: ["Yogur Proteico (200g)", "Semillas de Lino (10g)"],
+              calories: 190, p: 22, c: 12, f: 5,
+              alternatives: [
+                { title: "Fiambre de Pavo con Bastones de Pepino", allergens: [], ingredients: ["Pavo (100g)", "Pepino (150g)"], calories: 120, p: 22, c: 4, f: 2 },
+                { title: "Batido de Proteína de Guisante con Leche de Coco", allergens: [], ingredients: ["Proteína Guisante (30g)", "Leche Coco (200ml)"], calories: 210, p: 24, c: 8, f: 9 }
+              ]
+            },
+            {
+              meal: "Cena",
+              title: "Wok de Pollo con Verduras Crujientes y Brotes de Soja",
+              allergens: ["soya"],
+              ingredients: ["Tiras de Pollo (200g)", "Brotes de Soja (100g)", "Pimientos y Calabacín (150g)"],
+              calories: 400, p: 48, c: 16, f: 10,
+              alternatives: [
+                { title: "Lubina al Horno con Ensalada Verde de Canónigos", allergens: ["pescado"], ingredients: ["Lubina (200g)", "Canónigos (100g)", "Aceite EV (8g)"], calories: 380, p: 42, c: 4, f: 18 },
+                { title: "Tortilla Francesa de 3 Claras con Espárragos Trigueros", allergens: ["huevo"], ingredients: ["Claras (200g)", "Espárragos (150g)", "Aceite EV (5g)"], calories: 250, p: 26, c: 6, f: 7 }
+              ]
+            }
+          ]
+        },
+        // DÍA 3: JUEVES
+        {
+          dayName: "Jueves",
+          meals: [
+            {
+              meal: "Desayuno",
+              title: "Bowl de Yogur Griego 0% con Chía, Fresas y Avellanas",
+              allergens: ["lactosa", "frutos_secos"],
+              ingredients: ["Yogur Griego 0% (200g)", "Semillas Chía (15g)", "Fresas (100g)", "Avellanas (15g)"],
+              calories: 380, p: 26, c: 28, f: 14,
+              alternatives: [
+                { title: "Tostada Sin Gluten con Aguacate y Huevo Pochado", allergens: ["huevo"], ingredients: ["Pan Sin Gluten (60g)", "Aguacate (50g)", "Huevo (1 ud)"], calories: 390, p: 16, c: 32, f: 20 },
+                { title: "Batido de Proteína Isolate con Harina de Arroz y Canela", allergens: [], ingredients: ["Proteína Isolate (30g)", "Harina Arroz (40g)", "Canela"], calories: 370, p: 28, c: 50, f: 3 }
+              ]
+            },
+            {
+              meal: "Media Mañana",
+              title: "Pechuga de Pavo con Tortitas de Espelta",
+              allergens: ["gluten"],
+              ingredients: ["Pavo (90g)", "Tortitas Espelta (3 uds)"],
+              calories: 210, p: 22, c: 22, f: 2,
+              alternatives: [
+                { title: "Proteína Whey Isolada sin Lactosa en Agua", allergens: [], ingredients: ["Whey Cero Lactosa (30g)"], calories: 120, p: 26, c: 2, f: 1 },
+                { title: "Nueces de Macadamia con Manzana", allergens: ["frutos_secos"], ingredients: ["Macadamia (15g)", "Manzana (150g)"], calories: 210, p: 3, c: 22, f: 12 }
+              ]
+            },
+            {
+              meal: "Almuerzo",
+              title: "Pechuga de Pollo al Limón con Patata Asada y Judías Verdes",
+              allergens: [],
+              ingredients: ["Pollo (200g)", "Patata Asada (200g)", "Judías Verdes (150g)"],
+              calories: 560, p: 50, c: 54, f: 10,
+              alternatives: [
+                { title: "Hamburguesas de Ternera Magra con Quinoa al Curry", allergens: [], ingredients: ["Ternera (180g)", "Quinoa (170g)"], calories: 580, p: 52, c: 48, f: 14 },
+                { title: "Filete de Salmón con Arroz Salvaje y Verduras", allergens: ["pescado"], ingredients: ["Salmón (180g)", "Arroz Salvaje (160g)"], calories: 590, p: 44, c: 50, f: 18 }
+              ]
+            },
+            {
+              meal: "Merienda",
+              title: "Atún al Natural con Bastones de Apio y Caracolas Sin Gluten",
+              allergens: ["pescado"],
+              ingredients: ["Atún (100g)", "Apio (150g)"],
+              calories: 160, p: 25, c: 6, f: 2,
+              alternatives: [
+                { title: "Proteína de Suero sin Lactosa con Fresa", allergens: [], ingredients: ["Whey Cero Lactosa (30g)", "Fresas (100g)"], calories: 160, p: 25, c: 10, f: 1 },
+                { title: "Kéfir de Cabra con Semillas de Sésamo", allergens: ["lactosa"], ingredients: ["Kéfir (200ml)", "Sésamo (10g)"], calories: 170, p: 12, c: 10, f: 9 }
+              ]
+            },
+            {
+              meal: "Cena",
+              title: "Crema de Calabaza y Calabacín con Tacos de Pechuga de Pavo",
+              allergens: [],
+              ingredients: ["Calabaza y Calabacín (300g)", "Pechuga de Pavo (180g)"],
+              calories: 360, p: 42, c: 24, f: 6,
+              alternatives: [
+                { title: "Filete de Lenguado a la Plancha con Espárragos", allergens: ["pescado"], ingredients: ["Lenguado (220g)", "Espárragos (150g)"], calories: 340, p: 44, c: 6, f: 8 },
+                { title: "Salteado de Tofu con Verduras y Aceite de Sésamo", allergens: ["soya"], ingredients: ["Tofu (180g)", "Verduras (200g)"], calories: 350, p: 26, c: 14, f: 16 }
+              ]
+            }
+          ]
+        },
+        // DÍA 4: VIERNES
+        {
+          dayName: "Viernes",
+          meals: [
+            {
+              meal: "Desayuno",
+              title: "Revuelto de 3 Claras y 1 Huevo con Champiñones y Pan Centeno",
+              allergens: ["huevo", "gluten"],
+              ingredients: ["Claras (150g)", "Huevo (1 ud)", "Champiñones (100g)", "Pan Centeno (60g)"],
+              calories: 400, p: 30, c: 36, f: 12,
+              alternatives: [
+                { title: "Porridge de Avena sin Gluten con Proteína Isolada", allergens: [], ingredients: ["Avena Sin Gluten (60g)", "Proteína Isolada (30g)"], calories: 390, p: 32, c: 46, f: 5 },
+                { title: "Tostadas Sin Gluten con Hummus y Tomate", allergens: [], ingredients: ["Pan Sin Gluten (60g)", "Hummus (60g)", "Tomate (100g)"], calories: 370, p: 12, c: 45, f: 12 }
+              ]
+            },
+            {
+              meal: "Media Mañana",
+              title: "Queso Cabaña / Cottage 0% con Arándanos",
+              allergens: ["lactosa"],
+              ingredients: ["Cottage 0% (200g)", "Arándanos (80g)"],
+              calories: 210, p: 24, c: 16, f: 2,
+              alternatives: [
+                { title: "Pechuga de Pavo con Pepinillos y Tortitas de Arroz", allergens: [], ingredients: ["Pavo (100g)", "Tortitas Arroz (3 uds)"], calories: 190, p: 24, c: 20, f: 2 },
+                { title: "Proteína de Arroz y Guisante con Agua de Coco", allergens: [], ingredients: ["Proteína Vegetal (30g)", "Agua Coco (250ml)"], calories: 200, p: 25, c: 18, f: 2 }
+              ]
+            },
+            {
+              meal: "Almuerzo",
+              title: "Solomillo de Ternera a la Parrilla con Boniato y Canónigos",
+              allergens: [],
+              ingredients: ["Ternera (190g)", "Boniato (200g)", "Canónigos (100g)"],
+              calories: 580, p: 54, c: 50, f: 14,
+              alternatives: [
+                { title: "Pechuga de Pollo al Curry con Arroz Basmati", allergens: [], ingredients: ["Pollo (200g)", "Arroz Basmati (180g)"], calories: 570, p: 50, c: 56, f: 10 },
+                { title: "Tacos de Bonito del Norte con Patata Cocida", allergens: ["pescado"], ingredients: ["Bonito (180g)", "Patata (220g)"], calories: 560, p: 48, c: 52, f: 11 }
+              ]
+            },
+            {
+              meal: "Merienda",
+              title: "Batido Proteico Cero Lactosa con Fresas",
+              allergens: [],
+              ingredients: ["Proteína Isolada Cero Lactosa (30g)", "Fresas (120g)"],
+              calories: 170, p: 26, c: 12, f: 1,
+              alternatives: [
+                { title: "Atún en Lata al Natural con Tomate Cuchillo", allergens: ["pescado"], ingredients: ["Atún (100g)", "Tomate (150g)"], calories: 150, p: 25, c: 8, f: 2 },
+                { title: "Almendras Tostadas con Té Verde", allergens: ["frutos_secos"], ingredients: ["Almendras (20g)"], calories: 130, p: 5, c: 3, f: 11 }
+              ]
+            },
+            {
+              meal: "Cena",
+              title: "Filete de Merluza con Verduras al Vapor y Aceite de Oliva",
+              allergens: ["pescado"],
+              ingredients: ["Merluza (220g)", "Verduras variadas (200g)", "Aceite EV (8g)"],
+              calories: 370, p: 42, c: 14, f: 12,
+              alternatives: [
+                { title: "Pechuga de Pollo con Ensalada Rúcula y Tomate", allergens: [], ingredients: ["Pollo (200g)", "Rúcula y Tomate (150g)"], calories: 350, p: 46, c: 8, f: 9 },
+                { title: "Revuelto de Claras con Espinacas y Gambas", allergens: ["huevo", "pescado"], ingredients: ["Claras (200g)", "Espinacas (100g)", "Gambas (100g)"], calories: 340, p: 44, c: 6, f: 6 }
+              ]
+            }
+          ]
+        },
+        // DÍA 5: SÁBADO
+        {
+          dayName: "Sábado",
+          meals: [
+            {
+              meal: "Desayuno",
+              title: "Tortilla de 3 Claras y Aguacate con Pan Sin Gluten",
+              allergens: ["huevo"],
+              ingredients: ["Claras (200g)", "Aguacate (50g)", "Pan Sin Gluten (60g)"],
+              calories: 410, p: 28, c: 34, f: 16,
+              alternatives: [
+                { title: "Porridge de Avena con Proteína de Suero Cero Lactosa", allergens: [], ingredients: ["Avena Sin Gluten (60g)", "Whey Cero Lactosa (30g)"], calories: 400, p: 32, c: 48, f: 5 },
+                { title: "Bowl de Yogur de Coco con Chía y Fruta", allergens: [], ingredients: ["Yogur Coco (200g)", "Chía (15g)", "Fruta (100g)"], calories: 380, p: 12, c: 38, f: 18 }
+              ]
+            },
+            {
+              meal: "Media Mañana",
+              title: "Pechuga de Pavo con Nueces de Brasil",
+              allergens: ["frutos_secos"],
+              ingredients: ["Pavo (100g)", "Nueces Brasil (15g)"],
+              calories: 220, p: 24, c: 2, f: 11,
+              alternatives: [
+                { title: "Proteína Whey Isolada en Agua con Arándanos", allergens: [], ingredients: ["Whey Cero Lactosa (30g)", "Arándanos (60g)"], calories: 160, p: 25, c: 10, f: 1 },
+                { title: "Huevos Cocidos (2 uds)", allergens: ["huevo"], ingredients: ["Huevos (2 uds)"], calories: 150, p: 13, c: 1, f: 10 }
+              ]
+            },
+            {
+              meal: "Almuerzo",
+              title: "Pechuga de Pollo al Horno con Camote Asado y Brócoli",
+              allergens: [],
+              ingredients: ["Pollo (200g)", "Camote (200g)", "Brócoli (150g)"],
+              calories: 575, p: 52, c: 54, f: 11,
+              alternatives: [
+                { title: "Entrecot de Ternera Magra con Patata y Pimientos", allergens: [], ingredients: ["Ternera (190g)", "Patata (200g)", "Pimientos (100g)"], calories: 590, p: 52, c: 48, f: 16 },
+                { title: "Filete de Salmón con Quinoa y Espárragos", allergens: ["pescado"], ingredients: ["Salmón (180g)", "Quinoa (160g)", "Espárragos (120g)"], calories: 580, p: 46, c: 46, f: 18 }
+              ]
+            },
+            {
+              meal: "Merienda",
+              title: "Atún Claro al Natural con Tortitas de Maíz",
+              allergens: ["pescado"],
+              ingredients: ["Atún (110g)", "Tortitas Maíz (3 uds)"],
+              calories: 200, p: 26, c: 18, f: 2,
+              alternatives: [
+                { title: "Batido Proteico de Guisante con Fresa", allergens: [], ingredients: ["Proteína Guisante (30g)", "Fresas (100g)"], calories: 160, p: 24, c: 10, f: 2 },
+                { title: "Queso Batido 0% con Semillas de Chía", allergens: ["lactosa"], ingredients: ["Queso Batido (200g)", "Chía (10g)"], calories: 180, p: 22, c: 10, f: 5 }
+              ]
+            },
+            {
+              meal: "Cena",
+              title: "Hamburguesa de Pavo Casera con Ensalada Verde y Aguacate",
+              allergens: [],
+              ingredients: ["Pavo Picado (180g)", "Ensalada (150g)", "Aguacate (40g)"],
+              calories: 400, p: 40, c: 10, f: 18,
+              alternatives: [
+                { title: "Lenguado al Limón con Salteado de Calabacín", allergens: ["pescado"], ingredients: ["Lenguado (200g)", "Calabacín (200g)"], calories: 350, p: 42, c: 8, f: 10 },
+                { title: "Revuelto de Claras con Champiñones", allergens: ["huevo"], ingredients: ["Claras (200g)", "Champiñones (150g)"], calories: 230, p: 26, c: 6, f: 5 }
+              ]
+            }
+          ]
+        },
+        // DÍA 6: DOMINGO
+        {
+          dayName: "Domingo",
+          meals: [
+            {
+              meal: "Desayuno",
+              title: "Omelette Proteico de 3 Claras con Espinacas y Tomate",
+              allergens: ["huevo"],
+              ingredients: ["Claras (200g)", "Espinacas (80g)", "Tomate (80g)", "Aceite EV (5g)"],
+              calories: 260, p: 28, c: 8, f: 8,
+              alternatives: [
+                { title: "Porridge de Avena Sin Gluten con Proteína Isolada", allergens: [], ingredients: ["Avena Sin Gluten (60g)", "Proteína Isolada (30g)"], calories: 390, p: 32, c: 46, f: 5 },
+                { title: "Batido de Proteína Vegetal con Plátano y Leche de Almendras", allergens: [], ingredients: ["Proteína Vegetal (30g)", "Plátano (100g)", "Leche Almendra (200ml)"], calories: 370, p: 28, c: 48, f: 4 }
+              ]
+            },
+            {
+              meal: "Media Mañana",
+              title: "Yogur Proteico Cero Lactosa con Almendras",
+              allergens: ["frutos_secos"],
+              ingredients: ["Yogur Proteico Cero Lactosa (200g)", "Almendras (15g)"],
+              calories: 210, p: 22, c: 12, f: 8,
+              alternatives: [
+                { title: "Fiambre de Pavo 95% con Bastones de Zanahoria", allergens: [], ingredients: ["Pavo (100g)", "Zanahoria (150g)"], calories: 150, p: 22, c: 10, f: 2 },
+                { title: "Proteína Whey Isolada en Agua", allergens: [], ingredients: ["Whey Isolate (30g)"], calories: 120, p: 26, c: 2, f: 1 }
+              ]
+            },
+            {
+              meal: "Almuerzo",
+              title: "Pechuga de Pollo a la Parrilla con Arroz Basmati y Verduras",
+              allergens: [],
+              ingredients: ["Pollo (200g)", "Arroz Basmati (180g)", "Verduras (150g)"],
+              calories: 570, p: 50, c: 56, f: 10,
+              alternatives: [
+                { title: "Ternera Magra al Horno con Boniato", allergens: [], ingredients: ["Ternera (190g)", "Boniato (200g)"], calories: 580, p: 54, c: 50, f: 13 },
+                { title: "Dorada a la Plancha con Quinoa", allergens: ["pescado"], ingredients: ["Dorada (200g)", "Quinoa (160g)"], calories: 560, p: 44, c: 44, f: 14 }
+              ]
+            },
+            {
+              meal: "Merienda",
+              title: "Tortitas de Arroz Sin Gluten con Pechuga de Pavo",
+              allergens: [],
+              ingredients: ["Tortitas Arroz (4 uds)", "Pavo (90g)"],
+              calories: 230, p: 22, c: 24, f: 2,
+              alternatives: [
+                { title: "Atún al Natural con Tomate", allergens: ["pescado"], ingredients: ["Atún (100g)", "Tomate (150g)"], calories: 150, p: 25, c: 8, f: 2 },
+                { title: "Semillas de Chía en Leche de Coco", allergens: [], ingredients: ["Chía (20g)", "Leche Coco (150ml)"], calories: 190, p: 6, c: 12, f: 12 }
+              ]
+            },
+            {
+              meal: "Cena",
+              title: "Crema de Verduras Mixtas con Filete de Pavo a la Plancha",
+              allergens: [],
+              ingredients: ["Crema Verduras (250g)", "Pavo (180g)"],
+              calories: 360, p: 42, c: 20, f: 7,
+              alternatives: [
+                { title: "Salmón Salvaje con Ensalada Verde", allergens: ["pescado"], ingredients: ["Salmón (180g)", "Ensalada (150g)"], calories: 420, p: 38, c: 6, f: 22 },
+                { title: "Revuelto de Claras con Champiñones", allergens: ["huevo"], ingredients: ["Claras (200g)", "Champiñones (150g)"], calories: 230, p: 26, c: 6, f: 5 }
+              ]
+            }
           ]
         }
       ],
@@ -374,16 +805,16 @@ class AppState {
         hombros: { sets: 12, status: "Óptimo" },
         brazos: { sets: 14, status: "Óptimo" }
       },
-      crossData: [
-        { week: "S-1", sleepScore: 72, bench1RM: 102.5 },
-        { week: "S-2", sleepScore: 88, bench1RM: 105.0 },
-        { week: "S-3", sleepScore: 64, bench1RM: 102.5 },
-        { week: "S-4", sleepScore: 82, bench1RM: 107.5 },
-        { week: "S-5", sleepScore: 79, bench1RM: 107.5 },
-        { week: "S-6", sleepScore: 86, bench1RM: 110.0 },
-      ],
-      bodyLog: { weight: 76.4, bodyFat: 13.8, waist: 81.0 }
+      bodyLog: {
+        weight: 74.5,
+        bodyFat: 14.5,
+        waist: 78
+      }
     };
+  }
+
+  initDefaultProfile() {
+    this.recalculateMetabolism();
   }
 
   subscribe(listener) {
@@ -397,7 +828,7 @@ class AppState {
     this.listeners.forEach(l => l());
   }
 
-  // --- WORKOUT ACTIONS & FREQUENCY ---
+  // --- WORKOUT ACTIONS ---
   setActiveDay(dayIndex) {
     this.workoutProgram.activeDayIndex = dayIndex;
     this.notify();
@@ -418,7 +849,6 @@ class AppState {
 
   setTargetDuration(durationMinutes) {
     this.workoutProgram.targetDurationMinutes = durationMinutes;
-    // Estimated exercises: 30m -> 3 ex, 45m -> 4 ex, 60m -> 5 ex, 75m -> 6 ex, 90m -> 7 ex
     let count = 5;
     if (durationMinutes <= 30) count = 3;
     else if (durationMinutes <= 45) count = 4;
@@ -435,7 +865,6 @@ class AppState {
     const day = this.getCurrentDay();
     if (day && day.exercises) {
       if (day.exercises.length < count) {
-        // Add real biomechanical exercises from pool
         const pool = this.workoutProgram.realExercisePool || [];
         while (day.exercises.length < count && pool.length > 0) {
           const poolEx = pool[day.exercises.length % pool.length];
@@ -458,7 +887,6 @@ class AppState {
           });
         }
       } else if (day.exercises.length > count) {
-        // Trim exercises to exact count requested
         day.exercises = day.exercises.slice(0, count);
       }
     }
@@ -469,384 +897,248 @@ class AppState {
     if (splitId === "fullbody_3d") {
       this.workoutProgram.daysCount = 3;
       this.workoutProgram.activeDayIndex = 0;
-      this.workoutProgram.days = [
-        {
-          dayName: "Día 1: Fullbody A (Fuerza Básica)",
-          pattern: "Empuje / Tirón / Rodilla",
-          isRestDay: false,
-          exercises: [
-            { id: "ex_fb1_1", name: "Sentadilla Trasera con Barra", category: "Rodilla", targetMuscle: "Cuádriceps / Glúteos", originalName: "Sentadilla Trasera con Barra", isSubstituted: false, sets: [{ setNum: 1, weight: 100, reps: 6, rpe: 8, completed: false }, { setNum: 2, weight: 100, reps: 6, rpe: 8.5, completed: false }], alternatives: [{ id: "alt1", name: "Prensa a 45°", note: "Estabilidad" }] },
-            { id: "ex_fb1_2", name: "Press de Banca con Barra", category: "Empuje Horizontal", targetMuscle: "Pecho / Tríceps", originalName: "Press de Banca con Barra", isSubstituted: false, sets: [{ setNum: 1, weight: 80, reps: 6, rpe: 8, completed: false }, { setNum: 2, weight: 80, reps: 6, rpe: 8.5, completed: false }], alternatives: [{ id: "alt2", name: "Press Inclinado Mancuernas", note: "Superior" }] },
-            { id: "ex_fb1_3", name: "Dominadas Neutras con Lastre", category: "Tirón Vertical", targetMuscle: "Dorsal Ancho", originalName: "Dominadas Neutras con Lastre", isSubstituted: false, sets: [{ setNum: 1, weight: 10, reps: 6, rpe: 8, completed: false }, { setNum: 2, weight: 10, reps: 6, rpe: 8.5, completed: false }], alternatives: [{ id: "alt3", name: "Jalón al Pecho", note: "Control" }] }
-          ]
-        },
-        {
-          dayName: "Día 2: Fullbody B (Tensión Constante)",
-          pattern: "Cadena Posterior / Empuje / Tirón",
-          isRestDay: false,
-          exercises: [
-            { id: "ex_fb2_1", name: "Peso Muerto Rumano", category: "Cadera", targetMuscle: "Isquiotibiales", originalName: "Peso Muerto Rumano", isSubstituted: false, sets: [{ setNum: 1, weight: 95, reps: 8, rpe: 8, completed: false }], alternatives: [{ id: "alt4", name: "Hip Thrust", note: "Glúteos" }] },
-            { id: "ex_fb2_2", name: "Press Militar con Mancuernas", category: "Empuje Vertical", targetMuscle: "Deltoides", originalName: "Press Militar con Mancuernas", isSubstituted: false, sets: [{ setNum: 1, weight: 24, reps: 8, rpe: 8, completed: false }], alternatives: [{ id: "alt5", name: "Elevaciones Laterales", note: "Aislamiento" }] }
-          ]
-        },
-        { dayName: "Día 3: Fullbody C (Hipertrofia)", pattern: "Accesorios Globales", isRestDay: false, exercises: [] }
-      ];
-    } else if (splitId === "ppl_5d" || splitId === "ppl_6d") {
-      this.workoutProgram.daysCount = splitId === "ppl_6d" ? 6 : 5;
+    } else if (splitId === "ppl_5d") {
+      this.workoutProgram.daysCount = 5;
       this.workoutProgram.activeDayIndex = 0;
-      this.workoutProgram.days = [
-        { dayName: "Día 1: Push (Empuje)", pattern: "Pecho / Hombro / Tríceps", isRestDay: false, exercises: [
-          { id: "ex_p1", name: "Press Inclinado con Mancuernas", category: "Empuje", targetMuscle: "Pecho Superior", originalName: "Press Inclinado con Mancuernas", isSubstituted: false, sets: [{ setNum: 1, weight: 30, reps: 8, rpe: 8, completed: false }], alternatives: [{ id: "a1", name: "Press Banca Barra", note: "Fuerza" }] }
-        ]},
-        { dayName: "Día 2: Pull (Tirón)", pattern: "Espalda / Deltoides Post / Bíceps", isRestDay: false, exercises: [
-          { id: "ex_pl1", name: "Remo con Barra Pendlay", category: "Tirón", targetMuscle: "Espalda Alta", originalName: "Remo con Barra Pendlay", isSubstituted: false, sets: [{ setNum: 1, weight: 70, reps: 8, rpe: 8, completed: false }], alternatives: [{ id: "a2", name: "Dominadas", note: "Vertical" }] }
-        ]},
-        { dayName: "Día 3: Legs (Pierna)", pattern: "Cuádriceps / Isquios / Glúteos", isRestDay: false, exercises: [
-          { id: "ex_l1", name: "Sentadilla Trasera", category: "Rodilla", targetMuscle: "Cuádriceps", originalName: "Sentadilla Trasera", isSubstituted: false, sets: [{ setNum: 1, weight: 100, reps: 6, rpe: 8, completed: false }], alternatives: [{ id: "a3", name: "Prensa", note: "Estabilidad" }] }
-        ]},
-        { dayName: "Día 4: Torso Especialización", pattern: "Empuje / Tirón", isRestDay: false, exercises: [] },
-        { dayName: "Día 5: Pierna & Core", pattern: "Isquios / Cuádriceps", isRestDay: false, exercises: [] }
-      ];
+    } else if (splitId === "ppl_6d") {
+      this.workoutProgram.daysCount = 6;
+      this.workoutProgram.activeDayIndex = 0;
     } else {
-      // Default 4 days Torso/Pierna
-      this.setDaysFrequency(4);
+      this.workoutProgram.daysCount = 4;
+      this.workoutProgram.activeDayIndex = 0;
     }
     this.notify();
   }
 
-  // Swap ONLY current active day's routine
-  swapCurrentDayRoutine(newDayTitle, newPattern) {
-    const currentDay = this.workoutProgram.days[this.workoutProgram.activeDayIndex];
-    if (currentDay) {
-      currentDay.dayName = newDayTitle;
-      currentDay.pattern = newPattern;
-      this.notify();
-    }
-  }
-
-  // --- AI COACH ENGINE ---
-  sendAiPrompt(userText) {
-    if (!userText.trim()) return;
-
-    // 1. Add User message
-    this.aiCoachHistory.push({ role: "user", text: userText });
-
-    // 2. Intelligent fitness AI engine response
-    const lower = userText.toLowerCase();
-    let reply = "";
-
-    if (lower.includes("hombro") || lower.includes("molestia") || lower.includes("dolor")) {
-      reply = " He analizado tu consulta sobre molestia en hombro. He sustituido los ejercicios de empuje por encima de la cabeza (Press Militar) por 'Press Landmine Unilateral' y 'Elevaciones Laterales en Polea' (ángulo diagonal articularmente libre de pinzamiento). ¡Se han actualizado las tarjetas de tu rutina!";
-      // Auto substitute militar press if present in current day
-      const currentDay = this.workoutProgram.days[this.workoutProgram.activeDayIndex];
-      if (currentDay && currentDay.exercises) {
-        currentDay.exercises.forEach(ex => {
-          if (ex.name.toLowerCase().includes("militar") || ex.name.toLowerCase().includes("banca")) {
-            ex.name = "Press Landmine Unilateral (Protección Escapular)";
-            ex.isSubstituted = true;
-          }
-        });
-      }
-    } else if (lower.includes("glúteo") || lower.includes("gluteo") || lower.includes("pierna")) {
-      reply = " ¡Excelente enfoque! He ajustado el patrón del día activo para incluir mayor volumen efectivo de cadera con 'Hip Thrust con Barra' (3x8) y 'Sentadilla Búlgara' (3x10). ¡Ya está aplicado a tu diario!";
-    } else if (lower.includes("días") || lower.includes("dias") || lower.includes("frecuencia")) {
-      reply = " Entendido. Puedes cambiar la frecuencia semanal entre 3, 4, 5 o 6 días utilizando los botones superiores de frecuencia. ¿Te gustaría cambiar a una distribución Fullbody (3 días) o Push/Pull/Legs (5-6 días)?";
-    } else {
-      reply = ` Entendido. He analizado tu solicitud ("${userText}"). He optimizado los volúmenes de tu rutina actual para equilibrar los patrones de empuje y tirón. Si deseas sustituir un ejercicio en particular, dímelo y te propondré las mejores opciones biomecánicas.`;
-    }
-
-    this.aiCoachHistory.push({ role: "assistant", text: reply });
-    this.notify();
-  }
-
-  // Standard Exercise & Set actions
   getCurrentDay() {
     return this.workoutProgram.days[this.workoutProgram.activeDayIndex] || this.workoutProgram.days[0];
   }
 
-  substituteExercise(exerciseId, newExerciseName) {
-    const day = this.getCurrentDay();
-    if (day && day.exercises) {
-      const ex = day.exercises.find(e => e.id === exerciseId);
-      if (ex) {
-        ex.name = newExerciseName;
-        ex.isSubstituted = true;
-        this.notify();
-      }
-    }
-  }
-
-  resetExerciseSubstitution(exerciseId) {
-    const day = this.getCurrentDay();
-    if (day && day.exercises) {
-      const ex = day.exercises.find(e => e.id === exerciseId);
-      if (ex) {
-        ex.name = ex.originalName;
-        ex.isSubstituted = false;
-        this.notify();
-      }
-    }
-  }
-
-  updateSet(exerciseId, setNum, field, value) {
-    const day = this.getCurrentDay();
-    if (day && day.exercises) {
-      const ex = day.exercises.find(e => e.id === exerciseId);
-      if (ex) {
-        const set = ex.sets.find(s => s.setNum === setNum);
-        if (set) {
-          set[field] = value;
-          this.notify();
-        }
-      }
-    }
-  }
-
   toggleSetCompleted(exerciseId, setNum) {
     const day = this.getCurrentDay();
-    if (day && day.exercises) {
-      const ex = day.exercises.find(e => e.id === exerciseId);
-      if (ex) {
-        const set = ex.sets.find(s => s.setNum === setNum);
-        if (set) {
-          set.completed = !set.completed;
-          this.notify();
-        }
+    if (!day || !day.exercises) return;
+
+    const exercise = day.exercises.find(e => e.id === exerciseId);
+    if (exercise && exercise.sets) {
+      const set = exercise.sets.find(s => s.setNum === setNum);
+      if (set) {
+        set.completed = !set.completed;
+        this.saveCurrentStateToHistory();
+        this.notify();
       }
     }
   }
 
-  // --- NUTRITION ACTIONS ---
-  addFoodLog(food) {
-    this.nutrition.loggedFood.push({ id: 'f_' + Date.now(), ...food });
-    this.notify();
-  }
+  substituteExercise(exerciseId, alternativeId) {
+    const day = this.getCurrentDay();
+    if (!day || !day.exercises) return;
 
-  removeFoodLog(id) {
-    this.nutrition.loggedFood = this.nutrition.loggedFood.filter(f => f.id !== id);
-    this.notify();
-  }
-
-  swapMealPlan(planIndex, alternativeText) {
-    const plan = this.nutrition.mealPlans[planIndex];
-    if (plan) {
-      const oldCurrent = plan.current;
-      plan.current = alternativeText;
-      plan.alternatives = plan.alternatives.filter(alt => alt !== alternativeText);
-      plan.alternatives.push(oldCurrent);
-      this.notify();
+    const exercise = day.exercises.find(e => e.id === exerciseId);
+    if (exercise && exercise.alternatives) {
+      const alt = exercise.alternatives.find(a => a.id === alternativeId);
+      if (alt) {
+        exercise.name = alt.name;
+        exercise.isSubstituted = true;
+        this.notify();
+      }
     }
   }
 
-  // --- BIOMETRIC PROFILE & GOAL CALCULATOR ENGINE ---
-  initDefaultProfile() {
-    this.userProfile = {
-      height: 178, // cm
-      weight: 76.5, // kg
-      age: 28, // years
-      gender: "male", // "male" | "female"
-      activityLevel: 1.55, // 1.2, 1.375, 1.55, 1.725
-      goal: "fat_loss", // "fat_loss" | "recomp" | "muscle_gain"
-      allergies: [], // ["lactosa", "gluten", "frutos_secos", "huevo", "pescado", "soya"]
-      customAllergies: "",
-      dietType: "omnivore", // "omnivore" | "mediterranean" | "keto" | "vegetarian" | "vegan" | "high_protein"
-      bmr: 1750,
-      tdee: 2250,
-      targetCalories: 1750,
-      targetProtein: 170,
-      targetCarbs: 165,
-      targetFat: 52
-    };
-    this.recalculateBiometrics();
+  // --- NUTRITION & ALLERGEN ENGINE (7 DÍAS X 5 COMIDAS) ---
+  setNutritionActiveWeekDay(dayIndex) {
+    this.nutrition.activeWeekDayIndex = dayIndex;
+    this.notify();
   }
 
   toggleAllergy(allergyId) {
-    if (!this.userProfile.allergies) this.userProfile.allergies = [];
     const idx = this.userProfile.allergies.indexOf(allergyId);
     if (idx >= 0) {
       this.userProfile.allergies.splice(idx, 1);
     } else {
       this.userProfile.allergies.push(allergyId);
     }
-    this.updateUserProfile({});
-  }
-
-  updateUserProfile(partialData) {
-    this.userProfile = { ...this.userProfile, ...partialData };
-    this.recalculateBiometrics();
-    localStorage.setItem('aura_user_profile', JSON.stringify(this.userProfile));
+    this.saveUserProfileToStorage();
+    this.autoEnforceSafeMeals();
     this.notify();
   }
 
-  recalculateBiometrics() {
-    const p = this.userProfile;
-    const h = parseFloat(p.height) || 175;
-    const w = parseFloat(p.weight) || 70;
-    const a = parseInt(p.age) || 25;
-    const act = parseFloat(p.activityLevel) || 1.55;
+  // MOTOR DE FILTRADO IMPLACABLE DE ALÉRGENOS
+  isMealSafe(mealObj) {
+    const activeAllergies = this.userProfile.allergies || [];
+    const customAllergies = (this.userProfile.customAllergies || "").toLowerCase().trim();
 
-    // Formula Mifflin-St Jeor para BMR
-    let bmr = (10 * w) + (6.25 * h) - (5 * a);
-    if (p.gender === "female") {
-      bmr -= 161;
-    } else {
-      bmr += 5;
-    }
-    p.bmr = Math.round(bmr);
+    // Check pre-tagged allergens
+    const mealAllergens = mealObj.allergens || [];
+    const hasPresetConflict = mealAllergens.some(a => activeAllergies.includes(a));
+    if (hasPresetConflict) return false;
 
-    // TDEE Base
-    const tdee = Math.round(p.bmr * act);
-    p.tdee = tdee;
-
-    // Objetivos Calóricos y Macros según la Meta (Finalidad)
-    let targetCals = tdee;
-    let proteinGrams = 2.0 * w;
-    let fatGrams = 0.9 * w;
-
-    if (p.goal === "fat_loss") {
-      // Perder Grasa / Adelgazar (-500 kcal)
-      targetCals = Math.max(1200, tdee - 500);
-      proteinGrams = 2.2 * w; // Alta proteína para conservar masa muscular
-      fatGrams = 0.8 * w;
-    } else if (p.goal === "muscle_gain") {
-      // Ganar Masa Muscular / Volumen Limpio (+350 kcal)
-      targetCals = tdee + 350;
-      proteinGrams = 1.8 * w;
-      fatGrams = 1.0 * w;
-    } else {
-      // Recomposición Corporal (Mantenimiento)
-      targetCals = tdee;
-      proteinGrams = 2.0 * w;
-      fatGrams = 0.9 * w;
+    // Check ingredient text against custom allergies
+    if (customAllergies.length > 0) {
+      const customList = customAllergies.split(',').map(s => s.trim()).filter(Boolean);
+      const ingredientsText = (mealObj.ingredients || []).join(' ').toLowerCase() + ' ' + (mealObj.title || '').toLowerCase();
+      const hasCustomConflict = customList.some(c => ingredientsText.includes(c));
+      if (hasCustomConflict) return false;
     }
 
-    // Adaptación por Tipo de Dieta
-    if (p.dietType === "keto") {
-      // Dieta Keto: Alta en Grasas (65%), Muy Baja en Carbos (5-10%)
-      fatGrams = (targetCals * 0.65) / 9;
-      proteinGrams = (targetCals * 0.25) / 4;
-    } else if (p.dietType === "high_protein") {
-      proteinGrams = Math.max(proteinGrams, 2.4 * w);
-    }
+    return true;
+  }
 
-    p.targetCalories = Math.round(targetCals);
-    p.targetProtein = Math.round(proteinGrams);
-    p.targetFat = Math.round(fatGrams);
+  // AUTOGESTIÓN DE EXCLUSIÓN: Reemplaza comidas prohibidas automáticamente por la primera alternativa segura
+  autoEnforceSafeMeals() {
+    if (!this.nutrition || !this.nutrition.weeklyPlan) return;
 
-    // Carbohidratos = Calorías restantes / 4
-    const remainingCals = p.targetCalories - (p.targetProtein * 4 + p.targetFat * 9);
-    p.targetCarbs = Math.max(20, Math.round(remainingCals / 4));
+    this.nutrition.weeklyPlan.forEach(day => {
+      day.meals.forEach(m => {
+        if (!this.isMealSafe(m)) {
+          // Find first safe alternative
+          const safeAlt = (m.alternatives || []).find(alt => this.isMealSafe(alt));
+          if (safeAlt) {
+            m.title = safeAlt.title;
+            m.allergens = safeAlt.allergens;
+            m.ingredients = safeAlt.ingredients;
+            m.calories = safeAlt.calories;
+            m.p = safeAlt.p;
+            m.c = safeAlt.c;
+            m.f = safeAlt.f;
+          }
+        }
+      });
+    });
+  }
 
-    // Sincronizar con metas de nutrición
-    if (this.nutrition) {
-      this.nutrition.targets = {
-        calories: p.targetCalories,
-        protein: p.targetProtein,
-        carbs: p.targetCarbs,
-        fat: p.targetFat
-      };
-
-      // Adaptar opciones de platos según alergias e intolerancias
-      this.updateMealPlansForAlergies();
+  swapWeeklyMeal(dayIndex, mealIndex, altObj) {
+    const day = this.nutrition.weeklyPlan[dayIndex];
+    if (day && day.meals[mealIndex]) {
+      const m = day.meals[mealIndex];
+      m.title = altObj.title;
+      m.allergens = altObj.allergens;
+      m.ingredients = altObj.ingredients;
+      m.calories = altObj.calories;
+      m.p = altObj.p;
+      m.c = altObj.c;
+      m.f = altObj.f;
+      this.notify();
     }
   }
 
-  updateMealPlansForAlergies() {
-    const p = this.userProfile;
-    const allergies = p.allergies || [];
-    const isLactose = allergies.includes('lactosa');
-    const isGluten = allergies.includes('gluten');
-    const isVegan = p.dietType === 'vegan';
-    const isVegetarian = p.dietType === 'vegetarian' || isVegan;
+  addFoodLog(item) {
+    const newLog = {
+      id: "f_" + Date.now(),
+      name: item.name,
+      meal: item.meal || "Adicional",
+      calories: item.calories,
+      p: item.p,
+      c: item.c,
+      f: item.f
+    };
+    this.nutrition.loggedFood.push(newLog);
+    this.saveCurrentStateToHistory();
+    this.notify();
+  }
 
-    let breakfastCurrent = "Tostada de Masa Madre con Huevos Pochados & Aguacate (480 kcal | 26g P | 42g C | 22g F)";
-    let breakfastAlts = [
-      "Porridge de Avena Orgánica con Proteína Isolada y Mantequilla de Almendra (480 kcal | 27g P | 44g C | 20g F)",
-      "Omelette de 3 Claras y 1 Huevo con Salmón Ahumado y Pan de Centeno (475 kcal | 30g P | 38g C | 21g F)"
-    ];
-
-    let lunchCurrent = "Pechuga de Pollo a la Plancha con Quinoa y Verduras (590 kcal | 52g P | 58g C | 14g F)";
-    let lunchAlts = [
-      "Lomo de Ternera Magra al Horno con Camote Asado (585 kcal | 54g P | 55g C | 15g F)",
-      "Filete de Salmón Salvaje con Arroz Basmati e Hinojo (595 kcal | 48g P | 56g C | 18g F)"
-    ];
-
-    if (isGluten) {
-      breakfastCurrent = breakfastCurrent.replace("Masa Madre", "Pan Sin Gluten Certificado");
-      breakfastAlts = breakfastAlts.map(a => a.replace("Centeno", "Pan Sin Gluten"));
-      lunchCurrent = lunchCurrent.replace("Quinoa", "Quinoa Orgánica (Sin Gluten)");
-    }
-
-    if (isLactose) {
-      breakfastAlts = breakfastAlts.map(a => a.replace("Proteína Isolada", "Proteína Vegana Isolada (Sin Lactosa)"));
-    }
-
-    if (isVegan) {
-      breakfastCurrent = "Tofu Revuelto con Cúrcuma, Aguacate y Pan de Semillas (460 kcal | 24g P | 40g C | 22g F)";
-      breakfastAlts = [
-        "Porridge de Avena con Proteína de Guisante y Mantequilla de Almendra (470 kcal | 25g P | 45g C | 20g F)",
-        "Bowl de Acai con Semillas de Chía, Nueces y Fruta Fresca (450 kcal | 18g P | 50g C | 21g F)"
-      ];
-      lunchCurrent = "Bowl de Garbanzos Asados con Quinoa, Aguacate y Tahini (580 kcal | 28g P | 65g C | 18g F)";
-      lunchAlts = [
-        "Tofu Marinado a la Parrilla con Arroz Basmati y Brócoli (565 kcal | 32g P | 60g C | 16g F)",
-        "Curry de Lentejas Rojas y Leche de Coco con Boniato (590 kcal | 26g P | 68g C | 19g F)"
-      ];
-    } else if (isVegetarian) {
-      lunchCurrent = "Hamburguesa de Lentejas y Queso Feta con Camote (575 kcal | 34g P | 60g C | 17g F)";
-    }
-
-    this.nutrition.mealPlans = [
-      {
-        title: "Desayuno Proteico Adaptado",
-        meal: "Desayuno",
-        current: breakfastCurrent,
-        alternatives: breakfastAlts
-      },
-      {
-        title: "Almuerzo Anabólico Adaptado",
-        meal: "Almuerzo",
-        current: lunchCurrent,
-        alternatives: lunchAlts
-      }
-    ];
+  removeFoodLog(id) {
+    this.nutrition.loggedFood = this.nutrition.loggedFood.filter(f => f.id !== id);
+    this.saveCurrentStateToHistory();
+    this.notify();
   }
 
   getTotals() {
-    return this.nutrition.loggedFood.reduce((acc, f) => {
-      acc.calories += f.calories;
-      acc.protein += f.p;
-      acc.carbs += f.c;
-      acc.fat += f.f;
-      return acc;
-    }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+    return this.nutrition.loggedFood.reduce(
+      (acc, curr) => ({
+        calories: acc.calories + curr.calories,
+        protein: acc.protein + curr.p,
+        carbs: acc.carbs + curr.c,
+        fat: acc.fat + curr.f
+      }),
+      { calories: 0, protein: 0, carbs: 0, fat: 0 }
+    );
   }
 
-  saveCurrentStateToHistory() {
+  // GENERADOR DE LISTA DE LA COMPRA SEMANAL CONSOLIDADA
+  generateGroceryList() {
+    const list = {};
+    if (!this.nutrition || !this.nutrition.weeklyPlan) return [];
+
+    this.nutrition.weeklyPlan.forEach(day => {
+      day.meals.forEach(m => {
+        if (this.isMealSafe(m) && m.ingredients) {
+          m.ingredients.forEach(ing => {
+            list[ing] = (list[ing] || 0) + 1;
+          });
+        }
+      });
+    });
+
+    return Object.keys(list).map(ing => `${ing} (x${list[ing]} tomas)`);
+  }
+
+  // --- USER PROFILE & METABOLISM ---
+  updateUserProfile(partialProfile) {
+    this.userProfile = { ...this.userProfile, ...partialProfile };
+    this.recalculateMetabolism();
+    this.saveUserProfileToStorage();
+    this.autoEnforceSafeMeals();
+    this.notify();
+  }
+
+  recalculateMetabolism() {
+    const p = this.userProfile;
+    let bmr = 10 * p.weight + 6.25 * p.height - 5 * p.age + (p.gender === 'male' ? 5 : -161);
+    bmr = Math.round(bmr);
+
+    let tdee = Math.round(bmr * p.activityLevel);
+
+    let targetCal = tdee;
+    if (p.goal === 'fat_loss') targetCal = tdee - 500;
+    else if (p.goal === 'muscle_gain') targetCal = tdee + 350;
+
+    let proteinGrams = Math.round(p.weight * 2.2);
+    let fatGrams = Math.round((targetCal * 0.25) / 9);
+    let carbsGrams = Math.round((targetCal - (proteinGrams * 4 + fatGrams * 9)) / 4);
+
+    if (p.dietType === 'keto') {
+      carbsGrams = 30;
+      proteinGrams = Math.round(p.weight * 2.0);
+      fatGrams = Math.round((targetCal - (proteinGrams * 4 + carbsGrams * 4)) / 9);
+    } else if (p.dietType === 'high_protein') {
+      proteinGrams = Math.round(p.weight * 2.5);
+      carbsGrams = Math.round((targetCal * 0.40) / 4);
+      fatGrams = Math.round((targetCal - (proteinGrams * 4 + carbsGrams * 4)) / 9);
+    }
+
+    this.userProfile.bmr = bmr;
+    this.userProfile.tdee = tdee;
+    this.userProfile.targetCalories = targetCal;
+    this.userProfile.targetProtein = proteinGrams;
+    this.userProfile.targetCarbs = carbsGrams;
+    this.userProfile.targetFat = fatGrams;
+    this.nutrition.targets = { calories: targetCal, protein: proteinGrams, carbs: carbsGrams, fat: fatGrams };
+  }
+
+  saveUserProfileToStorage() {
+    localStorage.setItem("aura_user_profile", JSON.stringify(this.userProfile));
+  }
+
+  // HISTÓRICO PERSISTENTE INDEXEDDB
+  async saveCurrentStateToHistory() {
     try {
       const currentUser = authService.getCurrentUser();
-      const today = new Date().toISOString().split('T')[0];
+      if (!currentUser) return;
 
-      // Save Workout Log
+      const dateStr = new Date().toISOString().split('T')[0];
       const activeDay = this.getCurrentDay();
+
       if (activeDay) {
-        dbService.saveWorkoutLog(currentUser.id, today, activeDay);
+        await dbService.saveWorkoutLog(currentUser.id, dateStr, activeDay);
       }
 
-      // Save Nutrition Log
-      dbService.saveNutritionLog(currentUser.id, today, {
+      await dbService.saveNutritionLog(currentUser.id, dateStr, {
         targets: this.nutrition.targets,
         totals: this.getTotals(),
         loggedFood: this.nutrition.loggedFood
       });
-
-      // Save Biometric Log
-      dbService.saveBiometricLog(currentUser.id, today, this.userProfile);
-    } catch (e) {
-      console.warn("Could not save history entry:", e);
-    }
+    } catch (e) {}
   }
 }
 
 export const appState = new AppState();
-

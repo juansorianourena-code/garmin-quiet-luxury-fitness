@@ -1,7 +1,7 @@
 /**
  * Módulo 4: Descanso, Salud, Informe Médico e Histórico Persistente (IndexedDB)
  * Formulario de Registro Biométrico Manual, Gráfico de Composición Corporal Multi-Eje
- * e Informe Fisiológico Focado en Gimnasio (0 Nombres de Relojes, 0 Cajas Vacías).
+ * e Informe Fisiológico Focado en Gimnasio con Cajas Telemétricas Limpias.
  * Estética Quiet Luxury estricta: 0 emojis, tipografía limpia e ilustraciones vectoriales.
  */
 
@@ -37,7 +37,7 @@ export async function renderAnalyticsModule(container) {
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
       <div>
         <div class="card-title-sm">Módulo 4: Informe Médico, Salud & Analítica</div>
-        <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Informe Biométrico & Fisiología Gimnasio</h2>
+        <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Informe Biométrico & Telemetría Médica</h2>
       </div>
       <div style="display: flex; align-items: center; gap: 8px;">
         <button id="btn-export-json-backup" class="inline-btn inline-btn-secondary" style="padding: 4px 10px; font-size: 0.72rem; font-family: var(--font-mono);">
@@ -154,7 +154,7 @@ export async function renderAnalyticsModule(container) {
       </div>
     </div>
 
-    <!-- 3. INFORME MÉDICO FOCADO EN GIMNASIO (0 NOMRES DE RELOJES, 0 CAJAS VACÍAS) -->
+    <!-- 3. INFORME MÉDICO FOCADO EN GIMNASIO CON CAJAS TELEMÉTRICAS LIMPIAS -->
     <div class="card" style="border: 1px solid var(--border-line-strong); margin-bottom: 20px; padding: 18px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px stroke var(--border-line); padding-bottom: 10px; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
         <div>
@@ -171,7 +171,7 @@ export async function renderAnalyticsModule(container) {
         </div>
       </div>
 
-      <!-- SECCIÓN I: FISIOLOGÍA CARDÍACA & AUTONÓMICA -->
+      <!-- SECCIÓN I: FISIOLOGÍA CARDÍACA & OXÍGENO EN SANGRE -->
       <div style="margin-bottom: 16px;">
         <div style="font-size: 0.76rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); letter-spacing: 0.05em; margin-bottom: 8px;">
           I. Evaluación Fisiológica & Fisiología Cardíaca
@@ -181,6 +181,13 @@ export async function renderAnalyticsModule(container) {
             <div style="font-size: 0.7rem; color: var(--text-muted);">VFC Media Nocturna (HRV):</div>
             <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--accent-optimal);">${gData.hrv} ms</div>
             <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Línea Base: ${gData.hrvBaseline || '62-74 ms'}</div>
+          </div>
+
+          <!-- CAJA DE MEDIA DE OXÍGENO EN SANGRE (SPO2) - RECEPTOR LIMPIO -->
+          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Media Oxígeno en Sangre (SpO2):</div>
+            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: ${gData.spo2Avg ? 'var(--accent-optimal)' : 'var(--text-muted)'};">${gData.spo2Avg ? `${gData.spo2Avg}%` : '--'}</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">${gData.spo2Min ? `Mínimo: ${gData.spo2Min}% SpO2` : 'Pulsioximetría Óptica'}</div>
           </div>
 
           <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
@@ -194,19 +201,13 @@ export async function renderAnalyticsModule(container) {
             <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--text-main);">${gData.respirationRate || 13.5} brpm</div>
             <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Patrón Eupneico Normal</div>
           </div>
-
-          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">VO2 Max & Edad Física:</div>
-            <div style="font-family: var(--font-mono); font-size: 1.0rem; font-weight: 600; color: var(--accent-optimal);">${gData.vo2Max} ml/kg/min</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Edad Física: ${gData.fitnessAge} años</div>
-          </div>
         </div>
       </div>
 
-      <!-- SECCIÓN II: POLISOMNOGRAFÍA & RECUPERACIÓN MUSCULAR -->
+      <!-- SECCIÓN II: POLISOMNOGRAFÍA & Detección de Siestas -->
       <div style="margin-bottom: 16px;">
         <div style="font-size: 0.76rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); letter-spacing: 0.05em; margin-bottom: 8px;">
-          II. Arquitectura del Sueño & Síntesis Proteica (Sueño Profundo Muscular)
+          II. Arquitectura del Sueño & Síntesis Proteica
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
           <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
@@ -216,20 +217,49 @@ export async function renderAnalyticsModule(container) {
           </div>
 
           <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Sueño Profundo (Reparación Muscular):</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Sueño Profundo (Muscular):</div>
             <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--text-main);">${gData.sleepDeepHours} hrs</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Secreción de Hormona de Crecimiento</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Hormona de Crecimiento</div>
           </div>
 
+          <!-- CAJA DE DETECCIÓN DE SIESTAS - RECEPTOR LIMPIO -->
           <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Sueño REM (Neurológica):</div>
-            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--text-main);">${gData.sleepRemHours} hrs</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Consolidación de Memoria Motora</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Detección de Siesta:</div>
+            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: ${gData.napMinutes ? 'var(--accent-optimal)' : 'var(--text-muted)'};">${gData.napMinutes ? `${gData.napMinutes} min` : '--'}</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">${gData.napMinutes ? '+8 pts Body Battery' : 'Monitor de Descanso'}</div>
           </div>
         </div>
       </div>
 
-      <!-- SECCIÓN III: DICTAMEN FISIOLÓGICO PARA ENTRENAMIENTO EN GIMNASIO -->
+      <!-- SECCIÓN III: TELEMETRÍA DE POTENCIA Y DINÁMICAS (RECEPTORES LIMPIOS) -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 0.76rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); letter-spacing: 0.05em; margin-bottom: 8px;">
+          III. Potenciómetro Integrado & Dinámicas Biomecánicas
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
+          <!-- CAJA DE POTENCIA EN MUÑECA W - RECEPTOR LIMPIO -->
+          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Potencia en Muñeca:</div>
+            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: ${gData.runningPowerWatts ? 'var(--accent-optimal)' : 'var(--text-muted)'};">${gData.runningPowerWatts ? `${gData.runningPowerWatts} W` : '--'}</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Potenciómetro de Muñeca</div>
+          </div>
+
+          <!-- CAJA DE DINÁMICAS DE CARRERA - RECEPTOR LIMPIO -->
+          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Dinámicas Biomecánicas:</div>
+            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: ${gData.cadenceSpm ? 'var(--text-main)' : 'var(--text-muted)'};">${gData.cadenceSpm ? `${gData.cadenceSpm} spm` : '--'}</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Cadencia & Tiempo Contacto</div>
+          </div>
+
+          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
+            <div style="font-size: 0.7rem; color: var(--text-muted);">VO2 Max & Edad Física:</div>
+            <div style="font-family: var(--font-mono); font-size: 1.0rem; font-weight: 600; color: var(--accent-optimal);">${gData.vo2Max} ml/kg/min</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Edad Física: ${gData.fitnessAge} años</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN IV: DICTAMEN FISIOLÓGICO PARA ENTRENAMIENTO EN GIMNASIO -->
       <div style="background: var(--bg-main); padding: 12px 14px; border-left: 3px solid var(--accent-optimal); border-radius: 2px; font-size: 0.8rem;">
         <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: var(--accent-optimal); letter-spacing: 0.08em; margin-bottom: 4px;">
           DICTAMEN BIOMECÁNICO DE CAPACIDAD DE CARGA EN PESAS:

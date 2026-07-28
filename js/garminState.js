@@ -1,6 +1,6 @@
 /**
  * Garmin State Manager & Dynamic Calculator (Quiet Luxury Aesthetic)
- * Sin nombres de dispositivos ni cuadros vacíos.
+ * Mediciones biométricas nativas y soporte telemétrico limpio.
  */
 
 class GarminState {
@@ -24,6 +24,13 @@ class GarminState {
       sleepLightHours: 3.8,
       sleepAwakeMinutes: 12,
       sleepEfficiency: 94, // %
+      
+      // Pulsioximetría, Potencia & Sensores Avanzados (Se rellenan automáticamente al recibir lectura)
+      spo2Avg: null, // % SpO2
+      spo2Min: null,
+      runningPowerWatts: null, // W
+      cadenceSpm: null,
+      napMinutes: null,
       
       // Métricas de Respiración y Fisiología
       respirationRate: 13.5, // brpm
