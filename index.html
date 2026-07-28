@@ -68,16 +68,13 @@
 
       <!-- User Profile Badge & Top-Right Actions -->
       <div class="header-actions">
-        <!-- AI Trainer Button -->
+        <!-- AI Trainer Button (Visible on both Desktop & Mobile) -->
         <button class="btn btn-purple btn-sm" id="btnOpenAIChat" title="Entrenadora IA - Cambiar Ejercicios o Rutinas">
-          <i class="fa-solid fa-robot"></i> <span class="desktop-text">Entrenadora IA</span>
+          <i class="fa-solid fa-robot"></i> <span>Entrenadora IA</span>
         </button>
         <!-- Force Reload Button -->
         <button class="btn btn-emerald btn-sm btn-reload-glow" id="btnForceReload" title="Buscar Actualizaciones">
           <i class="fa-solid fa-arrows-rotate" id="reloadIcon"></i>
-        </button>
-        <button class="btn btn-outline btn-sm" id="btnExportData" title="Copia de Seguridad">
-          <i class="fa-solid fa-download"></i>
         </button>
       </div>
     </div>
@@ -232,7 +229,7 @@
         </div>
         <div class="header-buttons">
           <button class="btn btn-purple btn-sm" onclick="document.getElementById('btnOpenAIChat').click()">
-            <i class="fa-solid fa-robot"></i> Hablar con Entrenadora IA (Cambiar Ejercicios)
+            <i class="fa-solid fa-robot"></i> Cambiar Ejercicios
           </button>
           <button class="btn btn-emerald btn-sm" id="btnSelectTemplate">
             <i class="fa-solid fa-rotate"></i> Renovar Rutina
@@ -356,6 +353,10 @@
     <button class="mobile-nav-btn" data-tab="tab-workouts">
       <i class="fa-solid fa-dumbbell"></i>
       <span>Rutinas</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="document.getElementById('btnOpenAIChat').click()">
+      <i class="fa-solid fa-robot" style="color:var(--accent-purple);"></i>
+      <span>Entrenadora</span>
     </button>
     <button class="mobile-nav-btn" data-tab="tab-meals">
       <i class="fa-solid fa-utensils"></i>
