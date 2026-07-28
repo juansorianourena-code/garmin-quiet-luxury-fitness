@@ -69,8 +69,8 @@
       <!-- User Profile Badge & Top-Right Actions -->
       <div class="header-actions">
         <!-- AI Trainer Button -->
-        <button class="btn btn-purple btn-sm" id="btnOpenAIChat" title="Entrenadora IA">
-          <i class="fa-solid fa-robot"></i> <span>Entrenadora IA</span>
+        <button class="btn btn-purple btn-sm" id="btnOpenAIChat" title="Entrenadora & Nutricionista IA">
+          <i class="fa-solid fa-robot"></i> <span>Asistente IA</span>
         </button>
         <!-- Force Reload Button -->
         <button class="btn btn-emerald btn-sm btn-reload-glow" id="btnForceReload" title="Buscar Actualizaciones">
@@ -303,6 +303,9 @@
           <p>Platos ajustados a tus objetivos calóricos, alergias y variedad culinaria.</p>
         </div>
         <div class="header-buttons">
+          <button class="btn btn-purple btn-sm" onclick="document.getElementById('btnOpenAIChat').click()">
+            <i class="fa-solid fa-robot"></i> Asistente Nutricional IA
+          </button>
           <button class="btn btn-emerald btn-sm" id="btnOpenGrocery">
             <i class="fa-solid fa-cart-shopping"></i> Lista de la Compra
           </button>
@@ -398,7 +401,7 @@
     </button>
     <button class="mobile-nav-btn" data-tab="tab-ai-chat" id="btnMobileAIChat">
       <i class="fa-solid fa-robot" style="color:var(--accent-purple);"></i>
-      <span>Entrenadora</span>
+      <span>Asistente IA</span>
     </button>
     <button class="mobile-nav-btn" data-tab="tab-meals">
       <i class="fa-solid fa-utensils"></i>
@@ -410,7 +413,7 @@
     </button>
   </nav>
 
-  <!-- MODAL: AI Trainer Interactive Chat Assistant -->
+  <!-- MODAL: AI Trainer & Nutritionist Interactive Chat Assistant -->
   <div class="modal-overlay" id="aiChatModal">
     <div class="modal-card chat-modal-card">
       <button class="modal-close" id="btnCloseAIChat">&times;</button>
@@ -419,37 +422,43 @@
           <i class="fa-solid fa-robot"></i>
         </div>
         <div>
-          <h3>Entrenadora Personal IA</h3>
-          <span class="badge badge-purple"><i class="fa-solid fa-circle"></i> Biomecánica & Adaptación en Vivo</span>
+          <h3>Entrenadora & Nutricionista IA</h3>
+          <span class="badge badge-purple"><i class="fa-solid fa-circle"></i> Biomecánica & Nutrición en Vivo</span>
         </div>
       </div>
 
+      <!-- Quick Action Chips -->
       <div class="chat-chips-bar" id="aiQuickChips">
+        <button class="chat-chip" data-msg="Tengo intolerancia a la lactosa, ajusta mi menú">
+          <i class="fa-solid fa-shield-halved"></i> Sin Lactosa
+        </button>
+        <button class="chat-chip" data-msg="Tengo alergia al gluten, actualiza mi dieta">
+          <i class="fa-solid fa-wheat-awn-circle-exclamation"></i> Sin Gluten
+        </button>
+        <button class="chat-chip" data-msg="Quiero un menú vegetariano rico en proteínas">
+          <i class="fa-solid fa-seedling"></i> Menú Vegetariano
+        </button>
         <button class="chat-chip" data-msg="Me he cansado de esta rutina, quiero renovarla entera">
-          <i class="fa-solid fa-rotate"></i> Renovar rutina completa
+          <i class="fa-solid fa-rotate"></i> Renovar rutina
         </button>
         <button class="chat-chip" data-msg="Me molesta el press de banca, sustitúyelo por otro ejercicio">
-          <i class="fa-solid fa-triangle-exclamation"></i> Me molesta la banca
-        </button>
-        <button class="chat-chip" data-msg="Sustituye la sentadilla por otro ejercicio de piernas más cómodo">
-          <i class="fa-solid fa-person-dots-from-line"></i> Cambiar sentadilla
-        </button>
-        <button class="chat-chip" data-msg="¿Cómo aplico la sobrecarga progresiva esta semana?">
-          <i class="fa-solid fa-chart-line"></i> ¿Cómo progresar?
+          <i class="fa-solid fa-triangle-exclamation"></i> Cambiar ejercicios
         </button>
       </div>
 
+      <!-- Messages Stream -->
       <div class="chat-messages-container" id="aiChatMessages">
         <div class="chat-msg ai">
           <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
           <div class="chat-bubble">
-            ¡Hola! Soy tu <strong>Entrenadora IA FitExpert</strong>. Dime si algún ejercicio te produce molestias o dolor y lo sustituiré en tu rutina en tiempo real manteniendo el estímulo muscular. También puedes pedirme renovar tu rutina entera.
+            ¡Hola! Soy tu <strong>Entrenadora & Nutricionista IA FitExpert</strong>. Dime qué alergias o preferencias tienes (ej: <em>"Tengo alergia al gluten"</em>, <em>"Soy vegetariano"</em>) o si deseas cambiar algún ejercicio o plato en tiempo real.
           </div>
         </div>
       </div>
 
+      <!-- Chat Input Form -->
       <form id="aiChatForm" class="chat-input-form">
-        <input type="text" id="aiChatInput" class="form-control" placeholder="Escribe aquí tu duda o ejercicio a cambiar..." autocomplete="off">
+        <input type="text" id="aiChatInput" class="form-control" placeholder="Escribe tu alergia, duda o ejercicio a cambiar..." autocomplete="off">
         <button type="submit" class="btn btn-purple">
           <i class="fa-solid fa-paper-plane"></i>
         </button>
