@@ -5,60 +5,38 @@ import { initMealPlanner } from './mealPlanner.js';
 import { initScienceHub } from './scienceHub.js';
 import { initAITrainerChat } from './aiTrainer.js';
 
+// New ES Modules
+import { initRestTimer } from './restTimer.js';
+import { initOneRepMaxCalc } from './oneRepMaxCalc.js';
+import { initSupplementation } from './supplementation.js';
+import { initHydrationTracker } from './hydrationTracker.js';
+import { initBodyMeasurements } from './bodyMeasurements.js';
+import { initWhatsAppExport } from './whatsappExport.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Setup Navigation Event Listeners
-  try {
-    setupTabNavigation();
-  } catch (err) {
-    console.error('Error setting up navigation:', err);
-  }
+  try { setupTabNavigation(); } catch (err) { console.error(err); }
 
   // 2. Setup Auto Reload & Update System
-  try {
-    setupAutoReloadSystem();
-  } catch (err) {
-    console.error('Error setting up reload system:', err);
-  }
+  try { setupAutoReloadSystem(); } catch (err) { console.error(err); }
 
-  // 3. Initialize Modules Safely
-  try {
-    initCalorieCalculator((profileData) => {
-      console.log('Profile updated:', profileData);
-    });
-  } catch (err) {
-    console.error('Error initCalorieCalculator:', err);
-  }
+  // 3. Initialize Core Modules
+  try { initCalorieCalculator(); } catch (err) { console.error(err); }
+  try { initWorkoutPlanner(); } catch (err) { console.error(err); }
+  try { initMealPlanner(); } catch (err) { console.error(err); }
+  try { initScienceHub(); } catch (err) { console.error(err); }
+  try { initAITrainerChat(); } catch (err) { console.error(err); }
 
-  try {
-    initWorkoutPlanner();
-  } catch (err) {
-    console.error('Error initWorkoutPlanner:', err);
-  }
+  // 4. Initialize New Premium Features
+  try { initRestTimer(); } catch (err) { console.error(err); }
+  try { initOneRepMaxCalc(); } catch (err) { console.error(err); }
+  try { initSupplementation(); } catch (err) { console.error(err); }
+  try { initHydrationTracker(); } catch (err) { console.error(err); }
+  try { initBodyMeasurements(); } catch (err) { console.error(err); }
+  try { initWhatsAppExport(); } catch (err) { console.error(err); }
 
-  try {
-    initMealPlanner();
-  } catch (err) {
-    console.error('Error initMealPlanner:', err);
-  }
-
-  try {
-    initScienceHub();
-  } catch (err) {
-    console.error('Error initScienceHub:', err);
-  }
-
-  try {
-    initAITrainerChat();
-  } catch (err) {
-    console.error('Error initAITrainerChat:', err);
-  }
-
-  // 4. Setup Data Actions
-  try {
-    setupDataActions();
-  } catch (err) {
-    console.error('Error setting up data actions:', err);
-  }
+  // 5. Setup Data Actions
+  try { setupDataActions(); } catch (err) { console.error(err); }
 });
 
 function setupTabNavigation() {
@@ -69,7 +47,6 @@ function setupTabNavigation() {
     btn.addEventListener('click', (e) => {
       const targetTabId = btn.getAttribute('data-tab');
 
-      // If button triggers AI Chat Modal directly
       if (targetTabId === 'tab-ai-chat' || btn.id === 'btnMobileAIChat') {
         e.preventDefault();
         const aiModal = document.getElementById('aiChatModal');
@@ -79,14 +56,11 @@ function setupTabNavigation() {
 
       if (!targetTabId) return;
 
-      // Deactivate all buttons across header & mobile nav
       allNavBtns.forEach(b => b.classList.remove('active'));
       tabContents.forEach(tc => tc.classList.remove('active'));
 
-      // Activate all matching tab buttons for targetTabId
       document.querySelectorAll(`[data-tab="${targetTabId}"]`).forEach(b => b.classList.add('active'));
 
-      // Activate target tab section
       const targetContent = document.getElementById(targetTabId);
       if (targetContent) {
         targetContent.classList.add('active');
@@ -103,53 +77,28 @@ function setupAutoReloadSystem() {
   if (btnReload) {
     btnReload.addEventListener('click', () => {
       if (icon) icon.classList.add('fa-spin');
-
       if ('caches' in window) {
         caches.keys().then(names => {
           names.forEach(name => caches.delete(name));
         });
       }
-
       setTimeout(() => {
         const cleanUrl = window.location.href.split('?')[0];
         window.location.href = `${cleanUrl}?v=${Date.now()}`;
       }, 300);
     });
   }
-
-  let lastFocusedTime = Date.now();
-
-  const handleForegroundCheck = () => {
-    const timePassed = Date.now() - lastFocusedTime;
-    if (timePassed > 30000) {
-      lastFocusedTime = Date.now();
-      const cleanUrl = window.location.href.split('?')[0];
-      window.location.href = `${cleanUrl}?v=${Date.now()}`;
-    }
-  };
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      handleForegroundCheck();
-    }
-  });
-
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted) {
-      handleForegroundCheck();
-    }
-  });
 }
 
 function setupDataActions() {
   const btnExport = document.getElementById('btnExportData');
-  const btnReset = document.getElementById('btnResetData');
-
   if (btnExport) {
     btnExport.addEventListener('click', () => {
       const exportData = {
         profile: localStorage.getItem('fitexpert_profile'),
         workoutLogs: localStorage.getItem('fitexpert_workout_logs'),
+        waterLogs: localStorage.getItem('fitexpert_water_ml'),
+        bodyMeasurements: localStorage.getItem('fitexpert_body_measurements'),
         exportDate: new Date().toISOString()
       };
 
@@ -160,15 +109,6 @@ function setupDataActions() {
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
-    });
-  }
-
-  if (btnReset) {
-    btnReset.addEventListener('click', () => {
-      if (confirm('¿Estás seguro de que deseas reiniciar todos los datos locales (rutinas y perfil calórico)?')) {
-        localStorage.clear();
-        window.location.reload();
-      }
     });
   }
 }

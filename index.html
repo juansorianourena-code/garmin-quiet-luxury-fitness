@@ -218,6 +218,53 @@
           </div>
         </div>
       </div>
+
+      <!-- NEW: Hydration Tracker & Body Measurements Grid -->
+      <div class="grid grid-2 mt-3">
+        <!-- Water & Electrolytes Tracker Card -->
+        <div class="card glass-card">
+          <h3 class="card-title"><i class="fa-solid fa-glass-water" style="color:var(--accent-cyan);"></i> Registro de Hidratación Diario</h3>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-weight:700; color:var(--text-main); font-size:16px;" id="resWaterValue">0.00 L / 3.12 L</span>
+            <span class="badge badge-cyan" id="resWaterText">0% completado</span>
+          </div>
+          <div class="macro-bar mb-2"><div class="macro-fill" id="barWaterFill" style="width: 0%; background:var(--accent-cyan);"></div></div>
+          <div style="display:flex; gap:6px; margin-top:8px;">
+            <button class="btn btn-outline btn-sm" id="btnWaterAdd250"><i class="fa-solid fa-plus"></i> +250 ml</button>
+            <button class="btn btn-outline btn-sm" id="btnWaterAdd500"><i class="fa-solid fa-plus"></i> +500 ml</button>
+            <button class="btn btn-outline btn-sm" id="btnWaterReset" style="color:var(--accent-rose);"><i class="fa-solid fa-rotate-left"></i></button>
+          </div>
+        </div>
+
+        <!-- Body Measurements & Antropometry Card -->
+        <div class="card glass-card">
+          <h3 class="card-title"><i class="fa-solid fa-ruler-combined" style="color:var(--accent-emerald);"></i> Medidas Corporales (cm)</h3>
+          <form id="bodyMeasurementsForm">
+            <div class="grid grid-2-sm mb-2">
+              <div>
+                <label style="font-size:10px; color:var(--text-muted);">Brazo (cm)</label>
+                <input type="number" id="measureArm" class="form-control" value="38" step="0.5">
+              </div>
+              <div>
+                <label style="font-size:10px; color:var(--text-muted);">Cintura (cm)</label>
+                <input type="number" id="measureWaist" class="form-control" value="82" step="0.5">
+              </div>
+              <div>
+                <label style="font-size:10px; color:var(--text-muted);">Pecho (cm)</label>
+                <input type="number" id="measureChest" class="form-control" value="104" step="0.5">
+              </div>
+              <div>
+                <label style="font-size:10px; color:var(--text-muted);">Muslo (cm)</label>
+                <input type="number" id="measureThigh" class="form-control" value="58" step="0.5">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-emerald btn-block btn-sm">
+              <i class="fa-solid fa-floppy-disk"></i> Guardar Medidas Corporales
+            </button>
+          </form>
+          <div id="measurementsHistoryContainer"></div>
+        </div>
+      </div>
     </section>
 
     <!-- ==================== TAB 2: RUTINAS DE GIMNASIO & TRACKER ==================== -->
@@ -282,9 +329,34 @@
               </div>
 
               <button type="submit" class="btn btn-primary btn-block">
-                <i class="fa-solid fa-plus-circle"></i> Registrar Serie
+                <i class="fa-solid fa-plus-circle"></i> Registrar Serie & Iniciar Descanso
               </button>
             </form>
+          </div>
+
+          <!-- NEW: 1RM Strength Calculator Card -->
+          <div class="card glass-card mb-3">
+            <h3 class="card-title"><i class="fa-solid fa-calculator" style="color:var(--accent-cyan);"></i> Calculadora de 1RM (Fuerza Máxima)</h3>
+            <form id="oneRepMaxForm">
+              <div class="grid grid-2-sm mb-2">
+                <div>
+                  <label style="font-size:10px; color:var(--text-muted);">Peso Levantado (kg)</label>
+                  <input type="number" id="oneRepWeight" class="form-control" value="80" step="2.5">
+                </div>
+                <div>
+                  <label style="font-size:10px; color:var(--text-muted);">Repeticiones</label>
+                  <input type="number" id="oneRepReps" class="form-control" value="6" min="1" max="15">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block btn-sm">
+                <i class="fa-solid fa-bolt"></i> Calcular 1RM
+              </button>
+            </form>
+            <div style="text-align:center; margin-top:8px;">
+              <span style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">1RM Estimado:</span>
+              <div style="font-size:22px; font-weight:800; color:var(--accent-cyan);" id="res1RMValue">96 kg</div>
+            </div>
+            <div id="res1RMPercentagesTable"></div>
           </div>
 
           <div class="card glass-card">
@@ -372,16 +444,37 @@
     <section id="tab-science" class="tab-content">
       <div class="section-header">
         <div>
-          <h2>Hub de Evidencia Científica</h2>
+          <h2>Hub de Evidencia Científica & Suplementación</h2>
           <p>Consenso de la ISSN, ACSM y publicaciones peer-reviewed.</p>
         </div>
         <span class="badge badge-purple"><i class="fa-solid fa-graduation-cap"></i> Peer-Reviewed</span>
+      </div>
+
+      <!-- NEW: Evidence-Based Supplementation Protocol -->
+      <div class="card glass-card mb-3">
+        <h3 class="card-title"><i class="fa-solid fa-capsules" style="color:var(--accent-purple);"></i> Dosis de Suplementación Calculada (ISSN)</h3>
+        <p class="text-muted fs-sm mb-3">Protocolos de suplementación ertogénica ajustados a tu peso corporal exacto.</p>
+        <div id="supplementationContainer"></div>
       </div>
 
       <div class="grid grid-2" id="scienceCardsContainer"></div>
     </section>
 
   </main>
+
+  <!-- FLOATING WIDGET: Rest Timer Overlay -->
+  <div class="modal-overlay" id="restTimerWidget" style="background:rgba(11,15,25,0.7);">
+    <div class="modal-card" style="max-width:320px; text-align:center; padding:20px;">
+      <button class="modal-close" id="btnCloseTimer">&times;</button>
+      <i class="fa-solid fa-stopwatch" style="font-size:36px; color:var(--accent-cyan); margin-bottom:8px;"></i>
+      <h3 style="font-family:var(--font-heading);">Descanso en Proceso</h3>
+      <div style="font-size:42px; font-weight:800; font-family:var(--font-heading); color:var(--accent-cyan); margin:10px 0;" id="timerCountdownDisplay">01:30</div>
+      <div style="display:flex; gap:8px; justify-content:center;">
+        <button class="btn btn-outline btn-sm" id="btnTimerAdd30">+30 seg</button>
+        <button class="btn btn-primary btn-sm" id="btnTimerSkip">Saltar Descanso</button>
+      </div>
+    </div>
+  </div>
 
   <!-- iOS Native Bottom App Navigation Bar -->
   <nav class="mobile-bottom-nav" id="mobileNav">
@@ -469,7 +562,12 @@
   <div class="modal-overlay" id="groceryModal">
     <div class="modal-card">
       <button class="modal-close" id="btnCloseGroceryModal">&times;</button>
-      <h3><i class="fa-solid fa-basket-shopping"></i> Lista de la Compra Semanal</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h3><i class="fa-solid fa-basket-shopping"></i> Lista de la Compra Semanal</h3>
+        <button class="btn btn-emerald btn-sm" id="btnShareGroceryWhatsApp">
+          <i class="fa-brands fa-whatsapp"></i> Compartir en WhatsApp
+        </button>
+      </div>
       <p class="text-muted fs-sm mb-3">Calculada a partir de los ingredientes de tu menú de 7 días.</p>
       <div id="groceryItemsList" class="grocery-list"></div>
     </div>
