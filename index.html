@@ -9,6 +9,13 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   
+  <script>
+    // Auto-bypass Safari / WebKit PWA offline cache
+    if (!window.location.search.includes('v=5.2')) {
+      window.location.replace(window.location.pathname + '?v=5.2');
+    }
+  </script>
+  
   <!-- Typography Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
