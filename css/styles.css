@@ -728,67 +728,87 @@ html, body {
    ========================================================================== */
 
 @media (max-width: 640px) {
+  #app-container {
+    padding-bottom: 100px;
+  }
+
   .top-header {
-    padding: 12px 14px;
+    padding: 10px 12px;
   }
 
   .top-header-brand {
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
   }
 
   .brand-title {
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
   }
 
   .garmin-badge {
-    padding: 3px 8px;
-    font-size: 0.68rem;
+    padding: 2px 6px;
+    font-size: 0.65rem;
   }
 
   .header-status-message {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+  }
+
+  h2 {
+    font-size: 1.1rem !important;
   }
 
   .content-area {
-    padding: 14px 12px;
+    padding: 10px 8px;
   }
 
   .card {
-    padding: 14px 16px;
-    margin-bottom: 14px;
+    padding: 10px 12px !important;
+    margin-bottom: 10px !important;
     border-radius: var(--radius-sm);
+  }
+
+  .card-title-sm {
+    font-size: 0.65rem !important;
+    margin-bottom: 6px !important;
+    letter-spacing: 0.08em;
   }
 
   .fine-grid {
     grid-template-columns: 1fr !important;
-    gap: 12px;
+    gap: 8px;
   }
 
   .grid-cell {
-    padding: 12px 14px;
+    padding: 8px 10px !important;
   }
 
   .metric-number-lg {
-    font-size: 2rem;
+    font-size: 1.5rem !important;
+    line-height: 1.1;
   }
 
   .metric-number-md {
-    font-size: 1.4rem;
+    font-size: 1.25rem !important;
+    line-height: 1.1;
+  }
+
+  .unit {
+    font-size: 0.72rem !important;
   }
 
   /* Responsive Buttons & Containers */
   .inline-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 10px 14px;
+    padding: 8px 12px !important;
+    font-size: 0.78rem !important;
   }
 
   .days-frequency-selector {
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding-bottom: 6px;
+    padding-bottom: 4px;
+    gap: 6px;
   }
 
   .days-frequency-selector::-webkit-scrollbar {
@@ -797,37 +817,62 @@ html, body {
 
   .day-pill {
     flex-shrink: 0;
-    padding: 6px 12px;
-    font-size: 0.75rem;
+    padding: 5px 10px;
+    font-size: 0.72rem;
   }
 
   /* AI Assistant Mobile */
   .ai-coach-box {
-    padding: 14px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+
+  .ai-msg {
+    padding: 8px 10px;
+    font-size: 0.8rem;
   }
 
   .ai-input-row {
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
 
   .ai-input-row input {
     width: 100%;
+    padding: 6px 10px;
+    font-size: 0.8rem;
   }
 
   .ai-input-row button {
     width: 100%;
+    padding: 8px 12px;
   }
 
   /* Workout Set Logger Mobile */
   .set-row {
-    grid-template-columns: 30px 1fr 1fr 1fr 34px;
-    gap: 6px;
+    grid-template-columns: 28px 1fr 1fr 1fr 30px;
+    gap: 4px;
+    padding: 4px 0;
   }
 
   .set-row input {
-    padding: 4px 6px;
-    font-size: 0.82rem;
+    padding: 3px 5px;
+    font-size: 0.78rem;
+  }
+
+  /* Bottom Nav Mobile Compact */
+  .bottom-nav {
+    height: 58px;
+  }
+
+  .nav-tab {
+    font-size: 0.65rem;
+    gap: 2px;
+  }
+
+  .nav-tab svg {
+    width: 17px;
+    height: 17px;
   }
 
   /* Garmin Control Panel Mobile */
@@ -843,6 +888,8 @@ html, body {
   .sim-field input[type="password"],
   .sim-field input[type="email"] {
     width: 100%;
+    padding: 8px 10px;
+    font-size: 0.82rem;
   }
 }
 
