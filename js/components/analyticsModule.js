@@ -23,14 +23,19 @@ export async function renderAnalyticsModule(container) {
 
   container.innerHTML = `
     <!-- Header -->
-    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
       <div>
         <div class="card-title-sm">Módulo 4: Descanso, Salud & Analítica</div>
         <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Analítica e Histórico Inalterable</h2>
       </div>
-      <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-muted); background: var(--bg-card); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border-line);">
-        Usuario: ${currentUser.name}
-      </span>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button id="btn-export-json-backup" class="inline-btn inline-btn-secondary" style="padding: 4px 10px; font-size: 0.72rem; font-family: var(--font-mono);">
+          Descargar Respaldo JSON
+        </button>
+        <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-muted); background: var(--bg-card); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border-line);">
+          Usuario: ${currentUser.name}
+        </span>
+      </div>
     </div>
 
     <!-- SECCIÓN: HISTÓRICO PERSISTENTE E INALTERABLE (INDEXEDDB) -->
@@ -211,4 +216,11 @@ export async function renderAnalyticsModule(container) {
       </div>
     </div>
   `;
+
+  const btnExport = container.querySelector('#btn-export-json-backup');
+  if (btnExport) {
+    btnExport.addEventListener('click', () => {
+      dbService.exportFullBackupJSON(currentUser.id);
+    });
+  }
 }
