@@ -1,0 +1,18 @@
+{
+  "status": "success",
+  "lastSync": "2026-07-28",
+  "email": "thejuaneitors@gmail.com",
+  "data": {
+    "sleepScore": 82,
+    "sleepTotalHours": 9.3,
+    "sleepDeepHours": 0.4,
+    "sleepRemHours": 1.8,
+    "bodyBattery": 28,
+    "stressLevel": 30,
+    "rhr": 59,
+    "hrv": 68,
+    "activeCalories": 238.0,
+    "userBmr": 2264.0,
+    "recoveryHours": 22
+  }
+}

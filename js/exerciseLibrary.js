@@ -1,5 +1,4 @@
 // FitExpert Studio - Exercise Library & Science-Based Workout Templates
-// ISSN / ACSM Evidence-Based Personalization Engine
 
 export const EXERCISE_DATABASE = [
   // PECHO / PUSH
@@ -99,7 +98,7 @@ export const EXERCISE_DATABASE = [
   // PIERNAS / LEGS
   {
     id: 'barbell-squat',
-    name: 'Sentadilla Trasera con Barra',
+    name: 'Sentadilla Trasera con Barra (Barra Alta/Baja)',
     category: 'Pierna',
     equipment: 'Barra & Rack',
     mechanics: 'Compuesto',
@@ -167,126 +166,67 @@ export const EXERCISE_DATABASE = [
   }
 ];
 
-// Dynamic Routine Generation Engine based on Profile Data
-export function generatePersonalizedRoutine(profile) {
-  const goal = profile ? profile.fitnessGoal : 'deficit_moderate';
-  const activity = profile ? profile.activityLevel : 'moderate';
-
-  let routineTitle = '';
-  let routineDesc = '';
-  let days = [];
-
-  if (goal.includes('deficit')) {
-    // Deficit Goal: Preserve Muscle & Maximize Metabolic Efficiency
-    routineTitle = 'Rutina de Retención Muscular en Déficit Calórico (Pérdida de Grasa)';
-    routineDesc = 'En déficit calórico, el objetivo primario del entrenamiento es dar una señal de síntesis proteica de alta intensidad (RPE 8-9) con volumen moderado para no saturar la capacidad de recuperación sin carbohidratos sobrantes.';
-    
-    days = [
+// Pre-configured Science-Based Templates
+export const WORKOUT_TEMPLATES = {
+  ppl: {
+    id: 'ppl',
+    name: 'Push / Pull / Legs (Frecuencia 2 - 6 días/semana)',
+    description: 'La división más validada por la ciencia para hipertrofia. Agrupa músculos agonistas y permite 48-72h de recuperación entre sesiones.',
+    days: [
       {
-        dayName: 'Día 1: Push Intensivo (Pecho, Hombro, Tríceps)',
+        dayName: 'Día 1: Push (Empuje - Pecho, Hombro, Tríceps)',
         exercises: [
-          { exerciseId: 'bench-press', sets: 4, reps: '6-8', rpe: '8.5' },
+          { exerciseId: 'bench-press', sets: 4, reps: '6-8', rpe: '8' },
           { exerciseId: 'incline-db-press', sets: 3, reps: '8-10', rpe: '8.5' },
           { exerciseId: 'overhead-press', sets: 3, reps: '8-10', rpe: '8' },
           { exerciseId: 'lateral-raises', sets: 4, reps: '12-15', rpe: '9' },
-          { exerciseId: 'triceps-rope-pushdown', sets: 3, reps: '10-12', rpe: '9' }
+          { exerciseId: 'triceps-rope-pushdown', sets: 3, reps: '12-15', rpe: '9.5' }
         ]
       },
       {
-        dayName: 'Día 2: Pull Intensivo (Espalda, Deltoides Post, Bíceps)',
+        dayName: 'Día 2: Pull (Jalón - Espalda, Deltoides Posterior, Bíceps)',
         exercises: [
-          { exerciseId: 'barbell-deadlift', sets: 3, reps: '5-6', rpe: '8' },
+          { exerciseId: 'barbell-deadlift', sets: 3, reps: '5-6', rpe: '7.5' },
           { exerciseId: 'lat-pulldown', sets: 4, reps: '8-10', rpe: '8.5' },
-          { exerciseId: 'barbell-row', sets: 3, reps: '8-10', rpe: '8.5' },
-          { exerciseId: 'db-biceps-curl', sets: 3, reps: '10-12', rpe: '9' }
+          { exerciseId: 'barbell-row', sets: 3, reps: '8-10', rpe: '8' },
+          { exerciseId: 'db-biceps-curl', sets: 4, reps: '10-12', rpe: '9' }
         ]
       },
       {
-        dayName: 'Día 3: Legs Preservación (Cuádriceps, Isquios & Glúteo)',
+        dayName: 'Día 3: Legs (Pierna Completa & Core)',
         exercises: [
-          { exerciseId: 'barbell-squat', sets: 4, reps: '6-8', rpe: '8.5' },
+          { exerciseId: 'barbell-squat', sets: 4, reps: '6-8', rpe: '8' },
           { exerciseId: 'romanian-deadlift', sets: 3, reps: '8-10', rpe: '8.5' },
-          { exerciseId: 'hip-thrust', sets: 3, reps: '8-10', rpe: '8.5' },
-          { exerciseId: 'leg-extension', sets: 3, reps: '12-15', rpe: '9' }
+          { exerciseId: 'hip-thrust', sets: 3, reps: '8-12', rpe: '8.5' },
+          { exerciseId: 'leg-extension', sets: 3, reps: '12-15', rpe: '9.5' }
         ]
       }
-    ];
-
-  } else if (goal.includes('surplus')) {
-    // Surplus Goal: Hypertrophy & Progressive Overload Peak
-    routineTitle = 'Rutina de Hipertrofia & Volumen de Fuerza (Ganancia Muscular Magra)';
-    routineDesc = 'En superávit calórico dispón de máxima energía glicolítica. El volumen aumenta a 16-20 series semanales por grupo muscular para maximizar el estímulo mecánico de la MPS (Síntesis de Proteína Muscular).';
-
-    days = [
+    ]
+  },
+  upper_lower: {
+    id: 'upper_lower',
+    name: 'Torso / Pierna (Frecuencia 2 - 4 días/semana)',
+    description: 'Excelente balance entre volumen de entrenamiento y recuperación. Ideal para intermedios y etapas de déficit calórico.',
+    days: [
       {
-        dayName: 'Día 1: Torso Enfoque Densidad & Fuerza',
+        dayName: 'Día 1: Torso Enfoque Fuerza & Densidad',
         exercises: [
           { exerciseId: 'bench-press', sets: 4, reps: '6-8', rpe: '8' },
           { exerciseId: 'barbell-row', sets: 4, reps: '6-8', rpe: '8' },
-          { exerciseId: 'incline-db-press', sets: 3, reps: '8-10', rpe: '8.5' },
-          { exerciseId: 'lat-pulldown', sets: 3, reps: '8-10', rpe: '8.5' },
-          { exerciseId: 'lateral-raises', sets: 4, reps: '12-15', rpe: '9' }
+          { exerciseId: 'overhead-press', sets: 3, reps: '8-10', rpe: '8' },
+          { exerciseId: 'lat-pulldown', sets: 3, reps: '10-12', rpe: '8.5' },
+          { exerciseId: 'lateral-raises', sets: 3, reps: '12-15', rpe: '9' }
         ]
       },
       {
-        dayName: 'Día 2: Pierna Enfoque Máximo Volumen',
+        dayName: 'Día 2: Pierna Enfoque Cadena Anterior & Posterior',
         exercises: [
           { exerciseId: 'barbell-squat', sets: 4, reps: '6-8', rpe: '8' },
           { exerciseId: 'romanian-deadlift', sets: 4, reps: '8-10', rpe: '8.5' },
-          { exerciseId: 'hip-thrust', sets: 4, reps: '8-10', rpe: '9' },
-          { exerciseId: 'leg-extension', sets: 4, reps: '12-15', rpe: '9.5' }
-        ]
-      },
-      {
-        dayName: 'Día 3: Brazos & Hombros Hipertrofia',
-        exercises: [
-          { exerciseId: 'overhead-press', sets: 4, reps: '8-10', rpe: '8.5' },
-          { exerciseId: 'lateral-raises', sets: 4, reps: '12-15', rpe: '9.5' },
-          { exerciseId: 'db-biceps-curl', sets: 4, reps: '10-12', rpe: '9' },
-          { exerciseId: 'triceps-rope-pushdown', sets: 4, reps: '10-12', rpe: '9.5' }
+          { exerciseId: 'hip-thrust', sets: 3, reps: '10-12', rpe: '8.5' },
+          { exerciseId: 'leg-extension', sets: 3, reps: '12-15', rpe: '9' }
         ]
       }
-    ];
-
-  } else {
-    // Recomposition Goal
-    routineTitle = 'Rutina de Recomposición Corporal & Fuerza Híbrida';
-    routineDesc = 'Diseñada para modificar el porcentaje de grasa y masa magra simultáneamente. Balance entre ejercicios compuestos de alta tensión mecánica y aislamiento metabólico.';
-
-    days = [
-      {
-        dayName: 'Día 1: Push Híbrido',
-        exercises: [
-          { exerciseId: 'bench-press', sets: 4, reps: '6-8', rpe: '8' },
-          { exerciseId: 'overhead-press', sets: 3, reps: '8-10', rpe: '8' },
-          { exerciseId: 'incline-db-press', sets: 3, reps: '8-10', rpe: '8.5' },
-          { exerciseId: 'lateral-raises', sets: 4, reps: '12-15', rpe: '9' }
-        ]
-      },
-      {
-        dayName: 'Día 2: Pull Híbrido',
-        exercises: [
-          { exerciseId: 'lat-pulldown', sets: 4, reps: '8-10', rpe: '8.5' },
-          { exerciseId: 'barbell-row', sets: 3, reps: '8-10', rpe: '8' },
-          { exerciseId: 'cable-crossover', sets: 3, reps: '12-15', rpe: '9' },
-          { exerciseId: 'db-biceps-curl', sets: 3, reps: '10-12', rpe: '9' }
-        ]
-      },
-      {
-        dayName: 'Día 3: Pierna Híbrida',
-        exercises: [
-          { exerciseId: 'barbell-squat', sets: 4, reps: '6-8', rpe: '8' },
-          { exerciseId: 'romanian-deadlift', sets: 3, reps: '8-10', rpe: '8.5' },
-          { exerciseId: 'hip-thrust', sets: 3, reps: '8-12', rpe: '8.5' }
-        ]
-      }
-    ];
+    ]
   }
-
-  return {
-    id: 'personalized',
-    name: routineTitle,
-    description: routineDesc,
-    days: days
-  };
-}
+};

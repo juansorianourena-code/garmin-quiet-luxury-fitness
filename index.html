@@ -1,630 +1,88 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>FitExpert Studio | Fitness, Nutrición & Evidencia Científica</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AURA | Quiet Luxury Fitness & Garmin Connect Performance</title>
+  <meta name="description" content="Aplicación de rendimiento personal, entrenamiento adaptativo y balance nutricional dinámico conectada con Garmin Connect API. Diseño Quiet Luxury sin modales emergentes." />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   
-  <!-- iOS Standalone App Meta Tags -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="FitExpert">
-  <meta name="theme-color" content="#0b0f19">
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
+  <!-- Typography Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-  <!-- Force No-Cache Meta Tags -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-
-  <!-- Fonts: Outfit & Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- FontAwesome Icons & Chart.js CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.com/npm/chart.js"></script>
-
-  <!-- App Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css">
+  <!-- Quiet Luxury Custom CSS Design System -->
+  <link rel="stylesheet" href="css/styles.css?v=5.0" />
 </head>
 <body>
 
-  <!-- Background Animated Elements -->
-  <div class="bg-glow glow-1"></div>
-  <div class="bg-glow glow-2"></div>
-  <div class="bg-glow glow-3"></div>
-
-  <!-- Header Navigation Bar (Ultra-Compact Native Mobile Header) -->
-  <header class="app-header">
-    <div class="header-container">
-      <div class="brand">
-        <div class="brand-icon">
-          <i class="fa-solid fa-bolt"></i>
-        </div>
-        <div class="brand-text">
-          <h1>FitExpert <span class="accent-text">Studio</span></h1>
-        </div>
-      </div>
-
-      <!-- Clean Header Top Action Bar -->
-      <div class="header-actions">
-        <!-- Security Setup Key Button -->
-        <button class="btn btn-purple btn-sm" id="btnSetupPassword" title="Proteger Perfil con Contraseña">
-          <i class="fa-solid fa-key"></i>
-        </button>
-
-        <!-- Force Reload Button -->
-        <button class="btn btn-emerald btn-sm btn-reload-glow" id="btnForceReload" title="Buscar Actualizaciones">
-          <i class="fa-solid fa-arrows-rotate" id="reloadIcon"></i>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content Container -->
-  <main class="main-container">
-
-    <!-- ==================== TAB 1: CALCULADORA MÉTRICA & DÉFICIT ==================== -->
-    <section id="tab-calculator" class="tab-content active">
-      <div class="section-header">
-        <div>
-          <h2>Calculadora Metabólica & Macros</h2>
-          <p>Ecuaciones diagnósticas (Mifflin-St Jeor & Katch-McArdle) respaldadas por la ISSN.</p>
-        </div>
-        <span class="badge badge-cyan"><i class="fa-solid fa-atom"></i> Precisión Científica</span>
-      </div>
-
-      <div class="grid grid-2">
-        <div class="card glass-card">
-          <h3 class="card-title"><i class="fa-solid fa-sliders"></i> Datos Antropométricos</h3>
-          <form id="calculatorForm">
-            <div class="form-row grid grid-2-sm">
-              <div class="form-group">
-                <label for="gender"><i class="fa-solid fa-venus-mars"></i> Sexo Biológico</label>
-                <select id="gender" class="form-control">
-                  <option value="male" selected>Hombre</option>
-                  <option value="female">Mujer</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="age"><i class="fa-solid fa-cake-candles"></i> Edad (Años)</label>
-                <input type="number" id="age" class="form-control" value="26" min="15" max="90" required>
-              </div>
-            </div>
-
-            <div class="form-row grid grid-2-sm">
-              <div class="form-group">
-                <label for="weight"><i class="fa-solid fa-weight-scale"></i> Peso Corporal (kg)</label>
-                <input type="number" id="weight" class="form-control" value="75" step="0.5" min="30" max="250" required>
-              </div>
-
-              <div class="form-group">
-                <label for="height"><i class="fa-solid fa-ruler-vertical"></i> Estatura (cm)</label>
-                <input type="number" id="height" class="form-control" value="178" min="120" max="230" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="bodyFat">
-                <i class="fa-solid fa-percent"></i> % Grasa Corporal (Opcional - Katch-McArdle)
-              </label>
-              <input type="number" id="bodyFat" class="form-control" placeholder="Ej: 15 (Dejar vacío si se desconoce)" step="0.5" min="4" max="50">
-            </div>
-
-            <div class="form-group">
-              <label for="activityLevel"><i class="fa-solid fa-fire-flame-curved"></i> Nivel de Actividad Física</label>
-              <select id="activityLevel" class="form-control">
-                <option value="sedentary">Sedentario (Oficina, poco ejercicio)</option>
-                <option value="light">Ligero (1-3 días/semana)</option>
-                <option value="moderate" selected>Moderado (3-5 días/semana)</option>
-                <option value="heavy">Intenso (6-7 días/semana)</option>
-                <option value="athlete">Atleta (Doble sesión)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="fitnessGoal"><i class="fa-solid fa-bullseye"></i> Objetivo Fisiológico</label>
-              <select id="fitnessGoal" class="form-control">
-                <option value="deficit_moderate" selected>Déficit Moderado (-20% ~ Grasa)</option>
-                <option value="deficit_aggressive">Déficit Agresivo (-25% ~ Rápido)</option>
-                <option value="recomp">Recomposición Corporal (-5%)</option>
-                <option value="surplus_clean">Superávit Limpio (+12% ~ Masa)</option>
-              </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block">
-              <i class="fa-solid fa-calculator"></i> Calcular Plan Calórico & Macros
-            </button>
-          </form>
-        </div>
-
-        <div class="card glass-card result-card" id="calcResultsContainer">
-          <h3 class="card-title"><i class="fa-solid fa-chart-pie"></i> Diagnóstico Metabólico</h3>
-
-          <div class="metrics-grid">
-            <div class="metric-box box-bmr">
-              <span class="metric-label">BMR</span>
-              <span class="metric-value" id="resBMR">1,720</span>
-              <span class="metric-unit">kcal/día</span>
-            </div>
-            <div class="metric-box box-tdee">
-              <span class="metric-label">TDEE</span>
-              <span class="metric-value" id="resTDEE">2,666</span>
-              <span class="metric-unit">kcal/día</span>
-            </div>
-            <div class="metric-box box-target glow-border">
-              <span class="metric-label" id="resGoalTitle">Déficit Moderado</span>
-              <span class="metric-value text-accent" id="resTargetCalories">2,133</span>
-              <span class="metric-unit">kcal/día</span>
-            </div>
-          </div>
-
-          <div class="chart-wrapper">
-            <canvas id="macrosChart" height="180"></canvas>
-          </div>
-
-          <div class="macro-cards">
-            <div class="macro-card macro-prot">
-              <div class="macro-header">
-                <span><i class="fa-solid fa-drumstick-bite"></i> Proteínas (2.2g/kg)</span>
-                <span class="macro-gram" id="resProtGram">165 g</span>
-              </div>
-              <div class="macro-bar"><div class="macro-fill" id="barProt" style="width: 31%;"></div></div>
-              <small class="macro-sub" id="resProtKcal">660 kcal (31%)</small>
-            </div>
-
-            <div class="macro-card macro-carbs">
-              <div class="macro-header">
-                <span><i class="fa-solid fa-wheat-awn"></i> Carbohidratos</span>
-                <span class="macro-gram" id="resCarbsGram">237 g</span>
-              </div>
-              <div class="macro-bar"><div class="macro-fill" id="barCarbs" style="width: 45%;"></div></div>
-              <small class="macro-sub" id="resCarbsKcal">948 kcal (45%)</small>
-            </div>
-
-            <div class="macro-card macro-fat">
-              <div class="macro-header">
-                <span><i class="fa-solid fa-avocado"></i> Grasas Saludables</span>
-                <span class="macro-gram" id="resFatGram">58 g</span>
-              </div>
-              <div class="macro-bar"><div class="macro-fill" id="barFat" style="width: 24%;"></div></div>
-              <small class="macro-sub" id="resFatKcal">522 kcal (24%)</small>
-            </div>
-          </div>
-
-          <div class="science-note mt-3">
-            <i class="fa-solid fa-circle-info"></i>
-            <span id="resScienceNote">Proteínas fijadas para prevenir catabolismo en déficit según consenso ISSN.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Hydration Tracker & Body Measurements Grid -->
-      <div class="grid grid-2 mt-3">
-        <!-- Water & Electrolytes Tracker Card -->
-        <div class="card glass-card">
-          <h3 class="card-title"><i class="fa-solid fa-glass-water" style="color:var(--accent-cyan);"></i> Registro de Hidratación Diario</h3>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <span style="font-weight:700; color:var(--text-main); font-size:16px;" id="resWaterValue">0.00 L / 3.12 L</span>
-            <span class="badge badge-cyan" id="resWaterText">0% completado</span>
-          </div>
-          <div class="macro-bar mb-2"><div class="macro-fill" id="barWaterFill" style="width: 0%; background:var(--accent-cyan);"></div></div>
-          <div style="display:flex; gap:6px; margin-top:8px;">
-            <button class="btn btn-outline btn-sm" id="btnWaterAdd250"><i class="fa-solid fa-plus"></i> +250 ml</button>
-            <button class="btn btn-outline btn-sm" id="btnWaterAdd500"><i class="fa-solid fa-plus"></i> +500 ml</button>
-            <button class="btn btn-outline btn-sm" id="btnWaterReset" style="color:var(--accent-rose);"><i class="fa-solid fa-rotate-left"></i></button>
-          </div>
-        </div>
-
-        <!-- Body Measurements Card -->
-        <div class="card glass-card">
-          <h3 class="card-title"><i class="fa-solid fa-ruler-combined" style="color:var(--accent-emerald);"></i> Medidas Corporales (cm)</h3>
-          <form id="bodyMeasurementsForm">
-            <div class="grid grid-2-sm mb-2">
-              <div>
-                <label style="font-size:10px; color:var(--text-muted);">Brazo (cm)</label>
-                <input type="number" id="measureArm" class="form-control" value="38" step="0.5">
-              </div>
-              <div>
-                <label style="font-size:10px; color:var(--text-muted);">Cintura (cm)</label>
-                <input type="number" id="measureWaist" class="form-control" value="82" step="0.5">
-              </div>
-              <div>
-                <label style="font-size:10px; color:var(--text-muted);">Pecho (cm)</label>
-                <input type="number" id="measureChest" class="form-control" value="104" step="0.5">
-              </div>
-              <div>
-                <label style="font-size:10px; color:var(--text-muted);">Muslo (cm)</label>
-                <input type="number" id="measureThigh" class="form-control" value="58" step="0.5">
-              </div>
-            </div>
-            <button type="submit" class="btn btn-emerald btn-block btn-sm">
-              <i class="fa-solid fa-floppy-disk"></i> Guardar Medidas Corporales
-            </button>
-          </form>
-          <div id="measurementsHistoryContainer"></div>
-        </div>
-      </div>
-
-      <!-- Profile Security & Backup Management Card -->
-      <div class="card glass-card mt-3">
-        <h3 class="card-title"><i class="fa-solid fa-shield-halved" style="color:var(--accent-purple);"></i> Seguridad de Perfil & Copia de Seguridad</h3>
-        <p class="text-muted fs-sm mb-3">Tus datos están protegidos y guardados en el almacenamiento inmune de tu teléfono.</p>
-        
-        <div style="display:flex; flex-wrap:wrap; gap:8px;">
-          <span id="authStatusBadge" class="badge badge-purple" style="font-size:12px; padding:6px 12px; align-self:center;">
-            <i class="fa-solid fa-lock-open"></i> Sin Contraseña
-          </span>
-          <button class="btn btn-outline btn-sm" id="btnLockAppNow">
-            <i class="fa-solid fa-lock"></i> Bloquear Pantalla
+  <div id="app-container">
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="top-header-brand">
+        <h1 class="brand-title">AURA · PERFORMANCE INSTRUMENT</h1>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button id="header-refresh-btn" class="header-refresh-btn" title="Forzar Sincronización con Garmin Connect">
+            <svg id="header-spinner-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
           </button>
-          <button class="btn btn-outline btn-sm" id="btnExportData">
-            <i class="fa-solid fa-download"></i> Guardar Copia (JSON)
-          </button>
-          <button class="btn btn-outline btn-sm" id="btnImportData">
-            <i class="fa-solid fa-upload"></i> Restaurar Copia
-          </button>
-          <input type="file" id="importFileInput" accept=".json" style="display:none;">
-        </div>
-      </div>
-
-    </section>
-
-    <!-- ==================== TAB 2: RUTINAS DE GIMNASIO & TRACKER ==================== -->
-    <section id="tab-workouts" class="tab-content">
-      <div class="section-header">
-        <div>
-          <h2>Rutinas & Tracker de Sobrecarga</h2>
-          <p>Ejercicios por estímulo muscular, RPE y gráfico de volumen total.</p>
-        </div>
-        <div class="header-buttons">
-          <button class="btn btn-outline btn-sm" id="btnPrintRoutineBtn">
-            <i class="fa-solid fa-print"></i> Imprimir Rutina
-          </button>
-          <button class="btn btn-purple btn-sm" id="btnWorkoutAIChat">
-            <i class="fa-solid fa-robot"></i> Cambiar Ejercicios
-          </button>
-          <button class="btn btn-emerald btn-sm" id="btnSelectTemplate">
-            <i class="fa-solid fa-rotate"></i> Renovar Rutina
-          </button>
-        </div>
-      </div>
-
-      <div class="grid grid-3-1">
-        <div class="card glass-card">
-          <div class="flex-between mb-3">
-            <h3 class="card-title" id="currentRoutineName"><i class="fa-solid fa-dumbbell"></i> Push / Pull / Legs</h3>
-            <span class="badge badge-purple" id="routineDaysBadge">3 Días</span>
-          </div>
-
-          <div class="day-tabs" id="workoutDayTabs"></div>
-          <div id="exerciseListContainer" class="exercise-list"></div>
-        </div>
-
-        <div class="workout-sidebar">
-          <div class="card glass-card mb-3">
-            <h3 class="card-title"><i class="fa-solid fa-stopwatch"></i> Registro de Sesión</h3>
-            <form id="workoutLogForm" class="mt-2">
-              <div class="form-group">
-                <label for="logExerciseSelect">Ejercicio</label>
-                <select id="logExerciseSelect" class="form-control"></select>
-              </div>
-
-              <div class="grid grid-3-sm">
-                <div class="form-group">
-                  <label for="logSets">Series</label>
-                  <input type="number" id="logSets" class="form-control" value="4" min="1" max="10">
-                </div>
-                <div class="form-group">
-                  <label for="logReps">Reps</label>
-                  <input type="number" id="logReps" class="form-control" value="8" min="1" max="50">
-                </div>
-                <div class="form-group">
-                  <label for="logWeight">Peso (kg)</label>
-                  <input type="number" id="logWeight" class="form-control" value="70" step="2.5" min="0" max="500">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="logRPE">RPE Percibido (1 - 10)</label>
-                <input type="range" id="logRPE" min="6" max="10" step="0.5" value="8.5" oninput="this.nextElementSibling.value = this.value">
-                <output class="rpe-output">8.5</output>
-              </div>
-
-              <button type="submit" class="btn btn-primary btn-block">
-                <i class="fa-solid fa-plus-circle"></i> Registrar Serie & Iniciar Descanso
-              </button>
-            </form>
-          </div>
-
-          <!-- 1RM Strength Calculator Card -->
-          <div class="card glass-card mb-3">
-            <h3 class="card-title"><i class="fa-solid fa-calculator" style="color:var(--accent-cyan);"></i> Calculadora de 1RM (Fuerza Máxima)</h3>
-            <form id="oneRepMaxForm">
-              <div class="grid grid-2-sm mb-2">
-                <div>
-                  <label style="font-size:10px; color:var(--text-muted);">Peso Levantado (kg)</label>
-                  <input type="number" id="oneRepWeight" class="form-control" value="80" step="2.5">
-                </div>
-                <div>
-                  <label style="font-size:10px; color:var(--text-muted);">Repeticiones</label>
-                  <input type="number" id="oneRepReps" class="form-control" value="6" min="1" max="15">
-                </div>
-              </div>
-              <button type="submit" class="btn btn-primary btn-block btn-sm">
-                <i class="fa-solid fa-bolt"></i> Calcular 1RM
-              </button>
-            </form>
-            <div style="text-align:center; margin-top:8px;">
-              <span style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">1RM Estimado:</span>
-              <div style="font-size:22px; font-weight:800; color:var(--accent-cyan);" id="res1RMValue">96 kg</div>
-            </div>
-            <div id="res1RMPercentagesTable"></div>
-          </div>
-
-          <div class="card glass-card">
-            <h3 class="card-title"><i class="fa-solid fa-chart-line"></i> Progreso de Volumen</h3>
-            <div class="chart-wrapper">
-              <canvas id="volumeChart" height="180"></canvas>
-            </div>
-            <div id="logHistoryList" class="log-history"></div>
+          <div class="garmin-badge">
+            <span class="garmin-pulse"></span>
+            <span id="garmin-badge-text">Garmin Connect Live · Battery 88%</span>
           </div>
         </div>
       </div>
-    </section>
+    </header>
 
-    <!-- ==================== TAB 3: MENÚ SEMANAL & NUTRICIÓN ==================== -->
-    <section id="tab-meals" class="tab-content">
-      <div class="section-header">
-        <div>
-          <h2>Menú Semanal & Lista de la Compra</h2>
-          <p>Platos ajustados a tus objetivos calóricos, alergias y variedad culinaria.</p>
-        </div>
-        <div class="header-buttons">
-          <button class="btn btn-outline btn-sm" id="btnPrintMenuBtn">
-            <i class="fa-solid fa-print"></i> Imprimir Menú
-          </button>
-          <button class="btn btn-purple btn-sm" id="btnOpenAIChatFromMeals">
-            <i class="fa-solid fa-robot"></i> Asistente Nutricional IA
-          </button>
-          <button class="btn btn-emerald btn-sm" id="btnOpenGrocery">
-            <i class="fa-solid fa-cart-shopping"></i> Lista de la Compra
-          </button>
-        </div>
-      </div>
+    <!-- Main Dynamic Content Area -->
+    <main class="content-area">
+      <!-- MÓDULO 1: Hub de Control Diario (Dashboard) -->
+      <section id="dashboard-module-page" class="module-page active"></section>
 
-      <!-- Personalized Dietary Preferences Filter Card -->
-      <div class="card glass-card mb-3">
-        <h3 class="card-title"><i class="fa-solid fa-filter"></i> Configuración de Alergias & Estilo Nutricional</h3>
-        <form id="dietaryControlsForm">
-          <div class="grid grid-2-sm">
-            <div class="form-group">
-              <label for="customAllergiesInput"><i class="fa-solid fa-shield-halved"></i> Mis Alergias / Intolerancias / Alimentos a Excluir</label>
-              <input type="text" id="customAllergiesInput" class="form-control" placeholder="Escribe aquí separado por comas (ej: Gluten, Lactosa, Mariscos, Nueces...)" value="">
-              <small class="form-text">La app excluirá automáticamente cualquier plato que contenga estos ingredientes.</small>
-            </div>
+      <!-- MÓDULO 2: Entrenamiento Adaptativo y Diario de Fuerza -->
+      <section id="workout-module-page" class="module-page"></section>
 
-            <div class="form-group">
-              <label for="menuStyle"><i class="fa-solid fa-utensils"></i> Estilo de Cocina / Gustos</label>
-              <select id="menuStyle" class="form-control">
-                <option value="all" selected>Variado (Todos los estilos)</option>
-                <option value="healthy">Healthy Fitness / Proteico Clean</option>
-                <option value="mediterraneo">Mediterráneo Tradicional</option>
-                <option value="meal-prep">Meal-Prep Rápido (Fácil Cocina)</option>
-                <option value="keto">Keto / Bajo en Carbohidratos</option>
-              </select>
-            </div>
-          </div>
+      <!-- MÓDULO 3: Nutrición y Balance Energético -->
+      <section id="nutrition-module-page" class="module-page"></section>
 
-          <button type="submit" class="btn btn-emerald btn-block mt-2">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Actualizar Alergias & Generar Nuevo Menú
-          </button>
-        </form>
-      </div>
+      <!-- MÓDULO 4: Descanso, Salud y Analítica -->
+      <section id="analytics-module-page" class="module-page"></section>
 
-      <!-- Days Navigation Bar -->
-      <div class="week-days-bar" id="weekDayNav">
-        <button class="day-nav-btn active" data-day="Lunes">Lun</button>
-        <button class="day-nav-btn" data-day="Martes">Mar</button>
-        <button class="day-nav-btn" data-day="Miércoles">Mié</button>
-        <button class="day-nav-btn" data-day="Jueves">Jue</button>
-        <button class="day-nav-btn" data-day="Viernes">Vie</button>
-        <button class="day-nav-btn" data-day="Sábado">Sáb</button>
-        <button class="day-nav-btn" data-day="Domingo">Dom</button>
-      </div>
+      <!-- Garmin Connect API Live Simulator Control Panel (Inline / Discreto) -->
+      <div id="garmin-simulator-container"></div>
+    </main>
 
-      <div class="card glass-card mb-4">
-        <div class="flex-between">
-          <h3 class="card-title" id="activeDayMealTitle"><i class="fa-solid fa-calendar-day"></i> Menú del Día: Lunes</h3>
-          <div class="day-macro-summary" id="activeDayMacroSummary"></div>
-        </div>
-      </div>
+    <!-- Navigation Bar Inferior Fija (4 Módulos) -->
+    <nav class="bottom-nav" aria-label="Navegación Principal">
+      <!-- Tab 1: Hub -->
+      <button class="nav-tab active" data-tab="dashboard" id="nav-dashboard" aria-label="Hub de Control">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Hub</span>
+      </button>
 
-      <div class="grid grid-2" id="mealsGridContainer"></div>
-    </section>
+      <!-- Tab 2: Entrenamiento -->
+      <button class="nav-tab" data-tab="workout" id="nav-workout" aria-label="Entrenamiento">
+        <svg viewBox="0 0 24 24"><path d="M6.5 6.5h11M6.5 17.5h11M4 12h16M2 7v10M22 7v10"/></svg>
+        <span>Entreno</span>
+      </button>
 
-    <!-- ==================== TAB 4: BASE CIENTÍFICA & EXPERTOS ==================== -->
-    <section id="tab-science" class="tab-content">
-      <div class="section-header">
-        <div>
-          <h2>Hub de Evidencia Científica & Suplementación</h2>
-          <p>Consenso de la ISSN, ACSM y publicaciones peer-reviewed.</p>
-        </div>
-        <span class="badge badge-purple"><i class="fa-solid fa-graduation-cap"></i> Peer-Reviewed</span>
-      </div>
+      <!-- Tab 3: Nutrición -->
+      <button class="nav-tab" data-tab="nutrition" id="nav-nutrition" aria-label="Nutrición">
+        <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span>Nutrición</span>
+      </button>
 
-      <!-- Evidence-Based Supplementation Protocol -->
-      <div class="card glass-card mb-3">
-        <h3 class="card-title"><i class="fa-solid fa-capsules" style="color:var(--accent-purple);"></i> Dosis de Suplementación Calculada (ISSN)</h3>
-        <p class="text-muted fs-sm mb-3">Protocolos de suplementación ergogénica ajustados a tu peso corporal exacto.</p>
-        <div id="supplementationContainer"></div>
-      </div>
-
-      <div class="grid grid-2" id="scienceCardsContainer"></div>
-    </section>
-
-  </main>
-
-  <!-- MODAL: Password Configuration Modal -->
-  <div class="modal-overlay" id="authModal">
-    <div class="modal-card" style="max-width:400px;">
-      <button class="modal-close" id="btnCloseAuthModal">&times;</button>
-      <h3><i class="fa-solid fa-key" style="color:var(--accent-purple);"></i> Proteger Mi Perfil con Contraseña</h3>
-      <p class="text-muted fs-sm mb-3">Establece una clave de acceso personal. Tus datos de rutinas, fotos y nutrición quedarán locked.</p>
-      
-      <form id="setupPasswordForm">
-        <div class="form-group">
-          <label for="newPassInput">Nueva Contraseña / PIN</label>
-          <input type="password" id="newPassInput" class="form-control" placeholder="Ej: 1234 o mi_clave_fit" required>
-        </div>
-        <div class="form-group">
-          <label for="newPassHintInput">Pista de Contraseña (Opcional)</label>
-          <input type="text" id="newPassHintInput" class="form-control" placeholder="Ej: Fecha de nacimiento, ciudad...">
-        </div>
-        <button type="submit" class="btn btn-purple btn-block mt-3">
-          <i class="fa-solid fa-shield-halved"></i> Guardar y Activar Protección
-        </button>
-      </form>
-    </div>
+      <!-- Tab 4: Analítica -->
+      <button class="nav-tab" data-tab="analytics" id="nav-analytics" aria-label="Analítica y Salud">
+        <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        <span>Analítica</span>
+      </button>
+    </nav>
   </div>
 
-  <!-- FULLSCREEN LOCK SCREEN OVERLAY -->
-  <div class="modal-overlay" id="appLockScreen" style="z-index:99999; background:#0b0f19; display:none;">
-    <div class="modal-card" style="max-width:340px; text-align:center; padding:24px;">
-      <div style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, var(--accent-purple), #6d28d9); color:#fff; display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 12px auto;">
-        <i class="fa-solid fa-lock"></i>
-      </div>
-      <h2 style="font-family:var(--font-heading); margin-bottom:4px;">FitExpert Protegido</h2>
-      <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">Introduce tu contraseña para acceder a tus datos privados.</p>
-
-      <form id="unlockAppForm">
-        <div class="form-group mb-2">
-          <input type="password" id="unlockPassInput" class="form-control" placeholder="Introduce tu contraseña..." required style="text-align:center; font-size:16px;">
-        </div>
-        <div id="unlockErrorText" style="color:var(--accent-rose); font-size:11px; margin-bottom:8px; font-weight:600;"></div>
-        <button type="submit" class="btn btn-primary btn-block">
-          <i class="fa-solid fa-unlock"></i> Desbloquear Perfil
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- FLOATING WIDGET: Rest Timer Overlay -->
-  <div class="modal-overlay" id="restTimerWidget" style="background:rgba(11,15,25,0.7); display:none;">
-    <div class="modal-card" style="max-width:320px; text-align:center; padding:20px;">
-      <button class="modal-close" id="btnCloseTimer">&times;</button>
-      <i class="fa-solid fa-stopwatch" style="font-size:36px; color:var(--accent-cyan); margin-bottom:8px;"></i>
-      <h3 style="font-family:var(--font-heading);">Descanso en Proceso</h3>
-      <div style="font-size:42px; font-weight:800; font-family:var(--font-heading); color:var(--accent-cyan); margin:10px 0;" id="timerCountdownDisplay">01:30</div>
-      <div style="display:flex; gap:8px; justify-content:center;">
-        <button class="btn btn-outline btn-sm" id="btnTimerAdd30">+30 seg</button>
-        <button class="btn btn-primary btn-sm" id="btnTimerSkip">Saltar Descanso</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- iOS Native Bottom App Navigation Bar -->
-  <nav class="mobile-bottom-nav" id="mobileNav">
-    <button class="mobile-nav-btn active" data-tab="tab-calculator">
-      <i class="fa-solid fa-calculator"></i>
-      <span>Calcular</span>
-    </button>
-    <button class="mobile-nav-btn" data-tab="tab-workouts">
-      <i class="fa-solid fa-dumbbell"></i>
-      <span>Rutinas</span>
-    </button>
-    <button class="mobile-nav-btn" data-tab="tab-ai-chat" id="btnMobileAIChat">
-      <i class="fa-solid fa-robot" style="color:var(--accent-purple);"></i>
-      <span>Asistente IA</span>
-    </button>
-    <button class="mobile-nav-btn" data-tab="tab-meals">
-      <i class="fa-solid fa-utensils"></i>
-      <span>Menú</span>
-    </button>
-    <button class="mobile-nav-btn" data-tab="tab-science">
-      <i class="fa-solid fa-atom"></i>
-      <span>Ciencia</span>
-    </button>
-  </nav>
-
-  <!-- MODAL: AI Trainer & Nutritionist Interactive Chat Assistant -->
-  <div class="modal-overlay" id="aiChatModal">
-    <div class="modal-card chat-modal-card">
-      <button class="modal-close" id="btnCloseAIChat">&times;</button>
-      <div class="ai-chat-header">
-        <div class="ai-avatar-badge">
-          <i class="fa-solid fa-robot"></i>
-        </div>
-        <div>
-          <h3>Entrenadora & Nutricionista IA</h3>
-          <span class="badge badge-purple"><i class="fa-solid fa-circle"></i> Biomecánica & Nutrición en Vivo</span>
-        </div>
-      </div>
-
-      <div class="chat-chips-bar" id="aiQuickChips">
-        <button class="chat-chip" data-msg="Tengo intolerancia a la lactosa, ajusta mi menú">
-          <i class="fa-solid fa-shield-halved"></i> Sin Lactosa
-        </button>
-        <button class="chat-chip" data-msg="Tengo alergia al gluten, actualiza mi dieta">
-          <i class="fa-solid fa-wheat-awn-circle-exclamation"></i> Sin Gluten
-        </button>
-        <button class="chat-chip" data-msg="Quiero un menú vegetariano rico en proteínas">
-          <i class="fa-solid fa-seedling"></i> Menú Vegetariano
-        </button>
-        <button class="chat-chip" data-msg="Me he cansado de esta rutina, quiero renovarla entera">
-          <i class="fa-solid fa-rotate"></i> Renovar rutina
-        </button>
-        <button class="chat-chip" data-msg="Me molesta el press de banca, sustitúyelo por otro ejercicio">
-          <i class="fa-solid fa-triangle-exclamation"></i> Cambiar ejercicios
-        </button>
-      </div>
-
-      <div class="chat-messages-container" id="aiChatMessages">
-        <div class="chat-msg ai">
-          <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
-          <div class="chat-bubble">
-            ¡Hola! Soy tu <strong>Entrenadora & Nutricionista IA FitExpert</strong>. Dime qué alergias o preferencias tienes (ej: <em>"Tengo alergia al gluten"</em>, <em>"No como marisco"</em>) o si deseas cambiar algún ejercicio o plato en tiempo real.
-          </div>
-        </div>
-      </div>
-
-      <form id="aiChatForm" class="chat-input-form">
-        <input type="text" id="aiChatInput" class="form-control" placeholder="Escribe tu alergia, duda o ejercicio a cambiar..." autocomplete="off">
-        <button type="submit" class="btn btn-purple">
-          <i class="fa-solid fa-paper-plane"></i>
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal: Exercise Detail Guide -->
-  <div class="modal-overlay" id="exerciseModal">
-    <div class="modal-card">
-      <button class="modal-close" id="btnCloseModal">&times;</button>
-      <div id="modalExerciseContent"></div>
-    </div>
-  </div>
-
-  <!-- Modal: Grocery List -->
-  <div class="modal-overlay" id="groceryModal">
-    <div class="modal-card">
-      <button class="modal-close" id="btnCloseGroceryModal">&times;</button>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <h3><i class="fa-solid fa-basket-shopping"></i> Lista de la Compra Semanal</h3>
-        <button class="btn btn-emerald btn-sm" id="btnShareGroceryWhatsApp">
-          <i class="fa-brands fa-whatsapp"></i> Compartir en WhatsApp
-        </button>
-      </div>
-      <p class="text-muted fs-sm mb-3">Calculada a partir de los ingredientes de tu menú de 7 días.</p>
-      <div id="groceryItemsList" class="grocery-list"></div>
-    </div>
-  </div>
-
-  <!-- Single Bundle Standalone Script Entrypoint for 100% Guaranteed iOS Safari Execution -->
-  <script src="js/app.js"></script>
+  <!-- ES Module Script Entry Point -->
+  <script type="module" src="js/app.js?v=5.0"></script>
 </body>
 </html>
