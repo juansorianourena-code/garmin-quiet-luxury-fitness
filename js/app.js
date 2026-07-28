@@ -14,59 +14,69 @@ import { initBodyMeasurements } from './bodyMeasurements.js';
 import { initWhatsAppExport } from './whatsappExport.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Setup Navigation Event Listeners
-  try { setupTabNavigation(); } catch (err) { console.error(err); }
+  // 1. Setup Navigation Event Listeners (Click + Touchstart)
+  try { setupTabNavigation(); } catch (err) { console.error('Error setupTabNavigation:', err); }
 
   // 2. Setup Auto Reload & Update System
-  try { setupAutoReloadSystem(); } catch (err) { console.error(err); }
+  try { setupAutoReloadSystem(); } catch (err) { console.error('Error setupAutoReloadSystem:', err); }
 
   // 3. Initialize Core Modules
-  try { initCalorieCalculator(); } catch (err) { console.error(err); }
-  try { initWorkoutPlanner(); } catch (err) { console.error(err); }
-  try { initMealPlanner(); } catch (err) { console.error(err); }
-  try { initScienceHub(); } catch (err) { console.error(err); }
-  try { initAITrainerChat(); } catch (err) { console.error(err); }
+  try { initCalorieCalculator(); } catch (err) { console.error('Error initCalorieCalculator:', err); }
+  try { initWorkoutPlanner(); } catch (err) { console.error('Error initWorkoutPlanner:', err); }
+  try { initMealPlanner(); } catch (err) { console.error('Error initMealPlanner:', err); }
+  try { initScienceHub(); } catch (err) { console.error('Error initScienceHub:', err); }
+  try { initAITrainerChat(); } catch (err) { console.error('Error initAITrainerChat:', err); }
 
   // 4. Initialize New Premium Features
-  try { initRestTimer(); } catch (err) { console.error(err); }
-  try { initOneRepMaxCalc(); } catch (err) { console.error(err); }
-  try { initSupplementation(); } catch (err) { console.error(err); }
-  try { initHydrationTracker(); } catch (err) { console.error(err); }
-  try { initBodyMeasurements(); } catch (err) { console.error(err); }
-  try { initWhatsAppExport(); } catch (err) { console.error(err); }
+  try { initRestTimer(); } catch (err) { console.error('Error initRestTimer:', err); }
+  try { initOneRepMaxCalc(); } catch (err) { console.error('Error initOneRepMaxCalc:', err); }
+  try { initSupplementation(); } catch (err) { console.error('Error initSupplementation:', err); }
+  try { initHydrationTracker(); } catch (err) { console.error('Error initHydrationTracker:', err); }
+  try { initBodyMeasurements(); } catch (err) { console.error('Error initBodyMeasurements:', err); }
+  try { initWhatsAppExport(); } catch (err) { console.error('Error initWhatsAppExport:', err); }
 
   // 5. Setup Data Actions
-  try { setupDataActions(); } catch (err) { console.error(err); }
+  try { setupDataActions(); } catch (err) { console.error('Error setupDataActions:', err); }
 });
 
 function setupTabNavigation() {
   const allNavBtns = document.querySelectorAll('.nav-btn, .mobile-nav-btn');
   const tabContents = document.querySelectorAll('.tab-content');
 
+  const handleTabSwitch = (btn, e) => {
+    if (e) e.preventDefault();
+
+    const targetTabId = btn.getAttribute('data-tab');
+
+    // If button triggers AI Chat Modal
+    if (targetTabId === 'tab-ai-chat' || btn.id === 'btnMobileAIChat') {
+      const aiModal = document.getElementById('aiChatModal');
+      if (aiModal) aiModal.classList.add('active');
+      return;
+    }
+
+    if (!targetTabId) return;
+
+    // Deactivate all nav buttons
+    allNavBtns.forEach(b => b.classList.remove('active'));
+    tabContents.forEach(tc => tc.classList.remove('active'));
+
+    // Activate target buttons & content
+    document.querySelectorAll(`[data-tab="${targetTabId}"]`).forEach(b => b.classList.add('active'));
+
+    const targetContent = document.getElementById(targetTabId);
+    if (targetContent) {
+      targetContent.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   allNavBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const targetTabId = btn.getAttribute('data-tab');
+    // Handle Click
+    btn.addEventListener('click', (e) => handleTabSwitch(btn, e));
 
-      if (targetTabId === 'tab-ai-chat' || btn.id === 'btnMobileAIChat') {
-        e.preventDefault();
-        const aiModal = document.getElementById('aiChatModal');
-        if (aiModal) aiModal.classList.add('active');
-        return;
-      }
-
-      if (!targetTabId) return;
-
-      allNavBtns.forEach(b => b.classList.remove('active'));
-      tabContents.forEach(tc => tc.classList.remove('active'));
-
-      document.querySelectorAll(`[data-tab="${targetTabId}"]`).forEach(b => b.classList.add('active'));
-
-      const targetContent = document.getElementById(targetTabId);
-      if (targetContent) {
-        targetContent.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    });
+    // Handle TouchStart for Instant iOS Response
+    btn.addEventListener('touchstart', (e) => handleTabSwitch(btn, e), { passive: false });
   });
 }
 
@@ -75,7 +85,8 @@ function setupAutoReloadSystem() {
   const icon = document.getElementById('reloadIcon');
 
   if (btnReload) {
-    btnReload.addEventListener('click', () => {
+    const handleReload = (e) => {
+      if (e) e.preventDefault();
       if (icon) icon.classList.add('fa-spin');
       if ('caches' in window) {
         caches.keys().then(names => {
@@ -86,7 +97,10 @@ function setupAutoReloadSystem() {
         const cleanUrl = window.location.href.split('?')[0];
         window.location.href = `${cleanUrl}?v=${Date.now()}`;
       }, 300);
-    });
+    };
+
+    btnReload.addEventListener('click', handleReload);
+    btnReload.addEventListener('touchstart', handleReload, { passive: false });
   }
 }
 
