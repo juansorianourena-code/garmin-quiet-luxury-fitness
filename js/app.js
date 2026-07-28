@@ -48,35 +48,47 @@ function initApp() {
     renderCurrentModule();
   });
 
-  // Header Refresh Button Ruleta listener (Universal Mobile Sync)
+  // Header Refresh Button Ruleta listener & Hard Reload Trigger
   const btnHeaderRefresh = document.querySelector('#header-refresh-btn');
+  const btnForceReload = document.querySelector('#btn-force-hard-reload');
   const headerSpinner = document.querySelector('#header-spinner-icon');
+
+  const executeHardReload = async () => {
+    if (headerSpinner) headerSpinner.classList.add('spinning');
+
+    // 1. Clear all browser PWA/ServiceWorker caches
+    if ('caches' in window) {
+      try {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      } catch (e) {}
+    }
+
+    if ('serviceWorker' in navigator) {
+      try {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        for (let r of regs) await r.unregister();
+      } catch (e) {}
+    }
+
+    // 2. Perform Garmin sync if credentials exist
+    const savedEmail = localStorage.getItem('aura_garmin_email');
+    const savedPass = localStorage.getItem('aura_garmin_pass');
+    if (savedEmail && savedPass) {
+      try { await syncGarminDirectClient(savedEmail, savedPass); } catch (err) {}
+    }
+
+    // 3. Force browser hard reload with timestamp cache-buster
+    setTimeout(() => {
+      window.location.href = window.location.pathname + '?v=' + Date.now();
+    }, 300);
+  };
+
   if (btnHeaderRefresh) {
-    btnHeaderRefresh.addEventListener('click', async () => {
-      if (headerSpinner) headerSpinner.classList.add('spinning');
-      
-      const savedEmail = localStorage.getItem('aura_garmin_email');
-      const savedPass = localStorage.getItem('aura_garmin_pass');
-
-      if (savedEmail && savedPass) {
-        try {
-          await syncGarminDirectClient(savedEmail, savedPass);
-        } catch (err) {
-          await garminState.fetchRealGarminJson();
-        }
-      } else {
-        // Si no hay cuenta guardada, desplegar el formulario para ingresar la cuenta
-        const simBody = document.querySelector('#sim-controls-body');
-        if (simBody) simBody.classList.add('expanded');
-        await garminState.fetchRealGarminJson();
-      }
-
-      renderCurrentModule();
-
-      setTimeout(() => {
-        if (headerSpinner) headerSpinner.classList.remove('spinning');
-      }, 700);
-    });
+    btnHeaderRefresh.addEventListener('click', executeHardReload);
+  }
+  if (btnForceReload) {
+    btnForceReload.addEventListener('click', executeHardReload);
   }
 
   // Initial render
