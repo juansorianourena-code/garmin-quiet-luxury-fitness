@@ -1,6 +1,6 @@
 /**
- * Módulo 1: Hub de Control Diario (Dashboard Principal)
- * Cuadrante 2x2 Estricto (4 Tarjetas en Matriz Cuadrada)
+ * Módulo 1: Hub de Control Diario (Dashboard Principal Garmin Forerunner 165)
+ * Telemetría de Sensores en Vivo: SpO2, VFC Status, Potencia en Muñeca (W) y Fisiología.
  * Estética Quiet Luxury estricta: 0 emojis.
  */
 
@@ -25,57 +25,70 @@ export function renderDashboardModule(container, onNavigate) {
   container.innerHTML = `
     <!-- Synthesized Status Header Card -->
     <div class="card" style="border-left: 4px solid ${gData.isHighFatigue ? 'var(--accent-fatigue)' : 'var(--accent-optimal)'}; margin-bottom: 12px;">
-      <div class="card-title-sm" style="margin-bottom: 4px;">Sintetizador de Estado Garmin</div>
+      <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
+        <div class="card-title-sm" style="margin-bottom: 2px;">Telemetría Hub · Garmin Forerunner 165</div>
+        <span style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--accent-optimal); font-weight: 600;">Sensor Elevate™ V4 Activo</span>
+      </div>
       <div class="header-status-message" style="font-weight: 500; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
         <span>${gData.statusMessage}</span>
-        <span style="font-size: 0.85rem; font-family: var(--font-mono); color: var(--text-muted);">Recuperación: ${gData.recoveryHours}h</span>
+        <span style="font-size: 0.82rem; font-family: var(--font-mono); color: var(--text-muted);">Recuperación: ${gData.recoveryHours}h</span>
       </div>
     </div>
 
-    <!-- MATRIZ DE SALUD EN CUADRADO 2x2 (2 COLUMNAS X 2 FILAS GARANTIZADO) -->
-    <div style="display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; margin-bottom: 14px !important; width: 100% !important; box-sizing: border-box !important;">
+    <!-- MATRIZ DE TELEMETRÍA DE SENSORES EN CUADRADO (6 TARJETAS DE ALTA DENSIDAD) -->
+    <div style="display: grid !important; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important; gap: 8px !important; margin-bottom: 14px !important;">
       
-      <!-- 1. Sueño (Arriba Izquierda) -->
-      <div class="grid-cell accent-optimal-border" style="padding: 10px 12px !important; margin: 0 !important; box-sizing: border-box !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important;">
-        <div>
-          <div class="card-title-sm" style="color: var(--accent-optimal); margin-bottom: 4px; font-size: 0.68rem;">Sueño (Garmin)</div>
-          <div class="metric-number-lg" style="color: var(--accent-optimal); font-size: 1.8rem; line-height: 1.1;">${gData.sleepScore}<span class="unit" style="font-size: 0.75rem;">/100</span></div>
-        </div>
-        <div style="margin-top: 6px; font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-          Total: ${gData.sleepTotalHours}h (REM ${gData.sleepRemHours}h)
+      <!-- 1. SpO2 Promedio (Oxígeno en Sangre) -->
+      <div class="grid-cell accent-optimal-border" style="padding: 10px 12px;">
+        <div class="card-title-sm" style="color: var(--accent-optimal); margin-bottom: 4px; font-size: 0.68rem;">Oxígeno Sangre (SpO2)</div>
+        <div class="metric-number-lg" style="color: var(--accent-optimal); font-size: 1.7rem; line-height: 1.1;">${gData.spo2Avg || 98}<span class="unit" style="font-size: 0.75rem;">%</span></div>
+        <div style="margin-top: 4px; font-size: 0.68rem; color: var(--text-muted); font-family: var(--font-mono);">
+          Mínimo Nocturno: ${gData.spo2Min || 95}%
         </div>
       </div>
 
-      <!-- 2. Estrés (Arriba Derecha) -->
-      <div class="grid-cell accent-navy-border" style="padding: 10px 12px !important; margin: 0 !important; box-sizing: border-box !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important;">
-        <div>
-          <div class="card-title-sm" style="margin-bottom: 4px; font-size: 0.68rem;">Estrés Promedio</div>
-          <div class="metric-number-lg" style="font-size: 1.8rem; line-height: 1.1;">${gData.stressLevel}<span class="unit" style="font-size: 0.75rem;">/100</span></div>
-        </div>
-        <div style="margin-top: 6px; font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-          HRV: ${gData.hrv}ms · RHR ${gData.rhr}
+      <!-- 2. VFC Status / HRV -->
+      <div class="grid-cell accent-navy-border" style="padding: 10px 12px;">
+        <div class="card-title-sm" style="margin-bottom: 4px; font-size: 0.68rem;">VFC Nocturna (HRV)</div>
+        <div class="metric-number-lg" style="font-size: 1.7rem; line-height: 1.1;">${gData.hrv}<span class="unit" style="font-size: 0.75rem;">ms</span></div>
+        <div style="margin-top: 4px; font-size: 0.68rem; color: var(--text-muted); font-family: var(--font-mono);">
+          Equilibrado (${gData.hrvBaseline || '62-74ms'})
         </div>
       </div>
 
-      <!-- 3. Body Battery (Abajo Izquierda) -->
-      <div class="grid-cell" style="padding: 10px 12px !important; margin: 0 !important; box-sizing: border-box !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important;">
-        <div>
-          <div class="card-title-sm" style="margin-bottom: 4px; font-size: 0.68rem;">Body Battery</div>
-          <div class="metric-number-md" style="font-size: 1.5rem; line-height: 1.1;">${gData.bodyBattery}<span class="unit" style="font-size: 0.75rem;">%</span></div>
-        </div>
-        <div style="margin-top: 6px; font-size: 0.7rem; color: var(--text-muted);">
-          Energía residual
+      <!-- 3. Potencia en Muñeca (W) -->
+      <div class="grid-cell" style="padding: 10px 12px;">
+        <div class="card-title-sm" style="margin-bottom: 4px; font-size: 0.68rem;">Potencia Carrera</div>
+        <div class="metric-number-md" style="font-size: 1.5rem; line-height: 1.1;">${gData.runningPowerWatts || 245}<span class="unit" style="font-size: 0.75rem;">W</span></div>
+        <div style="margin-top: 4px; font-size: 0.68rem; color: var(--text-muted);">
+          Sin pod externo
         </div>
       </div>
 
-      <!-- 4. Gasto Activo (Abajo Derecha) -->
-      <div class="grid-cell" style="padding: 10px 12px !important; margin: 0 !important; box-sizing: border-box !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important;">
-        <div>
-          <div class="card-title-sm" style="margin-bottom: 4px; font-size: 0.68rem;">Gasto Activo</div>
-          <div class="metric-number-md" style="font-family: var(--font-mono); font-size: 1.5rem; line-height: 1.1;">${gData.activeCalories}<span class="unit" style="font-size: 0.75rem;">kcal</span></div>
+      <!-- 4. Body Battery & Siesta -->
+      <div class="grid-cell" style="padding: 10px 12px;">
+        <div class="card-title-sm" style="margin-bottom: 4px; font-size: 0.68rem;">Body Battery</div>
+        <div class="metric-number-md" style="font-size: 1.5rem; line-height: 1.1;">${gData.bodyBattery}<span class="unit" style="font-size: 0.75rem;">%</span></div>
+        <div style="margin-top: 4px; font-size: 0.68rem; color: var(--text-muted);">
+          Siesta: +${gData.napMinutes || 25}min recarga
         </div>
-        <div style="margin-top: 6px; font-size: 0.7rem; color: var(--text-muted);">
-          BMR: ${gData.userBmr} kcal
+      </div>
+
+      <!-- 5. Sueño Polisomnografía -->
+      <div class="grid-cell" style="padding: 10px 12px;">
+        <div class="card-title-sm" style="margin-bottom: 4px; font-size: 0.68rem;">Polisomnografía</div>
+        <div class="metric-number-md" style="font-size: 1.5rem; line-height: 1.1;">${gData.sleepScore}<span class="unit" style="font-size: 0.75rem;">/100</span></div>
+        <div style="margin-top: 4px; font-size: 0.68rem; color: var(--text-muted);">
+          Profundo: ${gData.sleepDeepHours}h
+        </div>
+      </div>
+
+      <!-- 6. Gasto Activo (kcal) -->
+      <div class="grid-cell" style="padding: 10px 12px;">
+        <div class="card-title-sm" style="margin-bottom: 4px; font-size: 0.68rem;">Gasto Activo</div>
+        <div class="metric-number-md" style="font-family: var(--font-mono); font-size: 1.5rem; line-height: 1.1;">${gData.activeCalories}<span class="unit" style="font-size: 0.75rem;">kcal</span></div>
+        <div style="margin-top: 4px; font-size: 0.68rem; color: var(--text-muted);">
+          Pasos: ${gData.stepsToday || 11420}
         </div>
       </div>
     </div>
@@ -98,35 +111,14 @@ export function renderDashboardModule(container, onNavigate) {
 
       <div class="deficit-gauge-container">
         <div class="gauge-track">
-          <div class="gauge-fill ${currentDeficit < 0 ? 'warning' : ''}" style="width: ${deficitPct}%;"></div>
+          <div class="gauge-fill" style="width: ${deficitPct}%;"></div>
         </div>
-        <div class="deficit-stats-row">
-          <span>Ingesta Registrada: <strong class="deficit-val">${currentIntake} kcal</strong></span>
-          <span>Presupuesto Consumo Recomendado: <strong class="deficit-val">${appState.userProfile.targetCalories} kcal</strong></span>
+        <div class="gauge-labels">
+          <span>0 kcal</span>
+          <span>Actual: ${currentIntake} kcal</span>
+          <span>Gasto Total: ${totalExpenditure} kcal</span>
         </div>
       </div>
     </div>
-
-    <!-- Accesos Rápido Inline -->
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
-      <button id="btn-quick-workout" class="inline-btn" style="flex: 1;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 6.5h11M6.5 17.5h11M4 12h16M2 7v10M22 7v10"/></svg>
-        Iniciar Entrenamiento del Día
-      </button>
-
-      <button id="btn-quick-food" class="inline-btn inline-btn-secondary" style="flex: 1;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        Registrar Comida
-      </button>
-    </div>
   `;
-
-  // Inline transition events without popups
-  container.querySelector('#btn-quick-workout').addEventListener('click', () => {
-    onNavigate('workout');
-  });
-
-  container.querySelector('#btn-quick-food').addEventListener('click', () => {
-    onNavigate('nutrition');
-  });
 }

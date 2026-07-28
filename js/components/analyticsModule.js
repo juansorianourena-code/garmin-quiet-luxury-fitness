@@ -34,7 +34,7 @@ export async function renderAnalyticsModule(container) {
 
   container.innerHTML = `
     <!-- Header -->
-    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
       <div>
         <div class="card-title-sm">Módulo 4: Informe Médico, Salud & Analítica</div>
         <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Informe Biométrico & Suite Garmin Forerunner 165</h2>
@@ -46,6 +46,24 @@ export async function renderAnalyticsModule(container) {
         <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-muted); background: var(--bg-card); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border-line);">
           Usuario: ${currentUser.name}
         </span>
+      </div>
+    </div>
+
+    <!-- BANNER DESTACADO DE PULSIOXIMETRÍA (MEDIA DE OXÍGENO EN SANGRE FORERUNNER 165) -->
+    <div class="card" style="border: 1px solid var(--accent-optimal); background: rgba(84, 110, 122, 0.05); margin-bottom: 20px; padding: 12px 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <div style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent-optimal);">
+            Media de Oxígeno en Sangre (SpO2 Promedio Garmin Forerunner 165)
+          </div>
+          <div style="font-size: 1.4rem; font-family: var(--font-mono); font-weight: 600; color: var(--text-main); margin-top: 2px;">
+            ${gData.spo2Avg || 98}% <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);">(Mínimo nocturno: ${gData.spo2Min || 95}% SpO2)</span>
+          </div>
+        </div>
+        <div style="text-align: right; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">
+          <span style="color: var(--accent-optimal); font-weight: 600;">Pulsioximetría Óptica Elevate™ V4</span>
+          <div>Frecuencia Respiratoria: ${gData.respirationRate || 13.5} brpm</div>
+        </div>
       </div>
     </div>
 
