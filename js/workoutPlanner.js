@@ -1,34 +1,58 @@
 // FitExpert Studio - Workout Planner & Progressive Overload Tracker Module
-import { EXERCISE_DATABASE, WORKOUT_TEMPLATES } from './exerciseLibrary.js';
+import { EXERCISE_DATABASE, generatePersonalizedRoutine } from './exerciseLibrary.js';
 
-let activeTemplate = WORKOUT_TEMPLATES.ppl;
+let activeTemplate = null;
 let activeDayIndex = 0;
 let volumeChartInstance = null;
 
 export function initWorkoutPlanner() {
-  // Load saved routine / workout logs from LocalStorage
-  const savedLogs = getWorkoutLogs();
+  // Load user profile to generate personalized routine automatically
+  loadPersonalizedRoutine();
 
-  renderRoutineUI();
+  const savedLogs = getWorkoutLogs();
   setupWorkoutLogForm();
   renderVolumeChart(savedLogs);
   renderHistoryList(savedLogs);
 
-  // Template switch button
+  // Re-generate routine if user changes template button
   const btnTemplate = document.getElementById('btnSelectTemplate');
   if (btnTemplate) {
     btnTemplate.addEventListener('click', () => {
-      // Toggle between PPL and Upper/Lower
-      activeTemplate = (activeTemplate.id === 'ppl') ? WORKOUT_TEMPLATES.upper_lower : WORKOUT_TEMPLATES.ppl;
-      activeDayIndex = 0;
-      renderRoutineUI();
+      loadPersonalizedRoutine();
     });
   }
+
+  // Listen for profile changes from Calculator tab
+  window.addEventListener('profileUpdated', () => {
+    loadPersonalizedRoutine();
+  });
 }
 
-function renderRoutineUI() {
+export function loadPersonalizedRoutine() {
+  let profile = null;
+  const savedProfileStr = localStorage.getItem('fitexpert_profile');
+
+  if (savedProfileStr) {
+    try {
+      profile = JSON.parse(savedProfileStr);
+    } catch (e) {
+      console.warn('Error reading profile', e);
+    }
+  }
+
+  activeTemplate = generatePersonalizedRoutine(profile);
+  activeDayIndex = 0;
+  renderRoutineUI(profile);
+}
+
+function renderRoutineUI(profile) {
+  if (!activeTemplate) return;
+
+  const goalName = profile && profile.macroResults ? profile.macroResults.deficitOrSurplusLabel : 'Preservación Muscular & Pérdida de Grasa';
+  const targetKcal = profile && profile.macroResults ? profile.macroResults.targetCalories : 2100;
+
   document.getElementById('currentRoutineName').innerHTML = `<i class="fa-solid fa-dumbbell"></i> ${activeTemplate.name}`;
-  document.getElementById('routineDaysBadge').textContent = `${activeTemplate.days.length} Sesiones`;
+  document.getElementById('routineDaysBadge').textContent = `${activeTemplate.days.length} Días / Personalizada`;
 
   // Render Day Tabs
   const dayTabsContainer = document.getElementById('workoutDayTabs');
@@ -40,17 +64,22 @@ function renderRoutineUI() {
     btn.textContent = day.dayName;
     btn.addEventListener('click', () => {
       activeDayIndex = index;
-      renderRoutineUI();
+      renderRoutineUI(profile);
     });
     dayTabsContainer.appendChild(btn);
   });
 
-  // Render Exercises for Active Day
+  // Render Exercise Cards for Active Day
   const currentDay = activeTemplate.days[activeDayIndex];
   const listContainer = document.getElementById('exerciseListContainer');
   const selectLog = document.getElementById('logExerciseSelect');
 
-  listContainer.innerHTML = '';
+  listContainer.innerHTML = `
+    <div style="background: rgba(0,242,254,0.06); border: 1px solid rgba(0,242,254,0.25); padding: 12px 14px; border-radius: var(--radius-md); font-size: 12px; color: var(--text-main); margin-bottom: 14px;">
+      <i class="fa-solid fa-graduation-cap" style="color:var(--accent-cyan);"></i> 
+      <strong>Adaptado a tus métricas:</strong> Esta rutina ha sido modulada para tu objetivo de <strong>${goalName}</strong> (${targetKcal} kcal/día). ${activeTemplate.description}
+    </div>
+  `;
   selectLog.innerHTML = '';
 
   currentDay.exercises.forEach((item) => {
@@ -80,7 +109,6 @@ function renderRoutineUI() {
       </button>
     `;
 
-    // Modal technique click
     card.querySelector('.btn-detail').addEventListener('click', () => {
       openExerciseModal(exData);
     });
@@ -170,7 +198,7 @@ function renderVolumeChart(logs) {
   const ctx = document.getElementById('volumeChart');
   if (!ctx) return;
 
-  const recentLogs = logs.slice(-8); // Show last 8 sessions
+  const recentLogs = logs.slice(-8);
   const labels = recentLogs.map(l => l.date);
   const volumes = recentLogs.map(l => l.totalVolume);
 

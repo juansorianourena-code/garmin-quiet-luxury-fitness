@@ -51,6 +51,9 @@ export function initCalorieCalculator(onProfileUpdated) {
     // Update UI Elements
     renderCalculatorResults(profileData);
 
+    // Notify other modules (Workout Planner & Meal Planner)
+    window.dispatchEvent(new CustomEvent('profileUpdated', { detail: profileData }));
+
     if (onProfileUpdated) {
       onProfileUpdated(profileData);
     }
