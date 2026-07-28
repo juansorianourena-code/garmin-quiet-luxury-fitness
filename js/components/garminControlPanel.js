@@ -2,6 +2,7 @@
  * Panel de Control y Sincronizador Real Garmin Connect (Móvil & Web Universal)
  * Persistencia en localStorage: Guarda email y contraseña automáticamente
  * y ejecuta la sincronización limpia sin bloqueos.
+ * Estética Quiet Luxury estricta: 0 emojis.
  */
 
 import { garminState } from '../garminState.js';
@@ -19,11 +20,11 @@ export function renderGarminControlPanel(container) {
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
         <div>
           <span style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-main);">
-            ⚡ Conector Automático Garmin Connect Real
+            Conector Automático Garmin Connect Real
           </span>
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
             ${gData.isRealSync 
-              ? `<span style="color: var(--accent-optimal); font-weight: 600;">✓ Cuenta Vinculada & Sincronizada (${gData.lastSyncTime || 'Hoy'})</span>`
+              ? `<span style="color: var(--accent-optimal); font-weight: 600;">Cuenta Vinculada & Sincronizada (${gData.lastSyncTime || 'Hoy'})</span>`
               : `Ingresa tu cuenta una sola vez. Se guardará de forma segura en tu móvil.`}
           </div>
         </div>
@@ -35,11 +36,11 @@ export function renderGarminControlPanel(container) {
       <div id="sim-controls-body" class="accordion-wrapper ${savedEmail ? '' : 'expanded'}" style="margin-top: 14px;">
         <!-- FORMULARIO DE ACCESO Y AUTO-SYNC (ADAPTADO A MÓVIL) -->
         <div style="background: var(--bg-main); padding: 16px; border: 1px solid var(--border-line-strong); border-radius: var(--radius-md); margin-bottom: 16px;">
-          <div style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 4px;">
-            🔑 Tu Cuenta de Garmin Connect
+          <div style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 4px; letter-spacing: 0.05em;">
+            Tu Cuenta de Garmin Connect
           </div>
           <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px;">
-            Ingresa tu email y contraseña una vez. Se guardarán en tu móvil para sincronizar con la ruleta 🔄:
+            Ingresa tu email y contraseña una vez. Se guardarán en tu móvil para sincronizar con el botón Recargar:
           </div>
 
           <div class="garmin-login-container">
@@ -96,21 +97,21 @@ export function renderGarminControlPanel(container) {
 
     if (!email || !password) {
       statusMsg.style.color = 'var(--accent-fatigue)';
-      statusMsg.textContent = '⚠️ Por favor ingresa tu email y contraseña para vincular.';
+      statusMsg.textContent = 'Por favor ingresa tu email y contraseña para vincular.';
       return;
     }
 
     if (spinnerIcon) spinnerIcon.classList.add('spinning');
     statusMsg.style.color = 'var(--text-main)';
-    statusMsg.textContent = '🔄 Conectando con Garmin y sincronizando métricas...';
+    statusMsg.textContent = 'Conectando con Garmin y sincronizando métricas...';
 
     try {
       await syncGarminDirectClient(email, password);
       statusMsg.style.color = 'var(--accent-optimal)';
-      statusMsg.textContent = '✅ ¡Sincronizado con éxito con Garmin Connect!';
+      statusMsg.textContent = 'Sincronizado con éxito con Garmin Connect';
     } catch (err) {
       statusMsg.style.color = 'var(--accent-fatigue)';
-      statusMsg.textContent = '⚠️ Error en la sincronización. Revisa tu usuario y contraseña.';
+      statusMsg.textContent = 'Error en la sincronización. Revisa tu usuario y contraseña.';
     } finally {
       if (spinnerIcon) spinnerIcon.classList.remove('spinning');
     }

@@ -6,6 +6,7 @@
  * - Función para cambiar TODAS las rutinas de la semana o SOLO LA RUTA DE UN DÍA.
  * - Sustitución de ejercicios por acordeón inline (0 Modales/Pop-ups).
  * - Autorregulación Garmin (-20% volumen por fatiga).
+ * Quiet Luxury estricto: 0 emojis.
  */
 
 import { garminState } from '../garminState.js';
@@ -26,15 +27,15 @@ export function renderWorkoutModule(container) {
 
   const goalInfo = {
     fat_loss: {
-      title: "📉 Perder Grasa / Adelgazar",
+      title: "Perder Grasa / Adelgazar",
       desc: "Series de alta densidad metabólica, descansos de 60s y balance en déficit."
     },
     recomp: {
-      title: "⚖️ Recomposición Corporal",
+      title: "Recomposición Corporal",
       desc: "Enfoque equilibrado en hipertrofia (8-12 reps), descansos de 75-90s y mantenimiento."
     },
     muscle_gain: {
-      title: "📈 Ganar Masa Muscular (Volumen Limpio / Engordar)",
+      title: "Ganar Masa Muscular (Volumen Limpio)",
       desc: "Sobrecarga progresiva (6-10 reps), descansos de 90-120s y superávit anabólico."
     }
   }[p.goal] || { title: "Objetivo Personalizado", desc: "Programa adaptado." };
@@ -50,10 +51,10 @@ export function renderWorkoutModule(container) {
       <!-- Acciones de Cambio de Rutina -->
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
         <button id="btn-toggle-change-one-day" class="inline-btn inline-btn-secondary" style="padding: 6px 12px; font-size: 0.78rem;">
-          🔄 Cambiar Solo Este Día
+          Cambiar Solo Este Día
         </button>
         <button id="btn-toggle-change-all-days" class="inline-btn inline-btn-secondary" style="padding: 6px 12px; font-size: 0.78rem;">
-          ⚙️ Cambiar Todas las Rutinas
+          Cambiar Todas las Rutinas
         </button>
       </div>
     </div>
@@ -61,7 +62,7 @@ export function renderWorkoutModule(container) {
     <!-- BANNER DE ADAPTACIÓN SEGÚN OBJETIVO BIOMÉTRICO (ADELGAZAR / VOLUMEN / RECOMP) -->
     <div style="background: var(--bg-card); padding: 10px 14px; border: 1px solid var(--border-line-strong); border-radius: var(--radius-sm); margin-bottom: 14px; font-size: 0.8rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
       <div>
-        <strong>🎯 Enfoque Adaptado:</strong> <span style="color: var(--accent-optimal); font-weight: 600;">${goalInfo.title}</span>
+        <strong>Enfoque Adaptado:</strong> <span style="color: var(--accent-optimal); font-weight: 600;">${goalInfo.title}</span>
         <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 1px;">${goalInfo.desc}</div>
       </div>
       <span style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-muted); background: var(--bg-main); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border-line);">
@@ -71,7 +72,7 @@ export function renderWorkoutModule(container) {
 
     <!-- SELECCIÓN DE FRECUENCIA DE DÍAS (3, 4, 5, 6 DÍAS) -->
     <div style="margin-bottom: 16px;">
-      <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">
+      <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.05em;">
         Frecuencia Semanal de Entrenamiento:
       </div>
       <div class="days-frequency-selector">
@@ -132,9 +133,8 @@ export function renderWorkoutModule(container) {
     <div class="ai-coach-box">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 1.1rem;">🤖</span>
-          <div style="font-size: 0.85rem; font-weight: 600; color: var(--accent-optimal);">
-            Asistente IA Entrenador Experto
+          <div style="font-size: 0.85rem; font-weight: 600; color: var(--accent-optimal); letter-spacing: 0.05em;">
+            ASISTENTE IA ENTRENADOR EXPERTO
           </div>
         </div>
         <span style="font-size: 0.72rem; color: var(--text-muted);">Escribe cualquier solicitud biomecánica</span>
@@ -157,7 +157,6 @@ export function renderWorkoutModule(container) {
     <!-- Banner de Autorregulación Garmin -->
     ${gData.isHighFatigue ? `
       <div class="autoreg-banner">
-        <div class="autoreg-icon">⚠️</div>
         <div class="autoreg-text">
           <div class="autoreg-title">Autorregulación Garmin Activada (-20% Volumen)</div>
           Debido a tu elevado nivel de fatiga / bajo descanso (Body Battery: ${gData.bodyBattery}%, Estrés: ${gData.stressLevel}), hemos ajustado automáticamente el volumen objetivo a ${targetSetsCount} series efectivas por ejercicio para optimizar tu recuperación.
@@ -167,7 +166,7 @@ export function renderWorkoutModule(container) {
 
     <!-- Rest Timer Inline Box -->
     <div id="rest-timer-box" class="rest-timer-inline" style="display: ${activeRestTimer ? 'flex' : 'none'};">
-      <span>⏱️ Temporizador de Descanso Inter-Series</span>
+      <span>Temporizador de Descanso Inter-Series</span>
       <div style="display: flex; align-items: center; gap: 12px;">
         <span id="rest-time-display" class="rest-timer-time">01:30</span>
         <button id="btn-stop-timer" class="inline-btn inline-btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;">Detener</button>
@@ -177,7 +176,6 @@ export function renderWorkoutModule(container) {
     <!-- DIA DE DESCANSO / O LISTA DE EJERCICIOS DEL DÍA SELECCIONADO -->
     ${currentDay.isRestDay ? `
       <div class="card" style="text-align: center; padding: 36px 20px;">
-        <div style="font-size: 2.2rem; margin-bottom: 8px;">🧘‍♂️</div>
         <h3 style="font-size: 1.2rem; font-weight: 500; color: var(--text-main);">Día de Descanso & Recuperación Biológica</h3>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; max-width: 460px; margin-left: auto; margin-right: auto;">
           Garmin indica ${gData.recoveryHours} horas estimadas de recuperación. Aprovecha para realizar movilidad suave, caminatas o estiramientos.
@@ -208,7 +206,6 @@ export function renderWorkoutModule(container) {
                     </button>
                   ` : ''}
                   <button class="inline-btn inline-btn-secondary btn-toggle-substitute" data-ex-id="${ex.id}" style="padding: 6px 12px; font-size: 0.78rem;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/></svg>
                     Cambiar ejercicio
                   </button>
                 </div>
@@ -259,7 +256,7 @@ export function renderWorkoutModule(container) {
                     </div>
                     <div style="text-align: center;">
                       <button class="btn-toggle-set inline-btn ${set.completed ? 'inline-btn-accent' : 'inline-btn-secondary'}" data-ex-id="${ex.id}" data-set-num="${set.setNum}" style="padding: 4px 8px; font-size: 0.75rem;">
-                        ${set.completed ? '✓' : '—'}
+                        ${set.completed ? 'COMPLETADO' : 'PENDIENTE'}
                       </button>
                     </div>
                   </div>

@@ -1,6 +1,7 @@
 /**
  * Módulo 1: Hub de Control Diario (Dashboard Principal)
  * Cuadrante 2x2 Estricto (4 Tarjetas en Matriz Cuadrada)
+ * Estética Quiet Luxury estricta: 0 emojis.
  */
 
 import { garminState } from '../garminState.js';
@@ -18,6 +19,8 @@ export function renderDashboardModule(container, onNavigate) {
   // Real time remaining calories for deficit target
   const currentDeficit = totalExpenditure - currentIntake;
   const deficitPct = Math.min(Math.max((currentDeficit / targetDeficit) * 100, 0), 100);
+
+  const goalText = appState.userProfile.goal === 'fat_loss' ? 'Déficit' : appState.userProfile.goal === 'muscle_gain' ? 'Superávit' : 'Mantenimiento';
 
   container.innerHTML = `
     <!-- Synthesized Status Header Card -->
@@ -81,7 +84,7 @@ export function renderDashboardModule(container, onNavigate) {
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
         <div>
-          <div class="card-title-sm">Calculadora Energética Adaptada (${appState.userProfile.goal === 'fat_loss' ? '📉 Déficit' : appState.userProfile.goal === 'muscle_gain' ? '📈 Superávit' : '⚖️ Mantenimiento'})</div>
+          <div class="card-title-sm">Calculadora Energética Adaptada (${goalText})</div>
           <div style="font-size: 1.05rem; font-weight: 500;">
             Balance Diario: <span style="font-family: var(--font-mono); font-weight: 600; color: ${currentDeficit >= targetDeficit ? 'var(--accent-optimal)' : 'var(--text-main)'};">${currentDeficit} kcal</span>
             <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);"> (Meta: ${appState.userProfile.targetCalories} kcal)</span>

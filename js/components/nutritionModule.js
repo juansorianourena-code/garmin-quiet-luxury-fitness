@@ -1,6 +1,7 @@
 /**
  * Módulo 3: Nutrición y Balance Energético
  * Planificador de Menús, Calculadora Biométrica BMR/TDEE, Alergias/Intolerancias y Estilo de Dieta.
+ * Diseño Quiet Luxury estricto (0 Emojis, tipografía limpia e iconos vectoriales finos).
  */
 
 import { appState } from '../appState.js';
@@ -17,27 +18,27 @@ export function renderNutritionModule(container) {
   const fatPct = Math.min(Math.round((totals.fat / nState.targets.fat) * 100), 100);
 
   const goalLabels = {
-    fat_loss: "📉 Perder Grasa / Adelgazar (-500 kcal)",
-    recomp: "⚖️ Recomposición Corporal (Mantenimiento)",
-    muscle_gain: "📈 Ganar Masa Muscular / Volumen (+350 kcal)"
+    fat_loss: "Perder Grasa / Adelgazar (-500 kcal)",
+    recomp: "Recomposición Corporal (Mantenimiento)",
+    muscle_gain: "Ganar Masa Muscular / Volumen (+350 kcal)"
   };
 
   const dietLabels = {
-    omnivore: "🥩 Omnívora Equilibrada",
-    mediterranean: "🥗 Mediterránea Flexitariana",
-    keto: "🥑 Keto / Cetogénica",
-    vegetarian: "🍃 Vegetariana",
-    vegan: "🥦 Vegana (100% Vegetal)",
-    high_protein: "🏋️ Alta en Proteínas"
+    omnivore: "Omnívora Equilibrada",
+    mediterranean: "Mediterránea Flexitariana",
+    keto: "Keto / Cetogénica",
+    vegetarian: "Vegetariana",
+    vegan: "Vegana (100% Vegetal)",
+    high_protein: "Alta en Proteínas"
   };
 
   const allergyList = [
-    { id: "lactosa", label: "🥛 Lactosa / Lácteos" },
-    { id: "gluten", label: "🌾 Gluten / Celíaco" },
-    { id: "frutos_secos", label: "🥜 Frutos Secos / Cacahuetes" },
-    { id: "huevo", label: "🥚 Huevo" },
-    { id: "pescado", label: "🐟 Pescado / Marisco" },
-    { id: "soya", label: "🫘 Soya" }
+    { id: "lactosa", label: "Lactosa / Lácteos" },
+    { id: "gluten", label: "Gluten / Celíaco" },
+    { id: "frutos_secos", label: "Frutos Secos / Cacahuetes" },
+    { id: "huevo", label: "Huevo" },
+    { id: "pescado", label: "Pescado / Marisco" },
+    { id: "soya", label: "Soya" }
   ];
 
   const userAllergies = p.allergies || [];
@@ -54,19 +55,19 @@ export function renderNutritionModule(container) {
       </span>
     </div>
 
-    <!-- ACCORDEÓN DESPLEGABLE: CALCULADORA BIOMÉTRICA, ALERGIAS & DIETA (SIN MODALES) -->
+    <!-- ACCORDEÓN DESPLEGABLE: CALCULADORA BIOMÉTRICA, ALERGIAS & DIETA (SIN MODALES / SIN EMOJIS) -->
     <div class="card" style="border: 1px solid var(--border-line-strong); background-color: rgba(27, 38, 59, 0.02); margin-bottom: 20px;">
       <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" id="btn-toggle-biometrics">
         <div>
           <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-main);">
-            ⚙️ Configuración Nutricional: Datos, Alergias & Tipo de Dieta
+            Configuración Nutricional: Datos, Alergias & Tipo de Dieta
           </div>
           <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">
-            ${p.weight} kg · ${p.height} cm | <strong>${dietLabels[p.dietType] || 'Omnívora'}</strong> | ${userAllergies.length > 0 ? `<span style="color: var(--accent-fatigue); font-weight: 600;">⚠️ ${userAllergies.length} Alergia(s) Activas</span>` : 'Sin Alergias'}
+            ${p.weight} kg · ${p.height} cm | <strong>${dietLabels[p.dietType] || 'Omnívora'}</strong> | ${userAllergies.length > 0 ? `<span style="color: var(--accent-fatigue); font-weight: 600;">${userAllergies.length} Alergia(s) Activas</span>` : 'Sin Alergias'}
           </div>
         </div>
         <button class="inline-btn inline-btn-secondary" style="padding: 4px 10px; font-size: 0.72rem;">
-          Desplegar / Ajustar
+          Configurar Perfil / Objetivo
         </button>
       </div>
 
@@ -75,7 +76,7 @@ export function renderNutritionModule(container) {
         <div style="background: var(--bg-main); padding: 16px; border: 1px solid var(--border-line-strong); border-radius: var(--radius-md);">
           
           <!-- 1. DATOS FÍSICOS -->
-          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 10px;">
+          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 10px; letter-spacing: 0.05em;">
             1. Tus Datos Físicos (Para Cálculo BMR y TDEE):
           </div>
 
@@ -115,7 +116,7 @@ export function renderNutritionModule(container) {
           </div>
 
           <!-- 2. ALERGIAS E INTOLERANCIAS ALIMENTARIAS -->
-          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px;">
+          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px; letter-spacing: 0.05em;">
             2. Alergias e Intolerancias (Filtra Platos y Recetas Automáticamente):
           </div>
 
@@ -124,7 +125,7 @@ export function renderNutritionModule(container) {
               const isChecked = userAllergies.includes(a.id);
               return `
                 <button class="day-pill btn-toggle-allergy ${isChecked ? 'active' : ''}" data-allergy-id="${a.id}" style="${isChecked ? 'background-color: var(--accent-fatigue); border-color: var(--accent-fatigue); color: white;' : ''}">
-                  ${isChecked ? '🚫' : '✓'} ${a.label}
+                  ${isChecked ? '[EXCLUIDO]' : '+'} ${a.label}
                 </button>
               `;
             }).join('')}
@@ -136,7 +137,7 @@ export function renderNutritionModule(container) {
           </div>
 
           <!-- 3. TIPO / ESTILO DE DIETA -->
-          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px;">
+          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px; letter-spacing: 0.05em;">
             3. Tipo de Dieta Preferida:
           </div>
 
@@ -149,21 +150,21 @@ export function renderNutritionModule(container) {
           </div>
 
           <!-- 4. OBJETIVO / FINALIDAD PRINCIPAL -->
-          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px;">
+          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px; letter-spacing: 0.05em;">
             4. Objetivo Principal (Finalidad):
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 16px;">
             <button class="inline-btn btn-goal-option ${p.goal === 'fat_loss' ? 'active' : 'inline-btn-secondary'}" data-goal="fat_loss" style="padding: 10px; font-size: 0.8rem; text-align: center;">
-              📉 Perder Grasa<br><span style="font-size: 0.7rem; font-weight: 400; opacity: 0.8;">Déficit (-500 kcal)</span>
+              Perder Grasa<br><span style="font-size: 0.7rem; font-weight: 400; opacity: 0.8;">Déficit (-500 kcal)</span>
             </button>
 
             <button class="inline-btn btn-goal-option ${p.goal === 'recomp' ? 'active' : 'inline-btn-secondary'}" data-goal="recomp" style="padding: 10px; font-size: 0.8rem; text-align: center;">
-              ⚖️ Recomposición<br><span style="font-size: 0.7rem; font-weight: 400; opacity: 0.8;">Mantenimiento Calórico</span>
+              Recomposición<br><span style="font-size: 0.7rem; font-weight: 400; opacity: 0.8;">Mantenimiento Calórico</span>
             </button>
 
             <button class="inline-btn btn-goal-option ${p.goal === 'muscle_gain' ? 'active' : 'inline-btn-secondary'}" data-goal="muscle_gain" style="padding: 10px; font-size: 0.8rem; text-align: center;">
-              📈 Ganar Músculo<br><span style="font-size: 0.7rem; font-weight: 400; opacity: 0.8;">Superávit (+350 kcal)</span>
+              Ganar Músculo<br><span style="font-size: 0.7rem; font-weight: 400; opacity: 0.8;">Superávit (+350 kcal)</span>
             </button>
           </div>
 
@@ -216,7 +217,7 @@ export function renderNutritionModule(container) {
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
         <div class="card-title-sm" style="margin-bottom: 0;">Planificador Adaptado (Sin Alérgenos & Dieta ${dietLabels[p.dietType] || ''})</div>
-        ${userAllergies.length > 0 ? `<span style="font-size: 0.72rem; padding: 2px 8px; background: rgba(158, 107, 85, 0.15); color: var(--accent-fatigue); border-radius: 4px; font-weight: 600;">✓ Platos Filtrados para tus ${userAllergies.length} Alergias</span>` : ''}
+        ${userAllergies.length > 0 ? `<span style="font-size: 0.72rem; padding: 2px 8px; background: rgba(158, 107, 85, 0.15); color: var(--accent-fatigue); border-radius: 4px; font-weight: 600;">Platos Filtrados para ${userAllergies.length} Alergias</span>` : ''}
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 12px;">
