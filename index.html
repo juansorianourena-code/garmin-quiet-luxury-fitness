@@ -2,12 +2,20 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Viewport fit=cover for iPhone Notch & Dynamic Island -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>FitExpert Studio | Fitness, Nutrición & Evidencia Científica</title>
   
+  <!-- iOS Standalone App Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FitExpert">
+  <meta name="theme-color" content="#0b0f19">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
+
   <!-- SEO & Meta -->
   <meta name="description" content="Plataforma de generación de rutinas de gimnasio con sobrecarga progresiva, calculadora científica de metabolismo basal (Mifflin-St Jeor), déficit calórico e itinerario de menús semanales.">
-  <meta name="keywords" content="rutinas gimnasio, deficit calorico, tdee calculator, menu semanal fitness, sobrecarga progresiva, ISSN, nutricion deportiva">
   
   <!-- Fonts: Outfit & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +36,7 @@
   <div class="bg-glow glow-2"></div>
   <div class="bg-glow glow-3"></div>
 
-  <!-- Header Navigation Bar -->
+  <!-- Header Navigation Bar (Desktop & Tablet) -->
   <header class="app-header">
     <div class="header-container">
       <div class="brand">
@@ -37,23 +45,23 @@
         </div>
         <div class="brand-text">
           <h1>FitExpert <span class="accent-text">Studio</span></h1>
-          <span class="brand-tagline"><i class="fa-solid fa-graduation-cap"></i> Respaldado por Evidencia Científica</span>
+          <span class="brand-tagline"><i class="fa-solid fa-graduation-cap"></i> Evidencia Científica</span>
         </div>
       </div>
 
-      <!-- Navigation Tabs -->
-      <nav class="nav-tabs" id="mainNav">
+      <!-- Navigation Tabs (Desktop) -->
+      <nav class="nav-tabs desktop-only-nav" id="mainNav">
         <button class="nav-btn active" data-tab="tab-calculator">
-          <i class="fa-solid fa-calculator"></i> Calculadora Métricas
+          <i class="fa-solid fa-calculator"></i> Calculadora
         </button>
         <button class="nav-btn" data-tab="tab-workouts">
-          <i class="fa-solid fa-dumbbell"></i> Rutinas & Tracker
+          <i class="fa-solid fa-dumbbell"></i> Rutinas
         </button>
         <button class="nav-btn" data-tab="tab-meals">
           <i class="fa-solid fa-utensils"></i> Menú Semanal
         </button>
         <button class="nav-btn" data-tab="tab-science">
-          <i class="fa-solid fa-book-journal-whills"></i> Base Científica
+          <i class="fa-solid fa-book-journal-whills"></i> Evidencia
         </button>
       </nav>
 
@@ -76,8 +84,8 @@
     <section id="tab-calculator" class="tab-content active">
       <div class="section-header">
         <div>
-          <h2>Calculadora Metabólica & Distribución de Macros</h2>
-          <p>Ecuaciones diagnósticas científicas (Mifflin-St Jeor & Katch-McArdle) recomendadas por la ACSM e ISSN.</p>
+          <h2>Calculadora Metabólica & Macros</h2>
+          <p>Ecuaciones diagnósticas (Mifflin-St Jeor & Katch-McArdle) respaldadas por la ISSN.</p>
         </div>
         <span class="badge badge-cyan"><i class="fa-solid fa-atom"></i> Precisión Científica</span>
       </div>
@@ -85,7 +93,7 @@
       <div class="grid grid-2">
         <!-- Form Inputs -->
         <div class="card glass-card">
-          <h3 class="card-title"><i class="fa-solid fa-sliders"></i> Datos Antropométricos y Objetivo</h3>
+          <h3 class="card-title"><i class="fa-solid fa-sliders"></i> Datos Antropométricos</h3>
           <form id="calculatorForm">
             <div class="form-row grid grid-2-sm">
               <div class="form-group">
@@ -116,35 +124,34 @@
 
             <div class="form-group">
               <label for="bodyFat">
-                <i class="fa-solid fa-percent"></i> % Grasa Corporal (Opcional - Ecuación Katch-McArdle)
+                <i class="fa-solid fa-percent"></i> % Grasa Corporal (Opcional - Katch-McArdle)
               </label>
               <input type="number" id="bodyFat" class="form-control" placeholder="Ej: 15 (Dejar vacío si se desconoce)" step="0.5" min="4" max="50">
-              <small class="form-text">Si ingresas este valor, se calculará sobre la Masa Corporal Magra exacta.</small>
             </div>
 
             <div class="form-group">
-              <label for="activityLevel"><i class="fa-solid fa-fire-flame-curved"></i> Nivel de Actividad Física (NEAT + Entrenamientos)</label>
+              <label for="activityLevel"><i class="fa-solid fa-fire-flame-curved"></i> Nivel de Actividad Física</label>
               <select id="activityLevel" class="form-control">
-                <option value="sedentary">Sedentario (Trabajo de oficina, poco/ningún ejercicio)</option>
-                <option value="light">Ligero (Ejercicio 1-3 días por semana)</option>
-                <option value="moderate" selected>Moderado (Ejercicio 3-5 días por semana)</option>
-                <option value="heavy">Intenso (Ejercicio 6-7 días por semana)</option>
-                <option value="athlete">Atleta / Trabajo Físico Exigente (Doble sesión)</option>
+                <option value="sedentary">Sedentario (Oficina, poco ejercicio)</option>
+                <option value="light">Ligero (1-3 días/semana)</option>
+                <option value="moderate" selected>Moderado (3-5 días/semana)</option>
+                <option value="heavy">Intenso (6-7 días/semana)</option>
+                <option value="athlete">Atleta (Doble sesión)</option>
               </select>
             </div>
 
             <div class="form-group">
               <label for="fitnessGoal"><i class="fa-solid fa-bullseye"></i> Objetivo Fisiológico</label>
               <select id="fitnessGoal" class="form-control">
-                <option value="deficit_moderate" selected>Déficit Calórico Moderado (-20% ~ Pérdida de Grasa Óptima)</option>
-                <option value="deficit_aggressive">Déficit Calórico Agresivo (-25% ~ Pérdida Rápida / Monitorear Fatiga)</option>
-                <option value="recomp">Recomposición Corporal (-5% / Mantenimiento Magro)</option>
-                <option value="surplus_clean">Superávit Calórico Limpio (+12% ~ Ganancia Muscular Magra)</option>
+                <option value="deficit_moderate" selected>Déficit Moderado (-20% ~ Grasa)</option>
+                <option value="deficit_aggressive">Déficit Agresivo (-25% ~ Rápido)</option>
+                <option value="recomp">Recomposición Corporal (-5%)</option>
+                <option value="surplus_clean">Superávit Limpio (+12% ~ Masa)</option>
               </select>
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">
-              <i class="fa-solid fa-calculator"></i> Calcular Mi Plan Calórico & Macros
+              <i class="fa-solid fa-calculator"></i> Calcular Plan Calórico & Macros
             </button>
           </form>
         </div>
@@ -156,19 +163,19 @@
           <!-- Summary Metric Cards -->
           <div class="metrics-grid">
             <div class="metric-box box-bmr">
-              <span class="metric-label">BMR (Metabolismo Basal)</span>
+              <span class="metric-label">BMR</span>
               <span class="metric-value" id="resBMR">1,720</span>
-              <span class="metric-unit">kcal / día</span>
+              <span class="metric-unit">kcal/día</span>
             </div>
             <div class="metric-box box-tdee">
-              <span class="metric-label">TDEE (Gasto Total)</span>
+              <span class="metric-label">TDEE</span>
               <span class="metric-value" id="resTDEE">2,666</span>
-              <span class="metric-unit">kcal / día</span>
+              <span class="metric-unit">kcal/día</span>
             </div>
             <div class="metric-box box-target glow-border">
-              <span class="metric-label" id="resGoalTitle">Déficit Calórico Moderado</span>
+              <span class="metric-label" id="resGoalTitle">Déficit Moderado</span>
               <span class="metric-value text-accent" id="resTargetCalories">2,133</span>
-              <span class="metric-unit">kcal / día</span>
+              <span class="metric-unit">kcal/día</span>
             </div>
           </div>
 
@@ -181,7 +188,7 @@
           <div class="macro-cards">
             <div class="macro-card macro-prot">
               <div class="macro-header">
-                <span><i class="fa-solid fa-drumstick-bite"></i> Proteínas (ISSN 2.2g/kg)</span>
+                <span><i class="fa-solid fa-drumstick-bite"></i> Proteínas (2.2g/kg)</span>
                 <span class="macro-gram" id="resProtGram">165 g</span>
               </div>
               <div class="macro-bar"><div class="macro-fill" id="barProt" style="width: 31%;"></div></div>
@@ -209,7 +216,7 @@
 
           <div class="science-note mt-3">
             <i class="fa-solid fa-circle-info"></i>
-            <span id="resScienceNote">Tus proteínas están fijadas en un rango elevado para prevenir el catabolismo muscular en déficit según el consenso ISSN 2017.</span>
+            <span id="resScienceNote">Proteínas fijadas para prevenir catabolismo en déficit según consenso ISSN.</span>
           </div>
         </div>
       </div>
@@ -219,49 +226,34 @@
     <section id="tab-workouts" class="tab-content">
       <div class="section-header">
         <div>
-          <h2>Rutinas de Gimnasio & Registro de Sobrecarga Progresiva</h2>
-          <p>Estructuración de sesiones por estímulo muscular, guía de intensidad RPE y cálculo automático del volumen total.</p>
+          <h2>Rutinas & Tracker de Sobrecarga</h2>
+          <p>Ejercicios por estímulo muscular, RPE y gráfico de volumen total.</p>
         </div>
         <div class="header-buttons">
           <button class="btn btn-emerald btn-sm" id="btnSelectTemplate">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Plantilla Científica (PPL / Torso-Pierna)
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Cambiar Plantilla (PPL / Torso-Pierna)
           </button>
         </div>
       </div>
 
-      <!-- Workout Layout: Left Sidebar Routine selector, Right Workout Live Tracker -->
       <div class="grid grid-3-1">
-        <!-- Routine Details & Exercise List -->
         <div class="card glass-card">
           <div class="flex-between mb-3">
-            <h3 class="card-title" id="currentRoutineName"><i class="fa-solid fa-dumbbell"></i> Rutina: Push / Pull / Legs</h3>
-            <span class="badge badge-purple" id="routineDaysBadge">3 Días / Frecuencia 2</span>
+            <h3 class="card-title" id="currentRoutineName"><i class="fa-solid fa-dumbbell"></i> Push / Pull / Legs</h3>
+            <span class="badge badge-purple" id="routineDaysBadge">3 Días</span>
           </div>
 
-          <!-- Day Switcher Tabs -->
-          <div class="day-tabs" id="workoutDayTabs">
-            <!-- Dynamically populated -->
-          </div>
-
-          <!-- Exercise Cards Container -->
-          <div id="exerciseListContainer" class="exercise-list">
-            <!-- Dynamically populated -->
-          </div>
+          <div class="day-tabs" id="workoutDayTabs"></div>
+          <div id="exerciseListContainer" class="exercise-list"></div>
         </div>
 
-        <!-- Right Side: Workout Log & Volume Progress Chart -->
         <div class="workout-sidebar">
-          <!-- Active Log Card -->
           <div class="card glass-card mb-3">
-            <h3 class="card-title"><i class="fa-solid fa-stopwatch"></i> Registro de Sesión en Vivo</h3>
-            <p class="text-muted fs-sm">Anota las series de la sesión de hoy para registrar la sobrecarga progresiva.</p>
-
+            <h3 class="card-title"><i class="fa-solid fa-stopwatch"></i> Registro de Sesión</h3>
             <form id="workoutLogForm" class="mt-2">
               <div class="form-group">
                 <label for="logExerciseSelect">Ejercicio</label>
-                <select id="logExerciseSelect" class="form-control">
-                  <!-- Populated from active workout -->
-                </select>
+                <select id="logExerciseSelect" class="form-control"></select>
               </div>
 
               <div class="grid grid-3-sm">
@@ -286,20 +278,17 @@
               </div>
 
               <button type="submit" class="btn btn-primary btn-block">
-                <i class="fa-solid fa-plus-circle"></i> Registrar Serie & Calcular Volumen
+                <i class="fa-solid fa-plus-circle"></i> Registrar Serie
               </button>
             </form>
           </div>
 
-          <!-- Volume Analytics Chart -->
           <div class="card glass-card">
-            <h3 class="card-title"><i class="fa-solid fa-chart-line"></i> Progreso de Volumen ($kg \times reps$)</h3>
+            <h3 class="card-title"><i class="fa-solid fa-chart-line"></i> Progreso de Volumen</h3>
             <div class="chart-wrapper">
-              <canvas id="volumeChart" height="200"></canvas>
+              <canvas id="volumeChart" height="180"></canvas>
             </div>
-            <div id="logHistoryList" class="log-history">
-              <!-- History entries -->
-            </div>
+            <div id="logHistoryList" class="log-history"></div>
           </div>
         </div>
       </div>
@@ -309,67 +298,76 @@
     <section id="tab-meals" class="tab-content">
       <div class="section-header">
         <div>
-          <h2>Planificador de Menús Semanales & Lista de la Compra</h2>
-          <p>Platos ajustados a tus objetivos calóricos con desglose exacto de macronutrientes por comida.</p>
+          <h2>Menú Semanal & Lista de la Compra</h2>
+          <p>Platos ajustados a tus macronutrientes calóricos.</p>
         </div>
         <div class="header-buttons">
           <button class="btn btn-emerald btn-sm" id="btnOpenGrocery">
-            <i class="fa-solid fa-cart-shopping"></i> Lista de la Compra Semanal
+            <i class="fa-solid fa-cart-shopping"></i> Lista de la Compra
           </button>
         </div>
       </div>
 
-      <!-- Days Selector Horizontal Bar -->
       <div class="week-days-bar" id="weekDayNav">
-        <button class="day-nav-btn active" data-day="Lunes">Lunes</button>
-        <button class="day-nav-btn" data-day="Martes">Martes</button>
-        <button class="day-nav-btn" data-day="Miércoles">Miércoles</button>
-        <button class="day-nav-btn" data-day="Jueves">Jueves</button>
-        <button class="day-nav-btn" data-day="Viernes">Viernes</button>
-        <button class="day-nav-btn" data-day="Sábado">Sábado</button>
-        <button class="day-nav-btn" data-day="Domingo">Domingo</button>
+        <button class="day-nav-btn active" data-day="Lunes">Lun</button>
+        <button class="day-nav-btn" data-day="Martes">Mar</button>
+        <button class="day-nav-btn" data-day="Miércoles">Mié</button>
+        <button class="day-nav-btn" data-day="Jueves">Jue</button>
+        <button class="day-nav-btn" data-day="Viernes">Vie</button>
+        <button class="day-nav-btn" data-day="Sábado">Sáb</button>
+        <button class="day-nav-btn" data-day="Domingo">Dom</button>
       </div>
 
-      <!-- Active Day Nutrition Overview -->
       <div class="card glass-card mb-4">
         <div class="flex-between">
           <h3 class="card-title" id="activeDayMealTitle"><i class="fa-solid fa-calendar-day"></i> Menú del Día: Lunes</h3>
-          <div class="day-macro-summary" id="activeDayMacroSummary">
-            <!-- Calorie & macro counters -->
-          </div>
+          <div class="day-macro-summary" id="activeDayMacroSummary"></div>
         </div>
       </div>
 
-      <!-- Meal Cards Grid -->
-      <div class="grid grid-2" id="mealsGridContainer">
-        <!-- Dynamically rendered meals (Desayuno, Comida, Merienda, Cena) -->
-      </div>
+      <div class="grid grid-2" id="mealsGridContainer"></div>
     </section>
 
     <!-- ==================== TAB 4: BASE CIENTÍFICA & EXPERTOS ==================== -->
     <section id="tab-science" class="tab-content">
       <div class="section-header">
         <div>
-          <h2>Hub de Evidencia Científica & Principios Fisiológicos</h2>
-          <p>Consenso de la ISSN, ACSM y revistas académicas de biomecánica y metabolismo deportivo.</p>
+          <h2>Hub de Evidencia Científica</h2>
+          <p>Consenso de la ISSN, ACSM y publicaciones peer-reviewed.</p>
         </div>
         <span class="badge badge-purple"><i class="fa-solid fa-graduation-cap"></i> Peer-Reviewed</span>
       </div>
 
-      <div class="grid grid-2" id="scienceCardsContainer">
-        <!-- Science Cards rendered via JS -->
-      </div>
+      <div class="grid grid-2" id="scienceCardsContainer"></div>
     </section>
 
   </main>
+
+  <!-- iOS Native Bottom App Navigation Bar -->
+  <nav class="mobile-bottom-nav" id="mobileNav">
+    <button class="mobile-nav-btn active" data-tab="tab-calculator">
+      <i class="fa-solid fa-calculator"></i>
+      <span>Calcular</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="tab-workouts">
+      <i class="fa-solid fa-dumbbell"></i>
+      <span>Rutinas</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="tab-meals">
+      <i class="fa-solid fa-utensils"></i>
+      <span>Menú</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="tab-science">
+      <i class="fa-solid fa-atom"></i>
+      <span>Ciencia</span>
+    </button>
+  </nav>
 
   <!-- Modal: Exercise Detail Guide -->
   <div class="modal-overlay" id="exerciseModal">
     <div class="modal-card">
       <button class="modal-close" id="btnCloseModal">&times;</button>
-      <div id="modalExerciseContent">
-        <!-- Dynamically loaded -->
-      </div>
+      <div id="modalExerciseContent"></div>
     </div>
   </div>
 
@@ -377,11 +375,9 @@
   <div class="modal-overlay" id="groceryModal">
     <div class="modal-card">
       <button class="modal-close" id="btnCloseGroceryModal">&times;</button>
-      <h3><i class="fa-solid fa-basket-shopping"></i> Lista de la Compra Semanal Automatizada</h3>
-      <p class="text-muted fs-sm mb-3">Calculada a partir de los ingredientes de tu menú semanal de 7 días.</p>
-      <div id="groceryItemsList" class="grocery-list">
-        <!-- Dynamically loaded -->
-      </div>
+      <h3><i class="fa-solid fa-basket-shopping"></i> Lista de la Compra Semanal</h3>
+      <p class="text-muted fs-sm mb-3">Calculada a partir de los ingredientes de tu menú de 7 días.</p>
+      <div id="groceryItemsList" class="grocery-list"></div>
     </div>
   </div>
 

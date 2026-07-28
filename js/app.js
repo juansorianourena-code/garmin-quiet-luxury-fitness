@@ -5,7 +5,7 @@ import { initMealPlanner } from './mealPlanner.js';
 import { initScienceHub } from './scienceHub.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize Header Navigation Tabs
+  // Initialize Header & Mobile Navigation Tabs
   setupTabNavigation();
 
   // Initialize Modules
@@ -22,23 +22,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupTabNavigation() {
-  const navContainer = document.getElementById('mainNav');
-  if (!navContainer) return;
+  const desktopNav = document.getElementById('mainNav');
+  const mobileNav = document.getElementById('mobileNav');
 
-  const navBtns = navContainer.querySelectorAll('.nav-btn');
+  const allNavBtns = document.querySelectorAll('.nav-btn, .mobile-nav-btn');
   const tabContents = document.querySelectorAll('.tab-content');
 
-  navBtns.forEach(btn => {
+  allNavBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const targetTabId = btn.getAttribute('data-tab');
 
-      navBtns.forEach(b => b.classList.remove('active'));
+      // Deactivate all buttons across header & mobile nav
+      allNavBtns.forEach(b => b.classList.remove('active'));
       tabContents.forEach(tc => tc.classList.remove('active'));
 
-      btn.classList.add('active');
+      // Activate all matching tab buttons for targetTabId
+      document.querySelectorAll(`[data-tab="${targetTabId}"]`).forEach(b => b.classList.add('active'));
+
+      // Activate target tab section
       const targetContent = document.getElementById(targetTabId);
       if (targetContent) {
         targetContent.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
   });
