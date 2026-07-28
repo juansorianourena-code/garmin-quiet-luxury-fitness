@@ -1,7 +1,7 @@
 /**
- * Módulo 4: Descanso, Salud, Informe Médico Garmin Forerunner 165 e Histórico Persistente (IndexedDB)
+ * Módulo 4: Descanso, Salud, Informe Médico-Deportivo e Histórico Persistente (IndexedDB)
  * Formulario de Registro Biométrico Manual, Gráfico de Composición Corporal Multi-Eje
- * e Informe Clínico-Deportivo con la Suite Completa de Sensores del Garmin Forerunner 165.
+ * e Informe Fisiológico Focado en Gimnasio / Pesas (Garmin Forerunner 55 & Preparado para 165).
  * Estética Quiet Luxury estricta: 0 emojis, tipografía limpia e ilustraciones vectoriales.
  */
 
@@ -37,7 +37,7 @@ export async function renderAnalyticsModule(container) {
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
       <div>
         <div class="card-title-sm">Módulo 4: Informe Médico, Salud & Analítica</div>
-        <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Informe Biométrico & Suite Garmin Forerunner 165</h2>
+        <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Informe Biométrico & Fisiología Gimnasio</h2>
       </div>
       <div style="display: flex; align-items: center; gap: 8px;">
         <button id="btn-export-json-backup" class="inline-btn inline-btn-secondary" style="padding: 4px 10px; font-size: 0.72rem; font-family: var(--font-mono);">
@@ -46,24 +46,6 @@ export async function renderAnalyticsModule(container) {
         <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-muted); background: var(--bg-card); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border-line);">
           Usuario: ${currentUser.name}
         </span>
-      </div>
-    </div>
-
-    <!-- BANNER DESTACADO DE PULSIOXIMETRÍA (MEDIA DE OXÍGENO EN SANGRE FORERUNNER 165) -->
-    <div class="card" style="border: 1px solid var(--accent-optimal); background: rgba(84, 110, 122, 0.05); margin-bottom: 20px; padding: 12px 16px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-        <div>
-          <div style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent-optimal);">
-            Media de Oxígeno en Sangre (SpO2 Promedio Garmin Forerunner 165)
-          </div>
-          <div style="font-size: 1.4rem; font-family: var(--font-mono); font-weight: 600; color: var(--text-main); margin-top: 2px;">
-            ${gData.spo2Avg || 98}% <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);">(Mínimo nocturno: ${gData.spo2Min || 95}% SpO2)</span>
-          </div>
-        </div>
-        <div style="text-align: right; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">
-          <span style="color: var(--accent-optimal); font-weight: 600;">Pulsioximetría Óptica Elevate™ V4</span>
-          <div>Frecuencia Respiratoria: ${gData.respirationRate || 13.5} brpm</div>
-        </div>
       </div>
     </div>
 
@@ -172,45 +154,45 @@ export async function renderAnalyticsModule(container) {
       </div>
     </div>
 
-    <!-- 3. INFORME MÉDICO Y DE SUITE DE SENSORES DEL GARMIN FORERUNNER 165 -->
+    <!-- 3. INFORME MÉDICO FOCADO EN GIMNASIO (GARMIN FORERUNNER 55 & 165 PREPARADO) -->
     <div class="card" style="border: 1px solid var(--border-line-strong); margin-bottom: 20px; padding: 18px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px stroke var(--border-line); padding-bottom: 10px; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
         <div>
           <div style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent-optimal);">
-            REPORTE MÉDICO DE SENSORES BIOMÉTRICOS · GARMIN FORERUNNER 165
+            REPORTE CLÍNICO DE FISIOLOGÍA DE MUSCULACIÓN · GARMIN CONNECT
           </div>
           <h3 style="font-size: 1.15rem; font-weight: 600; color: var(--text-main); margin-top: 2px;">
-            Evaluación Fisiológica & Telemetría de Carrera
+            Evaluación Fisiológica para Entrenamiento de Fuerza
           </h3>
         </div>
         <div style="text-align: right; font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-muted);">
-          <div>Sensor Engine: Elevate™ V4 & Multi-GNSS</div>
+          <div>Reloj Conectado: ${gData.deviceModel}</div>
           <div>Fecha Informe: ${new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}</div>
         </div>
       </div>
 
-      <!-- SECCIÓN I: FISIOLOGÍA CARDÍACA Y VFC (ELEVATE V4) -->
+      <!-- SECCIÓN I: FISIOLOGÍA CARDÍACA & OXÍGENO EN SANGRE (SPO2 INTEGRADO AQUÍ) -->
       <div style="margin-bottom: 16px;">
         <div style="font-size: 0.76rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); letter-spacing: 0.05em; margin-bottom: 8px;">
-          I. Sensor Óptico Elevate V4 & Variabilidad Cardíaca (VFC Status)
+          I. Evaluación Fisiológica & Fisiología Cardíaca
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
           <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">VFC Media Nocturna:</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">VFC Media Nocturna (HRV):</div>
             <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--accent-optimal);">${gData.hrv} ms</div>
             <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Línea Base: ${gData.hrvBaseline || '62-74 ms'}</div>
+          </div>
+
+          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Media Oxígeno en Sangre (SpO2):</div>
+            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: ${gData.spo2Avg ? 'var(--accent-optimal)' : 'var(--text-muted)'};">${gData.spo2Avg ? `${gData.spo2Avg}%` : '--'}</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">${gData.spo2Avg ? `Mínimo: ${gData.spo2Min}%` : 'Pendiente Forerunner 165'}</div>
           </div>
 
           <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
             <div style="font-size: 0.7rem; color: var(--text-muted);">Frecuencia Reposo (RHR):</div>
             <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--text-main);">${gData.rhr} ppm</div>
             <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Reserva Bradicárdica</div>
-          </div>
-
-          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">SpO2 Nocturno (Pulsioximetría):</div>
-            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--accent-optimal);">${gData.spo2Avg || 98}%</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Mínimo: ${gData.spo2Min || 95}% SpO2</div>
           </div>
 
           <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
@@ -221,91 +203,65 @@ export async function renderAnalyticsModule(container) {
         </div>
       </div>
 
-      <!-- SECCIÓN II: POLISOMNOGRAFÍA & SIENTAS RECURSOS (GARMIN SLEEP & NAP COACH) -->
+      <!-- SECCIÓN II: POLISOMNOGRAFÍA & RECUPERACIÓN MUSCULAR -->
       <div style="margin-bottom: 16px;">
         <div style="font-size: 0.76rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); letter-spacing: 0.05em; margin-bottom: 8px;">
-          II. Poligrafía del Sueño & Detección de Siestas (Sleep Coach Forerunner 165)
+          II. Arquitectura del Sueño & Síntesis Proteica (Sueño Profundo Muscular)
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
           <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Score & Eficiencia Sueño:</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Score de Sueño:</div>
             <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--accent-optimal);">${gData.sleepScore}/100</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Eficiencia: ${gData.sleepEfficiency || 94}%</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Total: ${gData.sleepTotalHours} horas</div>
           </div>
 
           <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Fases Profundo / REM:</div>
-            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--text-main);">${gData.sleepDeepHours}h / ${gData.sleepRemHours}h</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Física y Neurológica</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Sueño Profundo (Reparación Muscular):</div>
+            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--text-main);">${gData.sleepDeepHours} hrs</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Secreción de Hormona de Crecimiento</div>
           </div>
 
           <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
             <div style="font-size: 0.7rem; color: var(--text-muted);">Detección de Siesta:</div>
-            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--accent-optimal);">${gData.napMinutes || 25} min</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">+8 pts Body Battery</div>
+            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: ${gData.napMinutes ? 'var(--accent-optimal)' : 'var(--text-muted)'};">${gData.napMinutes ? `${gData.napMinutes} min` : '--'}</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">${gData.napMinutes ? '+8 pts Body Battery' : 'Pendiente Forerunner 165'}</div>
           </div>
         </div>
       </div>
 
-      <!-- SECCIÓN III: POTENCIA EN MUÑECA & DINÁMICAS DE CARRERA (GARMIN RUNNING DYNAMICS) -->
+      <!-- SECCIÓN III: MÉTRICAS AVANZADAS PARA CUANDO CAMBIES AL FORERUNNER 165 -->
       <div style="margin-bottom: 16px;">
         <div style="font-size: 0.76rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); letter-spacing: 0.05em; margin-bottom: 8px;">
-          III. Potenciómetro en Muñeca & Dinámicas de Carrera (Wrist Running Power & Dynamics)
+          III. Telemetría Avanzada (Preparada para tu Futuro Forerunner 165)
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
-          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Potencia de Carrera en Muñeca:</div>
-            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--accent-optimal);">${gData.runningPowerWatts || 245} W</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Medido sin pod externo</div>
+          <div style="padding: 10px; background: var(--bg-main); border: 1px dashed var(--border-line-strong); border-radius: var(--radius-sm);">
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Potencia en Muñeca (W):</div>
+            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--text-muted);">${gData.runningPowerWatts ? `${gData.runningPowerWatts} W` : '--'}</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Pendiente Forerunner 165</div>
+          </div>
+
+          <div style="padding: 10px; background: var(--bg-main); border: 1px dashed var(--border-line-strong); border-radius: var(--radius-sm);">
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Dinámicas de Carrera:</div>
+            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--text-muted);">${gData.cadenceSpm ? `${gData.cadenceSpm} spm` : '--'}</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Pendiente Forerunner 165</div>
           </div>
 
           <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Cadencia de Zancada:</div>
-            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--text-main);">${gData.cadenceSpm || 172} spm</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Longitud: ${gData.strideLengthMeters || 1.15} m</div>
-          </div>
-
-          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Contacto Suelo (GCT):</div>
-            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--text-main);">${gData.groundContactTimeMs || 238} ms</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Oscilación Vert.: ${gData.verticalOscillationCm || 7.8} cm</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">VO2 Max & Edad Física:</div>
+            <div style="font-family: var(--font-mono); font-size: 1.0rem; font-weight: 600; color: var(--accent-optimal);">${gData.vo2Max} ml/kg/min</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Edad Física: ${gData.fitnessAge} años</div>
           </div>
         </div>
       </div>
 
-      <!-- SECCIÓN IV: EFECTO DE ENTRENAMIENTO & PRONÓSTICO DE CARRERA (RACE PREDICTOR) -->
-      <div style="margin-bottom: 16px;">
-        <div style="font-size: 0.76rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); letter-spacing: 0.05em; margin-bottom: 8px;">
-          IV. Training Effect (TE) & Pronóstico de Carrera (Race Predictor 165)
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
-          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Efecto Aeróbico TE:</div>
-            <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--accent-optimal);">${gData.aerobicTE || 3.4} / 5.0</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Impacto Significativo</div>
-          </div>
-
-          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Predicción 5k / 10k:</div>
-            <div style="font-family: var(--font-mono); font-size: 1.0rem; font-weight: 600; color: var(--text-main);">${gData.racePredictor5k || '20:45'} / ${gData.racePredictor10k || '43:10'}</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Basado en VO2 Max ${gData.vo2Max}</div>
-          </div>
-
-          <div style="padding: 10px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Medio Maratón / Maratón:</div>
-            <div style="font-family: var(--font-mono); font-size: 1.0rem; font-weight: 600; color: var(--text-main);">${gData.racePredictorHalfMarathon || '1h 35m'} / ${gData.racePredictorMarathon || '3h 24m'}</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">Edad Física: ${gData.fitnessAge || 21} años</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECCIÓN V: DICTAMEN CLÍNICO SINTETIZADO -->
+      <!-- SECCIÓN IV: DICTAMEN FISIOLÓGICO PARA ENTRENAMIENTO EN GIMNASIO -->
       <div style="background: var(--bg-main); padding: 12px 14px; border-left: 3px solid var(--accent-optimal); border-radius: 2px; font-size: 0.8rem;">
         <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: var(--accent-optimal); letter-spacing: 0.08em; margin-bottom: 4px;">
-          DICTAMEN TÉCNICO AUTOGENERADO GARMIN FORERUNNER 165 NEURAL ENGINE:
+          DICTAMEN BIOMECÁNICO DE CAPACIDAD DE CARGA EN PESAS (${gData.deviceModel}):
         </div>
         <div style="color: var(--text-main); font-style: italic;">
-          "Sensor Elevate V4 registra equilibrio VFC (68 ms) con SpO2 de 98% y siesta reparadora de 25 min. Potencia de carrera en muñeca (245W) y cadencia (172 spm) muestran alta eficiencia biomecánica sin sobrecarga articular. Estado óptimo para afrontar la rutina diaria."
+          "El sistema nervioso central (SNC) registra tono parasimpático adecuado (HRV 68 ms, RHR 50 ppm) y 2.1h de sueño profundo para síntesis proteica muscular. Body Battery al 88%. El sujeto está 100% preparado para afrontar la sesión de gimnasio con cargas intensas de hipertrofia o fuerza máxima."
         </div>
       </div>
     </div>

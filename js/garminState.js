@@ -1,18 +1,19 @@
 /**
- * Garmin State Manager & Dynamic Calculator (Garmin Forerunner 165 Full Sensor Suite)
- * Integración nativa de todos los sensores ópticos Elevate V4, Potenciómetro de Carrera en Muñeca,
- * Dinámicas de Carrera, Altímetro Barométrico y Pulsioximetría del Garmin Forerunner 165.
- * Estética Quiet Luxury (0 Emojis, precisión quirúrgica de laboratorio).
+ * Garmin State Manager & Dynamic Calculator (Focus: Gym / Strength & Hardware Compatibility)
+ * Soporte activo para Garmin Forerunner 55 actual y preparación de la suite completa Forerunner 165.
+ * Estética Quiet Luxury (0 Emojis, precisión de laboratorio biomecánico).
  */
 
 class GarminState {
   constructor() {
-    // Garmin Forerunner 165 Full Sensor Data
+    // Current Active Watch: Garmin Forerunner 55
+    // Future Upgrade Ready: Garmin Forerunner 165
     this.data = {
-      deviceModel: "Garmin Forerunner 165",
-      sensorEngine: "Garmin Elevate™ V4 Optical HR & Pulse Ox",
+      deviceModel: "Garmin Forerunner 55",
+      futureModelReady: "Garmin Forerunner 165",
+      sensorEngine: "Garmin Elevate™ Optical HR",
       
-      // 1. Fisiología Cardíaca & Autonómica (Elevate V4)
+      // 1. Fisiología Cardíaca & Autonómica para Gimnasio (Disponibles en Forerunner 55 & 165)
       rhr: 50, // ppm (Resting Heart Rate)
       hrv: 68, // ms (HRV Status: Balanced)
       hrvBaseline: "62 - 74 ms",
@@ -20,57 +21,38 @@ class GarminState {
       stressLevel: 24, // 0 - 100 (Average daily stress)
       stressCharge: 72,
       stressDrain: -65,
-      bodyBattery: 88, // 0 - 100
+      bodyBattery: 88, // 0 - 100 (Reserva de energía para gimnasio)
       
-      // 2. Polisomnografía & Detección de Siestas
+      // 2. Sueño & Recuperación Muscular (Forerunner 55 & 165)
       sleepScore: 88, // 0 - 100
       sleepTotalHours: 7.8,
-      sleepDeepHours: 2.1,
+      sleepDeepHours: 2.1, // Horas de recuperación física muscular
       sleepRemHours: 1.9,
       sleepLightHours: 3.8,
       sleepAwakeMinutes: 12,
       sleepEfficiency: 94, // %
-      napMinutes: 25, // Detección de Siesta (Garmin Nap Detection)
       
-      // 3. Pulsioximetría & Respiración
-      spo2Avg: 98, // % SpO2
-      spo2Min: 95,
-      respirationRate: 13.5, // brpm (Breaths Per Minute)
+      // 3. Métricas Exclusivas de Forerunner 165 (Pendientes `--` hasta vincular el nuevo reloj)
+      spo2Avg: null, // Pendiente Forerunner 165 (SpO2 %)
+      spo2Min: null,
+      napMinutes: null, // Detección de siestas
+      runningPowerWatts: null, // W
+      cadenceSpm: null,
+      strideLengthMeters: null,
+      groundContactTimeMs: null,
+      verticalOscillationCm: null,
       
-      // 4. Capacidad Aeróbica & Edad Físico (VO2 Max)
+      // 4. Métricas de Respiración y Gimnasio (Forerunner 55 & 165)
+      respirationRate: 13.5, // brpm
       vo2Max: 54.5, // ml/kg/min
-      fitnessAge: 21, // Edad Fisiológica (Fitness Age)
-      lactateThresholdPace: "4:15 min/km",
-      lactateThresholdHr: 168, // bpm
+      fitnessAge: 21, // Edad Fisiológica
       
-      // 5. Potencia en Carrera desde Muñeca (Garmin Wrist Running Power)
-      runningPowerWatts: 245, // W (Potencia en vatios sin pod externo)
-      
-      // 6. Dinámicas de Carrera Avanzadas (Garmin Running Dynamics)
-      cadenceSpm: 172, // spm (Pasos por minuto)
-      strideLengthMeters: 1.15, // m (Longitud de zancada)
-      groundContactTimeMs: 238, // ms (Tiempo de contacto con el suelo)
-      verticalOscillationCm: 7.8, // cm (Oscilación vertical)
-      
-      // 7. Altímetro Barométrico & Actividad Diaria
-      floorsClimbed: 14, // Pisos subidos
-      elevationGainMeters: 185, // m Desnivel positivo
-      activeCalories: 640, // kcal activas de movimiento
-      recoveryHours: 14, // Horas de recuperación estimadas
+      // 5. Gasto Activo en Gimnasio y Pasos (Forerunner 55)
+      activeCalories: 640, // kcal quemadas en entrenamiento de fuerza y movimiento
+      recoveryHours: 14, // Horas de recuperación estimadas para la siguiente sesión de pesas
       stepsToday: 11420,
-      distanceKm: 8.4,
       
-      // 8. Efecto de Entrenamiento (Training Effect 1.0 - 5.0)
-      aerobicTE: 3.4, // "Impacto Aeróbico Significativo"
-      anaerobicTE: 2.1, // "Mantenimiento Anaeróbico"
-      
-      // 9. Predicción de Tiempos de Carrera (Race Predictor Forerunner 165)
-      racePredictor5k: "20:45 min",
-      racePredictor10k: "43:10 min",
-      racePredictorHalfMarathon: "1h 35m",
-      racePredictorMarathon: "3h 24m",
-      
-      // 10. Configuración Fisiológica Base
+      // 6. Configuración Fisiológica Base
       userBmr: 1820, // Basal Metabolic Rate (kcal/day)
       targetDeficit: 500, // Target deficit (kcal/day)
       isRealSync: false,
@@ -116,20 +98,20 @@ class GarminState {
     const totalExpenditure = this.data.userBmr + this.data.activeCalories;
     const targetIntake = totalExpenditure - this.data.targetDeficit;
     
-    // Auto-regulation evaluation (Garmin Forerunner 165 Neural Engine)
+    // Auto-regulation evaluation for GYM & STRENGTH TRAINING
     const isHighFatigue = this.data.bodyBattery < 30 || this.data.stressLevel > 75 || this.data.sleepScore < 55;
-    const suggestedVolumeReduction = isHighFatigue ? 20 : 0; // -20% volume
+    const suggestedVolumeReduction = isHighFatigue ? 20 : 0; // -20% de series en el gimnasio
 
-    // Status message synthesis
-    let statusMessage = `Estado Forerunner 165: Recuperación Óptima · Body Battery ${this.data.bodyBattery}%`;
+    // Status message synthesis for GYM WORKOUTS
+    let statusMessage = `Estado Gimnasio (${this.data.deviceModel}): Recuperación Óptima · Body Battery ${this.data.bodyBattery}%`;
     let statusLevel = "optimal"; // 'optimal' | 'fatigue' | 'moderate'
 
     if (isHighFatigue) {
       statusLevel = "fatigue";
-      statusMessage = `Aviso Forerunner 165: Alta Fatiga Detectada · Sugerido -20% Volumen`;
+      statusMessage = `Aviso Carga (${this.data.deviceModel}): Alta Fatiga Central · Sugerido -20% Volumen en Pesas`;
     } else if (this.data.bodyBattery < 50 || this.data.stressLevel > 50) {
       statusLevel = "moderate";
-      statusMessage = `Estado Forerunner 165: Recuperación Moderada · Carga Controlada`;
+      statusMessage = `Estado Gimnasio (${this.data.deviceModel}): Recuperación Moderada · Mantener Cargas Estables`;
     }
 
     return {
