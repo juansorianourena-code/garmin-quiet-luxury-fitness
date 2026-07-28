@@ -69,15 +69,12 @@
       <!-- User Profile Badge & Top-Right Actions -->
       <div class="header-actions">
         <!-- AI Trainer Button -->
-        <button class="btn btn-purple btn-sm" id="btnOpenAIChat" title="Entrenadora IA - Cambiar Ejercicios o Rutinas">
+        <button class="btn btn-purple btn-sm" id="btnOpenAIChat" title="Entrenadora IA">
           <i class="fa-solid fa-robot"></i> <span>Entrenadora IA</span>
         </button>
         <!-- Force Reload Button -->
         <button class="btn btn-emerald btn-sm btn-reload-glow" id="btnForceReload" title="Buscar Actualizaciones">
           <i class="fa-solid fa-arrows-rotate" id="reloadIcon"></i>
-        </button>
-        <button class="btn btn-outline btn-sm" id="btnExportData" title="Copia de Seguridad">
-          <i class="fa-solid fa-download"></i>
         </button>
       </div>
     </div>
@@ -303,7 +300,7 @@
       <div class="section-header">
         <div>
           <h2>Menú Semanal & Lista de la Compra</h2>
-          <p>Platos ajustados a tus macronutrientes calóricos.</p>
+          <p>Platos ajustados a tus objetivos calóricos, alergias y variedad culinaria.</p>
         </div>
         <div class="header-buttons">
           <button class="btn btn-emerald btn-sm" id="btnOpenGrocery">
@@ -312,6 +309,48 @@
         </div>
       </div>
 
+      <!-- Personalized Dietary Preferences Filter Card -->
+      <div class="card glass-card mb-3">
+        <h3 class="card-title"><i class="fa-solid fa-filter"></i> Preferencias Nutricionales & Alergias</h3>
+        <form id="dietaryControlsForm">
+          <div class="grid grid-2-sm">
+            <div class="form-group">
+              <label for="menuStyle"><i class="fa-solid fa-utensils"></i> Estilo de Menú</label>
+              <select id="menuStyle" class="form-control">
+                <option value="all" selected>Variado (Todos los estilos)</option>
+                <option value="healthy">Healthy Fitness / Proteico Clean</option>
+                <option value="mediterraneo">Mediterráneo Tradicional</option>
+                <option value="meal-prep">Meal-Prep Rápido (Fácil Cocina)</option>
+                <option value="keto">Keto / Bajo en Carbohidratos</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label><i class="fa-solid fa-shield-halved"></i> Alergias / Intolerancias</label>
+              <div style="display:flex; flex-wrap:wrap; gap:10px; padding-top:6px;">
+                <label style="font-size:12px; font-weight:normal; color:var(--text-main); display:flex; align-items:center; gap:4px;">
+                  <input type="checkbox" id="allergyGluten"> Sin Gluten
+                </label>
+                <label style="font-size:12px; font-weight:normal; color:var(--text-main); display:flex; align-items:center; gap:4px;">
+                  <input type="checkbox" id="allergyLactose"> Sin Lactosa
+                </label>
+                <label style="font-size:12px; font-weight:normal; color:var(--text-main); display:flex; align-items:center; gap:4px;">
+                  <input type="checkbox" id="allergyNuts"> Sin Frutos Secos
+                </label>
+                <label style="font-size:12px; font-weight:normal; color:var(--text-main); display:flex; align-items:center; gap:4px;">
+                  <input type="checkbox" id="dietVeg"> Vegetariano
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-emerald btn-block mt-2">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Generar Nuevo Menú Personalizado
+          </button>
+        </form>
+      </div>
+
+      <!-- Days Navigation Bar -->
       <div class="week-days-bar" id="weekDayNav">
         <button class="day-nav-btn active" data-day="Lunes">Lun</button>
         <button class="day-nav-btn" data-day="Martes">Mar</button>
@@ -385,7 +424,6 @@
         </div>
       </div>
 
-      <!-- Quick Action Chips -->
       <div class="chat-chips-bar" id="aiQuickChips">
         <button class="chat-chip" data-msg="Me he cansado de esta rutina, quiero renovarla entera">
           <i class="fa-solid fa-rotate"></i> Renovar rutina completa
@@ -401,17 +439,15 @@
         </button>
       </div>
 
-      <!-- Messages Stream -->
       <div class="chat-messages-container" id="aiChatMessages">
         <div class="chat-msg ai">
           <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
           <div class="chat-bubble">
-            ¡Hola! Soy tu <strong>Entrenadora IA FitExpert</strong>. Dime si algún ejercicio te produce molestias o dolor (ej: <em>"Me molesta la banca"</em> o <em>"Cambia el peso muerto"</em>) y lo sustituiré en tu rutina en tiempo real manteniendo el estímulo muscular. También puedes pedirme renovar tu rutina entera si te has cansado de ella.
+            ¡Hola! Soy tu <strong>Entrenadora IA FitExpert</strong>. Dime si algún ejercicio te produce molestias o dolor y lo sustituiré en tu rutina en tiempo real manteniendo el estímulo muscular. También puedes pedirme renovar tu rutina entera.
           </div>
         </div>
       </div>
 
-      <!-- Chat Input Form -->
       <form id="aiChatForm" class="chat-input-form">
         <input type="text" id="aiChatInput" class="form-control" placeholder="Escribe aquí tu duda o ejercicio a cambiar..." autocomplete="off">
         <button type="submit" class="btn btn-purple">
