@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <!-- Viewport fit=cover for iPhone Notch & Dynamic Island -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>FitExpert Studio | Fitness, Nutrición & Evidencia Científica</title>
   
@@ -13,6 +12,11 @@
   <meta name="theme-color" content="#0b0f19">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
+
+  <!-- Force No-Cache Meta Tags -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 
   <!-- SEO & Meta -->
   <meta name="description" content="Plataforma de generación de rutinas de gimnasio con sobrecarga progresiva, calculadora científica de metabolismo basal (Mifflin-St Jeor), déficit calórico e itinerario de menús semanales.">
@@ -36,7 +40,7 @@
   <div class="bg-glow glow-2"></div>
   <div class="bg-glow glow-3"></div>
 
-  <!-- Header Navigation Bar (Desktop & Tablet) -->
+  <!-- Header Navigation Bar (Desktop & Mobile Top Bar) -->
   <header class="app-header">
     <div class="header-container">
       <div class="brand">
@@ -65,10 +69,14 @@
         </button>
       </nav>
 
-      <!-- User Profile Badge & Data Actions -->
+      <!-- User Profile Badge & Top-Right Actions -->
       <div class="header-actions">
+        <!-- Force Reload / Search Updates Button -->
+        <button class="btn btn-emerald btn-sm btn-reload-glow" id="btnForceReload" title="Buscar Actualizaciones y Recargar App">
+          <i class="fa-solid fa-arrows-rotate" id="reloadIcon"></i> <span class="desktop-text">Actualizar</span>
+        </button>
         <button class="btn btn-outline btn-sm" id="btnExportData" title="Exportar Copia de Seguridad">
-          <i class="fa-solid fa-download"></i> Copia
+          <i class="fa-solid fa-download"></i>
         </button>
         <button class="btn btn-outline btn-sm" id="btnResetData" title="Reiniciar Datos">
           <i class="fa-solid fa-rotate-right"></i>

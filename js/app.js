@@ -5,8 +5,11 @@ import { initMealPlanner } from './mealPlanner.js';
 import { initScienceHub } from './scienceHub.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize Header & Mobile Navigation Tabs
+  // Setup Tab Navigation
   setupTabNavigation();
+
+  // Setup Auto Reload on App Launch / Foreground & Top-Right Reload Button
+  setupAutoReloadSystem();
 
   // Initialize Modules
   initCalorieCalculator((profileData) => {
@@ -22,9 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupTabNavigation() {
-  const desktopNav = document.getElementById('mainNav');
-  const mobileNav = document.getElementById('mobileNav');
-
   const allNavBtns = document.querySelectorAll('.nav-btn, .mobile-nav-btn');
   const tabContents = document.querySelectorAll('.tab-content');
 
@@ -32,20 +32,66 @@ function setupTabNavigation() {
     btn.addEventListener('click', () => {
       const targetTabId = btn.getAttribute('data-tab');
 
-      // Deactivate all buttons across header & mobile nav
       allNavBtns.forEach(b => b.classList.remove('active'));
       tabContents.forEach(tc => tc.classList.remove('active'));
 
-      // Activate all matching tab buttons for targetTabId
       document.querySelectorAll(`[data-tab="${targetTabId}"]`).forEach(b => b.classList.add('active'));
 
-      // Activate target tab section
       const targetContent = document.getElementById(targetTabId);
       if (targetContent) {
         targetContent.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
+  });
+}
+
+function setupAutoReloadSystem() {
+  const btnReload = document.getElementById('btnForceReload');
+  const icon = document.getElementById('reloadIcon');
+
+  // Manual Reload Button Click handler
+  if (btnReload) {
+    btnReload.addEventListener('click', () => {
+      if (icon) icon.classList.add('fa-spin');
+
+      // Clear session cache and reload with timestamp cache-buster
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => caches.delete(name));
+        });
+      }
+
+      setTimeout(() => {
+        const cleanUrl = window.location.href.split('?')[0];
+        window.location.href = `${cleanUrl}?v=${Date.now()}`;
+      }, 350);
+    });
+  }
+
+  // Force auto-refresh when opening app or returning from background (iOS PWA foreground event)
+  let lastFocusedTime = Date.now();
+
+  const handleForegroundCheck = () => {
+    const timePassed = Date.now() - lastFocusedTime;
+    // If user returned to the app after 30+ seconds, refresh cache silently
+    if (timePassed > 30000) {
+      lastFocusedTime = Date.now();
+      const cleanUrl = window.location.href.split('?')[0];
+      window.location.href = `${cleanUrl}?v=${Date.now()}`;
+    }
+  };
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      handleForegroundCheck();
+    }
+  });
+
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      handleForegroundCheck();
+    }
   });
 }
 
