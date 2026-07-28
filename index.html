@@ -49,14 +49,14 @@
         </div>
       </div>
 
-      <!-- Clean Header Top Action Bar (Only 2 Essential Quick Buttons) -->
+      <!-- Clean Header Top Action Bar -->
       <div class="header-actions">
         <!-- Security Setup Key Button -->
         <button class="btn btn-purple btn-sm" id="btnSetupPassword" title="Proteger Perfil con Contraseña">
           <i class="fa-solid fa-key"></i>
         </button>
 
-        <!-- Force Reload Button (Now Fully Visible with Zero Clipping!) -->
+        <!-- Force Reload Button -->
         <button class="btn btn-emerald btn-sm btn-reload-glow" id="btnForceReload" title="Buscar Actualizaciones">
           <i class="fa-solid fa-arrows-rotate" id="reloadIcon"></i>
         </button>
@@ -64,7 +64,7 @@
     </div>
   </header>
 
-  <!-- Main Content Container (Full Width Mobile Shell) -->
+  <!-- Main Content Container -->
   <main class="main-container">
 
     <!-- ==================== TAB 1: CALCULADORA MÉTRICA & DÉFICIT ==================== -->
@@ -250,7 +250,7 @@
         </div>
       </div>
 
-      <!-- NEW: Dedicated Profile Security & Backup Management Card -->
+      <!-- Profile Security & Backup Management Card -->
       <div class="card glass-card mt-3">
         <h3 class="card-title"><i class="fa-solid fa-shield-halved" style="color:var(--accent-purple);"></i> Seguridad de Perfil & Copia de Seguridad</h3>
         <p class="text-muted fs-sm mb-3">Tus datos están protegidos y guardados en el almacenamiento inmune de tu teléfono.</p>
@@ -282,8 +282,8 @@
           <p>Ejercicios por estímulo muscular, RPE y gráfico de volumen total.</p>
         </div>
         <div class="header-buttons">
-          <button class="btn btn-outline btn-sm" onclick="window.print()">
-            <i class="fa-solid fa-print"></i> Imprimir Rutina (Papel/PDF)
+          <button class="btn btn-outline btn-sm" id="btnPrintRoutineBtn">
+            <i class="fa-solid fa-print"></i> Imprimir Rutina
           </button>
           <button class="btn btn-purple btn-sm" id="btnWorkoutAIChat">
             <i class="fa-solid fa-robot"></i> Cambiar Ejercicios
@@ -385,10 +385,10 @@
           <p>Platos ajustados a tus objetivos calóricos, alergias y variedad culinaria.</p>
         </div>
         <div class="header-buttons">
-          <button class="btn btn-outline btn-sm" onclick="window.print()">
-            <i class="fa-solid fa-print"></i> Imprimir Menú (Papel/PDF)
+          <button class="btn btn-outline btn-sm" id="btnPrintMenuBtn">
+            <i class="fa-solid fa-print"></i> Imprimir Menú
           </button>
-          <button class="btn btn-purple btn-sm" onclick="document.getElementById('btnOpenAIChat').click()">
+          <button class="btn btn-purple btn-sm" id="btnOpenAIChatFromMeals">
             <i class="fa-solid fa-robot"></i> Asistente Nutricional IA
           </button>
           <button class="btn btn-emerald btn-sm" id="btnOpenGrocery">
@@ -472,9 +472,9 @@
   <!-- MODAL: Password Configuration Modal -->
   <div class="modal-overlay" id="authModal">
     <div class="modal-card" style="max-width:400px;">
-      <button class="modal-close" onclick="document.getElementById('authModal').classList.remove('active')">&times;</button>
+      <button class="modal-close" id="btnCloseAuthModal">&times;</button>
       <h3><i class="fa-solid fa-key" style="color:var(--accent-purple);"></i> Proteger Mi Perfil con Contraseña</h3>
-      <p class="text-muted fs-sm mb-3">Establece una clave de acceso personal. Tus datos de rutinas, fotos y nutrición quedarán bloqueados para terceros.</p>
+      <p class="text-muted fs-sm mb-3">Establece una clave de acceso personal. Tus datos de rutinas, fotos y nutrición quedarán locked.</p>
       
       <form id="setupPasswordForm">
         <div class="form-group">

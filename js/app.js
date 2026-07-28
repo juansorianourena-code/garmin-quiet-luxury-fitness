@@ -16,31 +16,31 @@ import { initAuthStorage } from './authStorage.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Profile Security & Persistence
-  try { initAuthStorage(); } catch (err) { console.error('Error initAuthStorage:', err); }
+  try { initAuthStorage(); } catch (err) { console.error(err); }
 
   // 2. Setup Navigation Event Listeners
-  try { setupTabNavigation(); } catch (err) { console.error('Error setupTabNavigation:', err); }
+  try { setupTabNavigation(); } catch (err) { console.error(err); }
 
   // 3. Setup Auto Reload System
-  try { setupAutoReloadSystem(); } catch (err) { console.error('Error setupAutoReloadSystem:', err); }
+  try { setupAutoReloadSystem(); } catch (err) { console.error(err); }
 
   // 4. Initialize Core Modules
-  try { initCalorieCalculator(); } catch (err) { console.error('Error initCalorieCalculator:', err); }
-  try { initWorkoutPlanner(); } catch (err) { console.error('Error initWorkoutPlanner:', err); }
-  try { initMealPlanner(); } catch (err) { console.error('Error initMealPlanner:', err); }
-  try { initScienceHub(); } catch (err) { console.error('Error initScienceHub:', err); }
-  try { initAITrainerChat(); } catch (err) { console.error('Error initAITrainerChat:', err); }
+  try { initCalorieCalculator(); } catch (err) { console.error(err); }
+  try { initWorkoutPlanner(); } catch (err) { console.error(err); }
+  try { initMealPlanner(); } catch (err) { console.error(err); }
+  try { initScienceHub(); } catch (err) { console.error(err); }
+  try { initAITrainerChat(); } catch (err) { console.error(err); }
 
   // 5. Initialize Premium Modules
-  try { initRestTimer(); } catch (err) { console.error('Error initRestTimer:', err); }
-  try { initOneRepMaxCalc(); } catch (err) { console.error('Error initOneRepMaxCalc:', err); }
-  try { initSupplementation(); } catch (err) { console.error('Error initSupplementation:', err); }
-  try { initHydrationTracker(); } catch (err) { console.error('Error initHydrationTracker:', err); }
-  try { initBodyMeasurements(); } catch (err) { console.error('Error initBodyMeasurements:', err); }
-  try { initWhatsAppExport(); } catch (err) { console.error('Error initWhatsAppExport:', err); }
+  try { initRestTimer(); } catch (err) { console.error(err); }
+  try { initOneRepMaxCalc(); } catch (err) { console.error(err); }
+  try { initSupplementation(); } catch (err) { console.error(err); }
+  try { initHydrationTracker(); } catch (err) { console.error(err); }
+  try { initBodyMeasurements(); } catch (err) { console.error(err); }
+  try { initWhatsAppExport(); } catch (err) { console.error(err); }
 
-  // 6. Setup Data Import/Export Actions
-  try { setupDataActions(); } catch (err) { console.error('Error setupDataActions:', err); }
+  // 6. Setup Data Import/Export Actions & Global Print Handlers
+  try { setupDataActions(); } catch (err) { console.error(err); }
 });
 
 function setupTabNavigation() {
@@ -48,11 +48,9 @@ function setupTabNavigation() {
   const tabContents = document.querySelectorAll('.tab-content');
 
   const handleTabSwitch = (btn, e) => {
-    if (e) e.preventDefault();
-
     const targetTabId = btn.getAttribute('data-tab');
 
-    if (targetTabId === 'tab-ai-chat' || btn.id === 'btnMobileAIChat') {
+    if (targetTabId === 'tab-ai-chat' || btn.id === 'btnMobileAIChat' || btn.id === 'btnOpenAIChatFromMeals') {
       const aiModal = document.getElementById('aiChatModal');
       if (aiModal) aiModal.classList.add('active');
       return;
@@ -74,8 +72,15 @@ function setupTabNavigation() {
 
   allNavBtns.forEach(btn => {
     btn.addEventListener('click', (e) => handleTabSwitch(btn, e));
-    btn.addEventListener('touchstart', (e) => handleTabSwitch(btn, e), { passive: false });
   });
+
+  const btnOpenAIChatFromMeals = document.getElementById('btnOpenAIChatFromMeals');
+  if (btnOpenAIChatFromMeals) {
+    btnOpenAIChatFromMeals.addEventListener('click', () => {
+      const aiModal = document.getElementById('aiChatModal');
+      if (aiModal) aiModal.classList.add('active');
+    });
+  }
 }
 
 function setupAutoReloadSystem() {
@@ -83,8 +88,7 @@ function setupAutoReloadSystem() {
   const icon = document.getElementById('reloadIcon');
 
   if (btnReload) {
-    const handleReload = (e) => {
-      if (e) e.preventDefault();
+    btnReload.addEventListener('click', () => {
       if (icon) icon.classList.add('fa-spin');
       if ('caches' in window) {
         caches.keys().then(names => {
@@ -95,10 +99,7 @@ function setupAutoReloadSystem() {
         const cleanUrl = window.location.href.split('?')[0];
         window.location.href = `${cleanUrl}?v=${Date.now()}`;
       }, 300);
-    };
-
-    btnReload.addEventListener('click', handleReload);
-    btnReload.addEventListener('touchstart', handleReload, { passive: false });
+    });
   }
 }
 
@@ -106,6 +107,24 @@ function setupDataActions() {
   const btnExport = document.getElementById('btnExportData');
   const btnImport = document.getElementById('btnImportData');
   const fileInput = document.getElementById('importFileInput');
+  const btnCloseAuth = document.getElementById('btnCloseAuthModal');
+
+  const btnPrintRoutine = document.getElementById('btnPrintRoutineBtn');
+  const btnPrintMenu = document.getElementById('btnPrintMenuBtn');
+
+  if (btnPrintRoutine) {
+    btnPrintRoutine.addEventListener('click', () => window.print());
+  }
+  if (btnPrintMenu) {
+    btnPrintMenu.addEventListener('click', () => window.print());
+  }
+
+  if (btnCloseAuth) {
+    btnCloseAuth.addEventListener('click', () => {
+      const modal = document.getElementById('authModal');
+      if (modal) modal.classList.remove('active');
+    });
+  }
 
   if (btnExport) {
     btnExport.addEventListener('click', () => {
