@@ -1,6 +1,6 @@
 /**
  * Módulo 3: Nutrición y Balance Energético
- * Planificador de Menús, Calculadora Biométrica BMR/TDEE & Selección de Objetivo Global (Adelgazar/Volumen/Recomposición).
+ * Planificador de Menús, Calculadora Biométrica BMR/TDEE, Alergias/Intolerancias y Estilo de Dieta.
  */
 
 import { appState } from '../appState.js';
@@ -22,38 +22,60 @@ export function renderNutritionModule(container) {
     muscle_gain: "📈 Ganar Masa Muscular / Volumen (+350 kcal)"
   };
 
+  const dietLabels = {
+    omnivore: "🥩 Omnívora Equilibrada",
+    mediterranean: "🥗 Mediterránea Flexitariana",
+    keto: "🥑 Keto / Cetogénica",
+    vegetarian: "🍃 Vegetariana",
+    vegan: "🥦 Vegana (100% Vegetal)",
+    high_protein: "🏋️ Alta en Proteínas"
+  };
+
+  const allergyList = [
+    { id: "lactosa", label: "🥛 Lactosa / Lácteos" },
+    { id: "gluten", label: "🌾 Gluten / Celíaco" },
+    { id: "frutos_secos", label: "🥜 Frutos Secos / Cacahuetes" },
+    { id: "huevo", label: "🥚 Huevo" },
+    { id: "pescado", label: "🐟 Pescado / Marisco" },
+    { id: "soya", label: "🫘 Soya" }
+  ];
+
+  const userAllergies = p.allergies || [];
+
   container.innerHTML = `
     <!-- Header -->
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px;">
       <div>
         <div class="card-title-sm">Módulo 3: Nutrición & Balance Energético</div>
-        <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Planificador & Calculadora Biométrica</h2>
+        <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Perfil Biométrico, Alergias & Dieta</h2>
       </div>
       <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--accent-optimal); background: var(--bg-card); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border-line);">
         Meta: ${p.targetCalories} kcal/día
       </span>
     </div>
 
-    <!-- ACCORDEÓN DESPLEGABLE: CALCULADORA BIOMÉTRICA & SELECCIÓN DE OBJETIVO (SIN MODALES) -->
+    <!-- ACCORDEÓN DESPLEGABLE: CALCULADORA BIOMÉTRICA, ALERGIAS & DIETA (SIN MODALES) -->
     <div class="card" style="border: 1px solid var(--border-line-strong); background-color: rgba(27, 38, 59, 0.02); margin-bottom: 20px;">
       <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" id="btn-toggle-biometrics">
         <div>
           <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-main);">
-            ⚙️ Perfil Biométrico & Calculadora Nutricional
+            ⚙️ Configuración Nutricional: Datos, Alergias & Tipo de Dieta
           </div>
           <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">
-            ${p.weight} kg · ${p.height} cm · ${p.age} años | <strong>${goalLabels[p.goal]}</strong>
+            ${p.weight} kg · ${p.height} cm | <strong>${dietLabels[p.dietType] || 'Omnívora'}</strong> | ${userAllergies.length > 0 ? `<span style="color: var(--accent-fatigue); font-weight: 600;">⚠️ ${userAllergies.length} Alergia(s) Activas</span>` : 'Sin Alergias'}
           </div>
         </div>
         <button class="inline-btn inline-btn-secondary" style="padding: 4px 10px; font-size: 0.72rem;">
-          Configurar Perfil / Objetivo
+          Desplegar / Ajustar
         </button>
       </div>
 
       <!-- FORMS DESPLEGABLE INLINE -->
       <div id="biometrics-accordion-body" class="accordion-wrapper" style="margin-top: 14px;">
         <div style="background: var(--bg-main); padding: 16px; border: 1px solid var(--border-line-strong); border-radius: var(--radius-md);">
-          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 12px;">
+          
+          <!-- 1. DATOS FÍSICOS -->
+          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 10px;">
             1. Tus Datos Físicos (Para Cálculo BMR y TDEE):
           </div>
 
@@ -84,16 +106,51 @@ export function renderNutritionModule(container) {
             <div class="garmin-field-group" style="grid-column: span 2;">
               <label class="garmin-input-label">Nivel de Actividad Diaria:</label>
               <select id="select-profile-activity" class="garmin-text-input" style="padding: 8px 10px; background: var(--bg-main);">
-                <option value="1.2" ${p.activityLevel == 1.2 ? 'selected' : ''}>Sedentario (Trabajo de oficina / Poco movimiento)</option>
-                <option value="1.375" ${p.activityLevel == 1.375 ? 'selected' : ''}>Ligeramente Activo (1-3 días de ejercicio semanal)</option>
-                <option value="1.55" ${p.activityLevel == 1.55 ? 'selected' : ''}>Moderadamente Activo (3-5 días de entreno intenso)</option>
-                <option value="1.725" ${p.activityLevel == 1.725 ? 'selected' : ''}>Muy Activo (6-7 días de entrenamiento / Trabajo físico)</option>
+                <option value="1.2" ${p.activityLevel == 1.2 ? 'selected' : ''}>Sedentario (Oficina / Poco movimiento)</option>
+                <option value="1.375" ${p.activityLevel == 1.375 ? 'selected' : ''}>Ligeramente Activo (1-3 días de ejercicio)</option>
+                <option value="1.55" ${p.activityLevel == 1.55 ? 'selected' : ''}>Moderadamente Activo (3-5 días intenso)</option>
+                <option value="1.725" ${p.activityLevel == 1.725 ? 'selected' : ''}>Muy Activo (6-7 días / Trabajo físico)</option>
               </select>
             </div>
           </div>
 
+          <!-- 2. ALERGIAS E INTOLERANCIAS ALIMENTARIAS -->
           <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px;">
-            2. Selecciona tu Objetivo Principal (Impacta Rutinas & Nutrición):
+            2. Alergias e Intolerancias (Filtra Platos y Recetas Automáticamente):
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+            ${allergyList.map(a => {
+              const isChecked = userAllergies.includes(a.id);
+              return `
+                <button class="day-pill btn-toggle-allergy ${isChecked ? 'active' : ''}" data-allergy-id="${a.id}" style="${isChecked ? 'background-color: var(--accent-fatigue); border-color: var(--accent-fatigue); color: white;' : ''}">
+                  ${isChecked ? '🚫' : '✓'} ${a.label}
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <div class="garmin-field-group" style="margin-bottom: 16px;">
+            <label class="garmin-input-label">Otras Alergias o Intolerancias Específicas:</label>
+            <input type="text" id="input-profile-custom-allergies" placeholder="Ej: Fructosa, Sorbitol, Mariscos específicos..." value="${p.customAllergies || ''}" class="garmin-text-input" style="padding: 8px 10px;" />
+          </div>
+
+          <!-- 3. TIPO / ESTILO DE DIETA -->
+          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px;">
+            3. Tipo de Dieta Preferida:
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 16px;">
+            ${Object.keys(dietLabels).map(key => `
+              <button class="inline-btn btn-diet-option ${p.dietType === key ? 'active' : 'inline-btn-secondary'}" data-diet="${key}" style="padding: 8px 10px; font-size: 0.78rem; text-align: left;">
+                ${dietLabels[key]}
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- 4. OBJETIVO / FINALIDAD PRINCIPAL -->
+          <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px;">
+            4. Objetivo Principal (Finalidad):
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 16px;">
@@ -155,9 +212,13 @@ export function renderNutritionModule(container) {
       </div>
     </div>
 
-    <!-- PLANIFICADOR Y INTERCAMBIO DE PLATOS (INLINE ACCORDION) -->
+    <!-- PLANIFICADOR Y INTERCAMBIO DE PLATOS ADAPTADOS A ALERGIAS -->
     <div class="card">
-      <div class="card-title-sm">Planificador de Menús & Intercambio de Platos Equivalentes</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+        <div class="card-title-sm" style="margin-bottom: 0;">Planificador Adaptado (Sin Alérgenos & Dieta ${dietLabels[p.dietType] || ''})</div>
+        ${userAllergies.length > 0 ? `<span style="font-size: 0.72rem; padding: 2px 8px; background: rgba(158, 107, 85, 0.15); color: var(--accent-fatigue); border-radius: 4px; font-weight: 600;">✓ Platos Filtrados para tus ${userAllergies.length} Alergias</span>` : ''}
+      </div>
+
       <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 12px;">
         ${nState.mealPlans.map((plan, idx) => `
           <div style="background: var(--bg-main); padding: 14px 18px; border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
@@ -174,7 +235,7 @@ export function renderNutritionModule(container) {
             <!-- ACORDEÓN INLINE DESPLEGABLE DE INTERCAMBIO -->
             <div id="meal-accordion-${idx}" class="accordion-wrapper">
               <div class="accordion-content" style="margin-top: 10px; padding: 12px 14px;">
-                <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">Alternativas con Equivalencia Exacta de Macronutrientes:</div>
+                <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">Alternativas Seguras con Equivalencia Exacta:</div>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
                   ${plan.alternatives.map(alt => `
                     <div class="substitute-item btn-select-meal-alt" data-plan-idx="${idx}" data-alt-text="${alt}" style="padding: 10px 14px;">
@@ -267,6 +328,7 @@ export function renderNutritionModule(container) {
   const inputA = container.querySelector('#input-profile-age');
   const selectG = container.querySelector('#select-profile-gender');
   const selectAct = container.querySelector('#select-profile-activity');
+  const inputCustomAlg = container.querySelector('#input-profile-custom-allergies');
 
   const onProfileInput = () => {
     appState.updateUserProfile({
@@ -274,7 +336,8 @@ export function renderNutritionModule(container) {
       weight: parseFloat(inputW.value) || 70,
       age: parseInt(inputA.value) || 25,
       gender: selectG.value,
-      activityLevel: parseFloat(selectAct.value)
+      activityLevel: parseFloat(selectAct.value),
+      customAllergies: inputCustomAlg ? inputCustomAlg.value : ""
     });
   };
 
@@ -283,12 +346,32 @@ export function renderNutritionModule(container) {
   if (inputA) inputA.addEventListener('change', onProfileInput);
   if (selectG) selectG.addEventListener('change', onProfileInput);
   if (selectAct) selectAct.addEventListener('change', onProfileInput);
+  if (inputCustomAlg) inputCustomAlg.addEventListener('change', onProfileInput);
 
-  // Attach Goal Option Selection
+  // Toggle Allergy Pills
+  container.querySelectorAll('.btn-toggle-allergy').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const allergyId = e.currentTarget.getAttribute('data-allergy-id');
+      appState.toggleAllergy(allergyId);
+      renderNutritionModule(container);
+    });
+  });
+
+  // Diet Selection Options
+  container.querySelectorAll('.btn-diet-option').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const dietType = e.currentTarget.getAttribute('data-diet');
+      appState.updateUserProfile({ dietType });
+      renderNutritionModule(container);
+    });
+  });
+
+  // Goal Option Selection
   container.querySelectorAll('.btn-goal-option').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const goal = e.currentTarget.getAttribute('data-goal');
       appState.updateUserProfile({ goal });
+      renderNutritionModule(container);
     });
   });
 

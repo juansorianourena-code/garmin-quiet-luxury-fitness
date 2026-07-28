@@ -464,6 +464,9 @@ class AppState {
       gender: "male", // "male" | "female"
       activityLevel: 1.55, // 1.2, 1.375, 1.55, 1.725
       goal: "fat_loss", // "fat_loss" | "recomp" | "muscle_gain"
+      allergies: [], // ["lactosa", "gluten", "frutos_secos", "huevo", "pescado", "soya"]
+      customAllergies: "",
+      dietType: "omnivore", // "omnivore" | "mediterranean" | "keto" | "vegetarian" | "vegan" | "high_protein"
       bmr: 1750,
       tdee: 2250,
       targetCalories: 1750,
@@ -472,6 +475,17 @@ class AppState {
       targetFat: 52
     };
     this.recalculateBiometrics();
+  }
+
+  toggleAllergy(allergyId) {
+    if (!this.userProfile.allergies) this.userProfile.allergies = [];
+    const idx = this.userProfile.allergies.indexOf(allergyId);
+    if (idx >= 0) {
+      this.userProfile.allergies.splice(idx, 1);
+    } else {
+      this.userProfile.allergies.push(allergyId);
+    }
+    this.updateUserProfile({});
   }
 
   updateUserProfile(partialData) {
@@ -523,6 +537,15 @@ class AppState {
       fatGrams = 0.9 * w;
     }
 
+    // Adaptación por Tipo de Dieta
+    if (p.dietType === "keto") {
+      // Dieta Keto: Alta en Grasas (65%), Muy Baja en Carbos (5-10%)
+      fatGrams = (targetCals * 0.65) / 9;
+      proteinGrams = (targetCals * 0.25) / 4;
+    } else if (p.dietType === "high_protein") {
+      proteinGrams = Math.max(proteinGrams, 2.4 * w);
+    }
+
     p.targetCalories = Math.round(targetCals);
     p.targetProtein = Math.round(proteinGrams);
     p.targetFat = Math.round(fatGrams);
@@ -539,7 +562,71 @@ class AppState {
         carbs: p.targetCarbs,
         fat: p.targetFat
       };
+
+      // Adaptar opciones de platos según alergias e intolerancias
+      this.updateMealPlansForAlergies();
     }
+  }
+
+  updateMealPlansForAlergies() {
+    const p = this.userProfile;
+    const allergies = p.allergies || [];
+    const isLactose = allergies.includes('lactosa');
+    const isGluten = allergies.includes('gluten');
+    const isVegan = p.dietType === 'vegan';
+    const isVegetarian = p.dietType === 'vegetarian' || isVegan;
+
+    let breakfastCurrent = "Tostada de Masa Madre con Huevos Pochados & Aguacate (480 kcal | 26g P | 42g C | 22g F)";
+    let breakfastAlts = [
+      "Porridge de Avena Orgánica con Proteína Isolada y Mantequilla de Almendra (480 kcal | 27g P | 44g C | 20g F)",
+      "Omelette de 3 Claras y 1 Huevo con Salmón Ahumado y Pan de Centeno (475 kcal | 30g P | 38g C | 21g F)"
+    ];
+
+    let lunchCurrent = "Pechuga de Pollo a la Plancha con Quinoa y Verduras (590 kcal | 52g P | 58g C | 14g F)";
+    let lunchAlts = [
+      "Lomo de Ternera Magra al Horno con Camote Asado (585 kcal | 54g P | 55g C | 15g F)",
+      "Filete de Salmón Salvaje con Arroz Basmati e Hinojo (595 kcal | 48g P | 56g C | 18g F)"
+    ];
+
+    if (isGluten) {
+      breakfastCurrent = breakfastCurrent.replace("Masa Madre", "Pan Sin Gluten Certificado");
+      breakfastAlts = breakfastAlts.map(a => a.replace("Centeno", "Pan Sin Gluten"));
+      lunchCurrent = lunchCurrent.replace("Quinoa", "Quinoa Orgánica (Sin Gluten)");
+    }
+
+    if (isLactose) {
+      breakfastAlts = breakfastAlts.map(a => a.replace("Proteína Isolada", "Proteína Vegana Isolada (Sin Lactosa)"));
+    }
+
+    if (isVegan) {
+      breakfastCurrent = "Tofu Revuelto con Cúrcuma, Aguacate y Pan de Semillas (460 kcal | 24g P | 40g C | 22g F)";
+      breakfastAlts = [
+        "Porridge de Avena con Proteína de Guisante y Mantequilla de Almendra (470 kcal | 25g P | 45g C | 20g F)",
+        "Bowl de Acai con Semillas de Chía, Nueces y Fruta Fresca (450 kcal | 18g P | 50g C | 21g F)"
+      ];
+      lunchCurrent = "Bowl de Garbanzos Asados con Quinoa, Aguacate y Tahini (580 kcal | 28g P | 65g C | 18g F)";
+      lunchAlts = [
+        "Tofu Marinado a la Parrilla con Arroz Basmati y Brócoli (565 kcal | 32g P | 60g C | 16g F)",
+        "Curry de Lentejas Rojas y Leche de Coco con Boniato (590 kcal | 26g P | 68g C | 19g F)"
+      ];
+    } else if (isVegetarian) {
+      lunchCurrent = "Hamburguesa de Lentejas y Queso Feta con Camote (575 kcal | 34g P | 60g C | 17g F)";
+    }
+
+    this.nutrition.mealPlans = [
+      {
+        title: "Desayuno Proteico Adaptado",
+        meal: "Desayuno",
+        current: breakfastCurrent,
+        alternatives: breakfastAlts
+      },
+      {
+        title: "Almuerzo Anabólico Adaptado",
+        meal: "Almuerzo",
+        current: lunchCurrent,
+        alternatives: lunchAlts
+      }
+    ];
   }
 
   getTotals() {
