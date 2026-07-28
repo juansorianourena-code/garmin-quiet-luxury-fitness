@@ -70,16 +70,35 @@ export function renderWorkoutModule(container) {
       </span>
     </div>
 
-    <!-- SELECCIÓN DE FRECUENCIA DE DÍAS (3, 4, 5, 6 DÍAS) -->
-    <div style="margin-bottom: 16px;">
-      <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.05em;">
-        Frecuencia Semanal de Entrenamiento:
+    <!-- SELECCIÓN DE FRECUENCIA DE DÍAS Y DURACIÓN DE SESIÓN -->
+    <div class="card" style="padding: 12px 14px; margin-bottom: 16px;">
+      <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px; letter-spacing: 0.05em;">
+        Personalización de Sesión: Frecuencia, Duración & N° Ejercicios
       </div>
-      <div class="days-frequency-selector">
-        <div class="day-pill btn-set-freq ${program.daysCount === 3 ? 'active' : ''}" data-freq="3">3 Días / Sem (Fullbody)</div>
-        <div class="day-pill btn-set-freq ${program.daysCount === 4 ? 'active' : ''}" data-freq="4">4 Días / Sem (Torso / Pierna)</div>
-        <div class="day-pill btn-set-freq ${program.daysCount === 5 ? 'active' : ''}" data-freq="5">5 Días / Sem (Push / Pull / Legs)</div>
-        <div class="day-pill btn-set-freq ${program.daysCount === 6 ? 'active' : ''}" data-freq="6">6 Días / Sem (Frecuencia 2x)</div>
+
+      <!-- 1. Frecuencia Semanal -->
+      <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 4px;">Frecuencia Semanal:</div>
+      <div class="days-frequency-selector" style="margin-bottom: 10px;">
+        <div class="day-pill btn-set-freq ${program.daysCount === 3 ? 'active' : ''}" data-freq="3">3 Días / Sem</div>
+        <div class="day-pill btn-set-freq ${program.daysCount === 4 ? 'active' : ''}" data-freq="4">4 Días / Sem</div>
+        <div class="day-pill btn-set-freq ${program.daysCount === 5 ? 'active' : ''}" data-freq="5">5 Días / Sem</div>
+        <div class="day-pill btn-set-freq ${program.daysCount === 6 ? 'active' : ''}" data-freq="6">6 Días / Sem</div>
+      </div>
+
+      <!-- 2. Duración deseada -->
+      <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 4px;">Duración Estimada de la Sesión:</div>
+      <div class="days-frequency-selector" style="margin-bottom: 10px;">
+        ${[30, 45, 60, 75, 90].map(mins => `
+          <div class="day-pill btn-set-duration ${program.targetDurationMinutes === mins ? 'active' : ''}" data-duration="${mins}">${mins} min</div>
+        `).join('')}
+      </div>
+
+      <!-- 3. Número de Ejercicios por Sesión -->
+      <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 4px;">Número de Ejercicios por Sesión:</div>
+      <div class="days-frequency-selector" style="margin-bottom: 4px;">
+        ${[3, 4, 5, 6, 7, 8].map(count => `
+          <div class="day-pill btn-set-ex-count ${(currentDay.exercises || []).length === count ? 'active' : ''}" data-ex-count="${count}">${count} Ejercicios</div>
+        `).join('')}
       </div>
     </div>
 
@@ -274,6 +293,24 @@ export function renderWorkoutModule(container) {
     pill.addEventListener('click', (e) => {
       const freq = parseInt(e.currentTarget.getAttribute('data-freq'));
       appState.setDaysFrequency(freq);
+      renderWorkoutModule(container);
+    });
+  });
+
+  // Attach Duration Pills Click Listeners
+  container.querySelectorAll('.btn-set-duration').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      const duration = parseInt(e.currentTarget.getAttribute('data-duration'));
+      appState.setTargetDuration(duration);
+      renderWorkoutModule(container);
+    });
+  });
+
+  // Attach Exercise Count Pills Click Listeners
+  container.querySelectorAll('.btn-set-ex-count').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      const count = parseInt(e.currentTarget.getAttribute('data-ex-count'));
+      appState.setTargetExerciseCount(count);
       renderWorkoutModule(container);
     });
   });

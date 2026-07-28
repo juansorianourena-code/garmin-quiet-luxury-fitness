@@ -20,15 +20,33 @@ class AppState {
       this.initDefaultProfile();
     }
 
-    // Frequency & Multi-Day Expert Workout Routines
+    // Frequency, Duration, Exercise Count & Real Biomechanical Routines
     this.workoutProgram = {
       daysCount: 4, // 3, 4, 5, 6 days option
+      targetDurationMinutes: 60, // 30, 45, 60, 75, 90 min
+      targetExerciseCount: 5, // 3, 4, 5, 6, 7, 8 exercises
+      equipment: "full_gym", // "full_gym" | "dumbbells" | "bodyweight" | "cables_machines"
       activeDayIndex: 0,
       availableSplits: [
         { id: "torso_pierna", name: "Torso / Pierna (4 Días)", daysCount: 4 },
         { id: "ppl_5d", name: "Push / Pull / Legs / Torso / Pierna (5 Días)", daysCount: 5 },
         { id: "ppl_6d", name: "Push / Pull / Legs (Frecuencia 2x - 6 Días)", daysCount: 6 },
         { id: "fullbody_3d", name: "Fullbody Alta Intensidad (3 Días)", daysCount: 3 }
+      ],
+      realExercisePool: [
+        { id: "ex_banca", name: "Press de Banca con Barra", category: "Empuje Horizontal", targetMuscle: "Pectoral Mayor / Tríceps", equipment: "full_gym", altNotes: "Fuerza máxima y reclutamiento global" },
+        { id: "ex_incl_manc", name: "Press Inclinado con Mancuernas", category: "Empuje Inclinado", targetMuscle: "Pectoral Superior / Deltoides", equipment: "dumbbells", altNotes: "Mayor rango de recorrido libre" },
+        { id: "ex_remo_bar", name: "Remo Pendlay con Barra", category: "Tirón Horizontal", targetMuscle: "Espalda Alta / Dorsal", equipment: "full_gym", altNotes: "Potencia desde el suelo sin inercia" },
+        { id: "ex_dominadas", name: "Dominadas Neutras con Lastre", category: "Tirón Vertical", targetMuscle: "Dorsal Ancho / Bíceps", equipment: "bodyweight", altNotes: "Tracción vertical biomecánicamente limpia" },
+        { id: "ex_militar_manc", name: "Press Militar con Mancuernas Sentado", category: "Empuje Vertical", targetMuscle: "Deltoides Anterior / Lateral", equipment: "dumbbells", altNotes: "Estabilidad escapular sin pinzamiento" },
+        { id: "ex_squat", name: "Sentadilla Trasera con Barra (Back Squat)", category: "Dominante Rodilla", targetMuscle: "Cuádriceps / Glúteos", equipment: "full_gym", altNotes: "Carga axial pura de cadena anterior" },
+        { id: "ex_rdl", name: "Peso Muerto Rumano con Barra (RDL)", category: "Dominante Cadera", targetMuscle: "Isquiotibiales / Glúteo Mayor", equipment: "full_gym", altNotes: "Estiramiento bajo carga excéntrica" },
+        { id: "ex_hip_thrust", name: "Hip Thrust con Barra", category: "Dominante Cadera", targetMuscle: "Glúteo Mayor", equipment: "full_gym", altNotes: "Máxima tensión en posición acortada" },
+        { id: "ex_prensa", name: "Prensa de Piernas a 45°", category: "Dominante Rodilla", targetMuscle: "Cuádriceps", equipment: "cables_machines", altNotes: "Aislamiento de cuádriceps sin fatiga lumbar" },
+        { id: "ex_elev_lat", name: "Elevaciones Laterales en Polea Baja", category: "Aislamiento Hombro", targetMuscle: "Deltoides Lateral", equipment: "cables_machines", altNotes: "Tensión uniforme en todo el rango" },
+        { id: "ex_bantara", name: "Sentadilla Búlgara con Mancuernas", category: "Unilateral Pierna", targetMuscle: "Cuádriceps / Glúteo Medio", equipment: "dumbbells", altNotes: "Corrección de asimetrías bilaterales" },
+        { id: "ex_curl_inc", name: "Curl de Bíceps Inclinado con Mancuernas", category: "Aislamiento Brazo", targetMuscle: "Bíceps Braquial (Cabeza Larga)", equipment: "dumbbells", altNotes: "Máximo estiramiento de la cabeza larga" },
+        { id: "ex_triceps_polea", name: "Extensiones de Tríceps en Polea Alta con Cuerda", category: "Aislamiento Brazo", targetMuscle: "Tríceps (Cabeza Lateral y Medial)", equipment: "cables_machines", altNotes: "Tensión constante con separación final" }
       ],
       days: [
         {
@@ -44,50 +62,79 @@ class AppState {
               originalName: "Press de Banca con Barra",
               isSubstituted: false,
               sets: [
-                { setNum: 1, weight: 85, reps: 6, rpe: 8, completed: true },
-                { setNum: 2, weight: 85, reps: 6, rpe: 8.5, completed: true },
+                { setNum: 1, weight: 85, reps: 6, rpe: 8, completed: false },
+                { setNum: 2, weight: 85, reps: 6, rpe: 8.5, completed: false },
                 { setNum: 3, weight: 85, reps: 5, rpe: 9, completed: false },
               ],
               alternatives: [
                 { id: "alt_1_1", name: "Press Inclinado con Mancuernas", note: "Enfoque pectoral superior / Menor estrés en hombro" },
-                { id: "alt_1_2", name: "Press de Pecho en Máquina Articulada", note: "Mayor tensión constante y máxima estabilidad" },
-                { id: "alt_1_3", name: "Flexiones con Lastre en Paralelas", note: "Patrón de peso corporal libre" }
+                { id: "alt_1_2", name: "Press de Pecho en Máquina Articulada", note: "Mayor tensión constante y máxima estabilidad" }
               ]
             },
             {
               id: "ex_1_2",
-              name: "Remo con Barra Pendlay",
+              name: "Remo Pendlay con Barra",
               category: "Tirón Horizontal",
               targetMuscle: "Espalda Alta / Dorsal",
-              originalName: "Remo con Barra Pendlay",
+              originalName: "Remo Pendlay con Barra",
               isSubstituted: false,
               sets: [
-                { setNum: 1, weight: 75, reps: 8, rpe: 7.5, completed: true },
-                { setNum: 2, weight: 75, reps: 8, rpe: 8, completed: true },
+                { setNum: 1, weight: 75, reps: 8, rpe: 7.5, completed: false },
+                { setNum: 2, weight: 75, reps: 8, rpe: 8, completed: false },
                 { setNum: 3, weight: 75, reps: 8, rpe: 8.5, completed: false },
               ],
               alternatives: [
                 { id: "alt_2_1", name: "Remo en Polea Baja con Agarre Neutro", note: "Tensión uniforme constante en todo el rango" },
-                { id: "alt_2_2", name: "Remo Seal Bench con Mancuernas", note: "Cero fatiga en zona lumbar / Máximo aislamiento" },
-                { id: "alt_2_3", name: "Dominadas Neutras con Lastre", note: "Patrón vertical alternativo" }
+                { id: "alt_2_2", name: "Remo Seal Bench con Mancuernas", note: "Cero fatiga en zona lumbar / Máximo aislamiento" }
               ]
             },
             {
               id: "ex_1_3",
               name: "Press Militar con Mancuernas Sentado",
               category: "Empuje Vertical",
-              targetMuscle: "Deltoides Anterior / Cabeza Lateral",
+              targetMuscle: "Deltoides Anterior / Lateral",
               originalName: "Press Militar con Mancuernas Sentado",
               isSubstituted: false,
               sets: [
-                { setNum: 1, weight: 26, reps: 8, rpe: 8, completed: true },
+                { setNum: 1, weight: 26, reps: 8, rpe: 8, completed: false },
                 { setNum: 2, weight: 26, reps: 8, rpe: 8.5, completed: false },
                 { setNum: 3, weight: 26, reps: 7, rpe: 9, completed: false },
               ],
               alternatives: [
                 { id: "alt_3_1", name: "Press de Hombros Landmine Unilateral", note: "Ángulo diagonal suave ideal para movilidad" },
-                { id: "alt_3_2", name: "Elevaciones Laterales en Polea", note: "Enfoque directo en deltoides lateral sin fatiga axial" },
-                { id: "alt_3_3", name: "Press Militar de Pie con Barra", note: "Mayor reclutamiento global de core" }
+                { id: "alt_3_2", name: "Elevaciones Laterales en Polea", note: "Enfoque directo en deltoides lateral sin fatiga axial" }
+              ]
+            },
+            {
+              id: "ex_1_4",
+              name: "Elevaciones Laterales en Polea Baja",
+              category: "Aislamiento Hombro",
+              targetMuscle: "Deltoides Lateral",
+              originalName: "Elevaciones Laterales en Polea Baja",
+              isSubstituted: false,
+              sets: [
+                { setNum: 1, weight: 12, reps: 12, rpe: 8, completed: false },
+                { setNum: 2, weight: 12, reps: 12, rpe: 8.5, completed: false },
+                { setNum: 3, weight: 12, reps: 10, rpe: 9, completed: false },
+              ],
+              alternatives: [
+                { id: "alt_4_1", name: "Elevaciones Laterales con Mancuernas", note: "Mancuernas en banco inclinado" }
+              ]
+            },
+            {
+              id: "ex_1_5",
+              name: "Extensiones de Tríceps en Polea Alta con Cuerda",
+              category: "Aislamiento Brazo",
+              targetMuscle: "Tríceps",
+              originalName: "Extensiones de Tríceps en Polea Alta con Cuerda",
+              isSubstituted: false,
+              sets: [
+                { setNum: 1, weight: 25, reps: 12, rpe: 8, completed: false },
+                { setNum: 2, weight: 25, reps: 12, rpe: 8.5, completed: false },
+                { setNum: 3, weight: 25, reps: 10, rpe: 9, completed: false },
+              ],
+              alternatives: [
+                { id: "alt_5_1", name: "Press Francés con Barra Z", note: "Fuerza pura de tríceps" }
               ]
             }
           ]
@@ -111,16 +158,15 @@ class AppState {
               ],
               alternatives: [
                 { id: "alt_p1_1", name: "Prensa de Piernas a 45°", note: "Menor carga axial en columna / Enfoque hipertrofia" },
-                { id: "alt_p1_2", name: "Sentadilla Búlgara con Mancuernas", note: "Unilateral / Corrección de asimetrías de fuerza" },
-                { id: "alt_p1_3", name: "Sentadilla Hack en Máquina", note: "Máxima estabilidad en cuádriceps" }
+                { id: "alt_p1_2", name: "Sentadilla Búlgara con Mancuernas", note: "Unilateral / Corrección de asimetrías" }
               ]
             },
             {
               id: "ex_2_2",
-              name: "Peso Muerto Rumano (RDL)",
+              name: "Peso Muerto Rumano con Barra (RDL)",
               category: "Dominante de Cadera",
               targetMuscle: "Isquiotibiales / Glúteo Mayor",
-              originalName: "Peso Muerto Rumano (RDL)",
+              originalName: "Peso Muerto Rumano con Barra (RDL)",
               isSubstituted: false,
               sets: [
                 { setNum: 1, weight: 100, reps: 8, rpe: 7.5, completed: false },
@@ -128,9 +174,55 @@ class AppState {
                 { setNum: 3, weight: 100, reps: 8, rpe: 8.5, completed: false },
               ],
               alternatives: [
-                { id: "alt_p2_1", name: "Hip Thrust con Barra", note: "Máxima tensión acortada en glúteo mayor" },
-                { id: "alt_p2_2", name: "Curl Femoral Tumbado en Máquina", note: "Aislamiento directo de isquiotibiales" },
-                { id: "alt_p2_3", name: "Good Mornings con Barra", note: "Enfoque en erectores espinales e isquios" }
+                { id: "alt_p2_1", name: "Hip Thrust con Barra", note: "Máxima tensión acortada en glúteo mayor" }
+              ]
+            },
+            {
+              id: "ex_2_3",
+              name: "Prensa de Piernas a 45°",
+              category: "Dominante Rodilla",
+              targetMuscle: "Cuádriceps",
+              originalName: "Prensa de Piernas a 45°",
+              isSubstituted: false,
+              sets: [
+                { setNum: 1, weight: 180, reps: 10, rpe: 8, completed: false },
+                { setNum: 2, weight: 180, reps: 10, rpe: 8.5, completed: false },
+                { setNum: 3, weight: 180, reps: 8, rpe: 9, completed: false }
+              ],
+              alternatives: [
+                { id: "alt_p3_1", name: "Sentadilla Hack en Máquina", note: "Aislamiento constante" }
+              ]
+            },
+            {
+              id: "ex_2_4",
+              name: "Hip Thrust con Barra",
+              category: "Dominante Cadera",
+              targetMuscle: "Glúteo Mayor",
+              originalName: "Hip Thrust con Barra",
+              isSubstituted: false,
+              sets: [
+                { setNum: 1, weight: 120, reps: 10, rpe: 8, completed: false },
+                { setNum: 2, weight: 120, reps: 10, rpe: 8.5, completed: false },
+                { setNum: 3, weight: 120, reps: 8, rpe: 9, completed: false }
+              ],
+              alternatives: [
+                { id: "alt_p4_1", name: "Extensiones de Cadera en Banco a 45°", note: "Glúteo excéntrico" }
+              ]
+            },
+            {
+              id: "ex_2_5",
+              name: "Sentadilla Búlgara con Mancuernas",
+              category: "Unilateral Pierna",
+              targetMuscle: "Cuádriceps / Glúteo Medio",
+              originalName: "Sentadilla Búlgara con Mancuernas",
+              isSubstituted: false,
+              sets: [
+                { setNum: 1, weight: 20, reps: 10, rpe: 8, completed: false },
+                { setNum: 2, weight: 20, reps: 10, rpe: 8.5, completed: false },
+                { setNum: 3, weight: 20, reps: 10, rpe: 9, completed: false }
+              ],
+              alternatives: [
+                { id: "alt_p5_1", name: "Zancadas Caminando con Mancuernas", note: "Unilateral dinámico" }
               ]
             }
           ]
@@ -159,8 +251,7 @@ class AppState {
                 { setNum: 3, weight: 15, reps: 5, rpe: 9, completed: false },
               ],
               alternatives: [
-                { id: "alt_4_1", name: "Jalón al Pecho en Polea Agarre Ancho", note: "Control absoluto de carga y excéntrica" },
-                { id: "alt_4_2", name: "Remo Gironda con Agarre V", note: "Tracción horizontal profunda" }
+                { id: "alt_4_1", name: "Jalón al Pecho en Polea Agarre Ancho", note: "Control absoluto de carga" }
               ]
             },
             {
@@ -176,8 +267,55 @@ class AppState {
                 { setNum: 3, weight: 32, reps: 8, rpe: 9, completed: false },
               ],
               alternatives: [
-                { id: "alt_4_3", name: "Press Militar con Barra", note: "Fuerza de empuje vertical pura" },
-                { id: "alt_4_4", name: "Fondos en Paralelas con Lastre", note: "Empuje declinado / Pectoral inferior" }
+                { id: "alt_4_3", name: "Fondos en Paralelas con Lastre", note: "Empuje declinado" }
+              ]
+            },
+            {
+              id: "ex_4_3",
+              name: "Curl de Bíceps Inclinado con Mancuernas",
+              category: "Aislamiento Brazo",
+              targetMuscle: "Bíceps Braquial",
+              originalName: "Curl de Bíceps Inclinado con Mancuernas",
+              isSubstituted: false,
+              sets: [
+                { setNum: 1, weight: 14, reps: 10, rpe: 8, completed: false },
+                { setNum: 2, weight: 14, reps: 10, rpe: 8.5, completed: false },
+                { setNum: 3, weight: 14, reps: 8, rpe: 9, completed: false }
+              ],
+              alternatives: [
+                { id: "alt_4_4", name: "Curl Martillo en Polea", note: "Braquiorradial" }
+              ]
+            },
+            {
+              id: "ex_4_4",
+              name: "Extensiones de Tríceps en Polea Alta con Cuerda",
+              category: "Aislamiento Brazo",
+              targetMuscle: "Tríceps",
+              originalName: "Extensiones de Tríceps en Polea Alta con Cuerda",
+              isSubstituted: false,
+              sets: [
+                { setNum: 1, weight: 25, reps: 12, rpe: 8, completed: false },
+                { setNum: 2, weight: 25, reps: 12, rpe: 8.5, completed: false },
+                { setNum: 3, weight: 25, reps: 10, rpe: 9, completed: false }
+              ],
+              alternatives: [
+                { id: "alt_4_5", name: "Press Francés con Barra Z", note: "Fuerza tríceps" }
+              ]
+            },
+            {
+              id: "ex_4_5",
+              name: "Elevaciones Laterales en Polea Baja",
+              category: "Aislamiento Hombro",
+              targetMuscle: "Deltoides Lateral",
+              originalName: "Elevaciones Laterales en Polea Baja",
+              isSubstituted: false,
+              sets: [
+                { setNum: 1, weight: 12, reps: 12, rpe: 8, completed: false },
+                { setNum: 2, weight: 12, reps: 12, rpe: 8.5, completed: false },
+                { setNum: 3, weight: 12, reps: 10, rpe: 9, completed: false }
+              ],
+              alternatives: [
+                { id: "alt_4_6", name: "Pajaro en Polea Alta", note: "Deltoides posterior" }
               ]
             }
           ]
@@ -189,18 +327,14 @@ class AppState {
     this.aiCoachHistory = [
       {
         role: "assistant",
-        text: "¡Hola! Soy tu Entrenador Experto en Biomecánica e Inteligencia Deportiva AURA. ¿Necesitas adaptar algún ejercicio por molestia, aumentar enfoque en algún grupo muscular o cambiar la estructura de días de tu rutina?"
+        text: "¡Hola! Soy tu Entrenador Experto en Biomecánica AURA. ¿Deseas personalizar la duración de tu sesión, el número de ejercicios o adaptar algún movimiento por molestia articular?"
       }
     ];
 
-    // Daily Nutrition Planner
+    // Daily Nutrition Planner: STRICT ZERO PRE-LOAD (0 kcal / 0% initial bars)
     this.nutrition = {
       targets: { calories: 1960, protein: 175, carbs: 215, fat: 58 },
-      loggedFood: [
-        { id: "f1", name: "Tostada de Masa Madre con Huevos Pochados & Aguacate", meal: "Desayuno", calories: 480, p: 26, c: 42, f: 22 },
-        { id: "f2", name: "Pechuga de Pollo a la Plancha con Quinoa y Verduras", meal: "Almuerzo", calories: 590, p: 52, c: 58, f: 14 },
-        { id: "f3", name: "Yogur Griego 0% con Frutos Rojos y Nueces", meal: "Merienda", calories: 280, p: 24, c: 22, f: 10 }
-      ],
+      loggedFood: [], // REGLA ESTRICTA: 0 ALIMENTOS REGISTRADOS POR DEFECTO
       mealPlans: [
         {
           title: "Desayuno Proteico de Lento Grado",
@@ -280,6 +414,55 @@ class AppState {
     } else {
       this.applySplitPreset("torso_pierna");
     }
+  }
+
+  setTargetDuration(durationMinutes) {
+    this.workoutProgram.targetDurationMinutes = durationMinutes;
+    // Estimated exercises: 30m -> 3 ex, 45m -> 4 ex, 60m -> 5 ex, 75m -> 6 ex, 90m -> 7 ex
+    let count = 5;
+    if (durationMinutes <= 30) count = 3;
+    else if (durationMinutes <= 45) count = 4;
+    else if (durationMinutes <= 60) count = 5;
+    else if (durationMinutes <= 75) count = 6;
+    else count = 7;
+    
+    this.setTargetExerciseCount(count, false);
+    this.notify();
+  }
+
+  setTargetExerciseCount(count, shouldNotify = true) {
+    this.workoutProgram.targetExerciseCount = count;
+    const day = this.getCurrentDay();
+    if (day && day.exercises) {
+      if (day.exercises.length < count) {
+        // Add real biomechanical exercises from pool
+        const pool = this.workoutProgram.realExercisePool || [];
+        while (day.exercises.length < count && pool.length > 0) {
+          const poolEx = pool[day.exercises.length % pool.length];
+          const newExId = `ex_cust_${Date.now()}_${day.exercises.length}`;
+          day.exercises.push({
+            id: newExId,
+            name: poolEx.name,
+            category: poolEx.category,
+            targetMuscle: poolEx.targetMuscle,
+            originalName: poolEx.name,
+            isSubstituted: false,
+            sets: [
+              { setNum: 1, weight: 20, reps: 10, rpe: 8, completed: false },
+              { setNum: 2, weight: 20, reps: 10, rpe: 8.5, completed: false },
+              { setNum: 3, weight: 20, reps: 8, rpe: 9, completed: false }
+            ],
+            alternatives: [
+              { id: `alt_${newExId}`, name: poolEx.altNotes || "Alternativa equivalente", note: poolEx.altNotes || "Mismo patrón biomecánico" }
+            ]
+          });
+        }
+      } else if (day.exercises.length > count) {
+        // Trim exercises to exact count requested
+        day.exercises = day.exercises.slice(0, count);
+      }
+    }
+    if (shouldNotify) this.notify();
   }
 
   applySplitPreset(splitId) {

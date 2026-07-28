@@ -295,7 +295,11 @@ export function renderNutritionModule(container) {
 
       <!-- Lista de alimentos guardados -->
       <div style="display: flex; flex-direction: column; gap: 8px;">
-        ${nState.loggedFood.map(item => `
+        ${nState.loggedFood.length === 0 ? `
+          <div style="font-size: 0.82rem; color: var(--text-muted); padding: 16px; text-align: center; background: var(--bg-main); border: 1px dashed var(--border-line-strong); border-radius: var(--radius-sm);">
+            Sin alimentos registrados hoy (0 kcal | 0g Proteína). Registra tus comidas usando el botón superior o aplica una opción del planificador.
+          </div>
+        ` : nState.loggedFood.map(item => `
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg-main); border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
             <div>
               <span style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted);">${item.meal}</span>
