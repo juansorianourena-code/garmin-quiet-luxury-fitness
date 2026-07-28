@@ -14,6 +14,8 @@ import { renderGarminControlPanel } from './components/garminControlPanel.js';
 
 import { syncGarminDirectClient } from './garminDirectClient.js';
 
+import { authService } from './services/authService.js';
+
 let currentTab = 'dashboard';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -91,10 +93,108 @@ function initApp() {
     btnForceReload.addEventListener('click', executeHardReload);
   }
 
+  // Account Menu Accordion & Auth Handlers
+  initAccountAuthUI();
+
   // Initial render
   switchTab('dashboard');
   renderGarminControlPanel(document.querySelector('#garmin-simulator-container'));
   updateHeaderGarminBadge();
+  updateHeaderUserBadge();
+}
+
+function initAccountAuthUI() {
+  const btnToggleAccount = document.querySelector('#btn-toggle-account-menu');
+  const accountAccordion = document.querySelector('#account-menu-accordion');
+  const btnLogin = document.querySelector('#btn-auth-login');
+  const btnRegister = document.querySelector('#btn-auth-register');
+  const feedbackMsg = document.querySelector('#auth-feedback-msg');
+
+  if (btnToggleAccount && accountAccordion) {
+    btnToggleAccount.addEventListener('click', () => {
+      accountAccordion.classList.toggle('expanded');
+      renderRegisteredAccountsList();
+    });
+  }
+
+  if (btnLogin) {
+    btnLogin.addEventListener('click', () => {
+      const email = document.querySelector('#auth-input-email').value;
+      const pass = document.querySelector('#auth-input-pass').value;
+      try {
+        const user = authService.login(email, pass);
+        feedbackMsg.style.color = 'var(--accent-optimal)';
+        feedbackMsg.textContent = `Sesión iniciada como ${user.name}`;
+        updateHeaderUserBadge();
+        renderRegisteredAccountsList();
+        setTimeout(() => location.reload(), 500);
+      } catch (err) {
+        feedbackMsg.style.color = 'var(--accent-fatigue)';
+        feedbackMsg.textContent = err.message;
+      }
+    });
+  }
+
+  if (btnRegister) {
+    btnRegister.addEventListener('click', () => {
+      const name = document.querySelector('#auth-input-name').value;
+      const email = document.querySelector('#auth-input-email').value;
+      const pass = document.querySelector('#auth-input-pass').value;
+      try {
+        const user = authService.register(email, pass, name);
+        feedbackMsg.style.color = 'var(--accent-optimal)';
+        feedbackMsg.textContent = `Cuenta creada e iniciada como ${user.name}`;
+        updateHeaderUserBadge();
+        renderRegisteredAccountsList();
+        setTimeout(() => location.reload(), 500);
+      } catch (err) {
+        feedbackMsg.style.color = 'var(--accent-fatigue)';
+        feedbackMsg.textContent = err.message;
+      }
+    });
+  }
+
+  renderRegisteredAccountsList();
+}
+
+function renderRegisteredAccountsList() {
+  const container = document.querySelector('#accounts-registered-list');
+  if (!container) return;
+
+  const users = authService.getUsers();
+  const current = authService.getCurrentUser();
+
+  container.innerHTML = users.map(u => `
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--bg-card); border: 1px solid var(--border-line); border-radius: var(--radius-sm); font-size: 0.78rem;">
+      <div>
+        <strong>${u.name}</strong> <span style="color: var(--text-muted); font-size: 0.7rem;">(${u.email})</span>
+        ${u.id === current.id ? `<span style="font-size: 0.65rem; padding: 1px 5px; background: var(--accent-optimal-light); color: var(--accent-optimal); border-radius: 3px; font-weight: 600; margin-left: 4px;">Activa</span>` : ''}
+      </div>
+      ${u.id !== current.id ? `
+        <button class="inline-btn inline-btn-secondary btn-switch-user" data-email="${u.email}" data-pass="${u.passwordHash}" style="padding: 2px 6px; font-size: 0.7rem;">
+          Conectar
+        </button>
+      ` : ''}
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.btn-switch-user').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const email = e.currentTarget.getAttribute('data-email');
+      const pass = e.currentTarget.getAttribute('data-pass');
+      authService.login(email, pass);
+      updateHeaderUserBadge();
+      location.reload();
+    });
+  });
+}
+
+function updateHeaderUserBadge() {
+  const current = authService.getCurrentUser();
+  const badgeName = document.querySelector('#header-user-name');
+  if (badgeName && current) {
+    badgeName.textContent = current.name.toUpperCase();
+  }
 }
 
 function switchTab(tabName) {

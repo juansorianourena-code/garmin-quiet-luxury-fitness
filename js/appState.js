@@ -1,15 +1,15 @@
-/**
- * Application State Manager
- * Handles Workouts, Multi-Day Routines, AI Expert Coach Engine,
- * Exercise Substitutions, Nutrition Log, and Analytics Data.
- */
+import { authService } from './services/authService.js';
+import { dbService } from './services/dbService.js';
 
 class AppState {
   constructor() {
     this.listeners = [];
 
     // Biometric Profile & Goal Calculator
-    const savedProfile = localStorage.getItem('aura_user_profile');
+    const currentUser = authService.getCurrentUser();
+    const userProfileKey = `aura_user_profile_${currentUser.id}`;
+    const savedProfile = localStorage.getItem(userProfileKey) || localStorage.getItem('aura_user_profile');
+
     if (savedProfile) {
       try {
         this.userProfile = JSON.parse(savedProfile);
@@ -638,6 +638,32 @@ class AppState {
       return acc;
     }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
   }
+
+  saveCurrentStateToHistory() {
+    try {
+      const currentUser = authService.getCurrentUser();
+      const today = new Date().toISOString().split('T')[0];
+
+      // Save Workout Log
+      const activeDay = this.getCurrentDay();
+      if (activeDay) {
+        dbService.saveWorkoutLog(currentUser.id, today, activeDay);
+      }
+
+      // Save Nutrition Log
+      dbService.saveNutritionLog(currentUser.id, today, {
+        targets: this.nutrition.targets,
+        totals: this.getTotals(),
+        loggedFood: this.nutrition.loggedFood
+      });
+
+      // Save Biometric Log
+      dbService.saveBiometricLog(currentUser.id, today, this.userProfile);
+    } catch (e) {
+      console.warn("Could not save history entry:", e);
+    }
+  }
 }
 
 export const appState = new AppState();
+

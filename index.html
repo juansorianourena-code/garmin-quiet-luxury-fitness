@@ -11,8 +11,8 @@
   
   <script>
     // Auto-bypass Safari / WebKit PWA offline cache
-    if (!window.location.search.includes('v=9.0')) {
-      window.location.replace(window.location.pathname + '?v=9.0');
+    if (!window.location.search.includes('v=10.0')) {
+      window.location.replace(window.location.pathname + '?v=10.0');
     }
   </script>
   
@@ -22,7 +22,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
   <!-- Quiet Luxury Custom CSS Design System -->
-  <link rel="stylesheet" href="css/styles.css?v=9.0" />
+  <link rel="stylesheet" href="css/styles.css?v=10.0" />
 </head>
 <body>
 
@@ -30,8 +30,11 @@
     <!-- Top Header -->
     <header class="top-header">
       <div class="top-header-brand">
-        <h1 class="brand-title">AURA · PERFORMANCE INSTRUMENT <span style="font-size: 0.65rem; padding: 2px 6px; background: var(--bg-card); border: 1px solid var(--border-line); border-radius: 4px; color: var(--accent-optimal);">v9.0 LIVE</span></h1>
-        <div style="display: flex; align-items: center; gap: 6px;">
+        <h1 class="brand-title">AURA · PERFORMANCE INSTRUMENT <span style="font-size: 0.65rem; padding: 2px 6px; background: var(--bg-card); border: 1px solid var(--border-line); border-radius: 4px; color: var(--accent-optimal);">v10.0 LIVE</span></h1>
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <button id="btn-toggle-account-menu" class="inline-btn inline-btn-secondary" style="padding: 3px 8px; font-size: 0.68rem; font-family: var(--font-mono); font-weight: 600;">
+            <span id="header-user-name">JUAN SORIANO</span> · CUENTA
+          </button>
           <button id="header-refresh-btn" class="header-refresh-btn" title="Forzar Sincronización & Recarga Total de la App">
             <svg id="header-spinner-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
           </button>
@@ -45,6 +48,57 @@
         </div>
       </div>
     </header>
+
+    <!-- ACCORDEÓN INLINE DE AUTENTICACIÓN & LOGIN PROPIO (0 MODALES) -->
+    <div id="account-menu-accordion" class="accordion-wrapper" style="padding: 0 16px; max-width: 900px; margin: 0 auto;">
+      <div class="card" style="margin-top: 10px; margin-bottom: 14px; border: 1px solid var(--border-line-strong); background-color: var(--bg-main);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div class="card-title-sm" style="margin-bottom: 0;">Gestor de Cuenta & Autenticación de Usuario</div>
+          <span id="account-status-badge" style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--accent-optimal);">Sesión Activa</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+          <!-- Columna 1: Formulario de Iniciar Sesión / Registro -->
+          <div>
+            <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px;">
+              Acceder o Crear Cuenta Nueva:
+            </div>
+            <div class="garmin-field-group" style="margin-bottom: 8px;">
+              <label class="garmin-input-label">Nombre Completo:</label>
+              <input type="text" id="auth-input-name" placeholder="Ej: Juan Soriano" class="garmin-text-input" style="padding: 6px 10px;" />
+            </div>
+            <div class="garmin-field-group" style="margin-bottom: 8px;">
+              <label class="garmin-input-label">Email / Usuario:</label>
+              <input type="email" id="auth-input-email" placeholder="usuario@fitexpert.app" class="garmin-text-input" style="padding: 6px 10px;" />
+            </div>
+            <div class="garmin-field-group" style="margin-bottom: 12px;">
+              <label class="garmin-input-label">Contraseña:</label>
+              <input type="password" id="auth-input-pass" placeholder="••••••••" class="garmin-text-input" style="padding: 6px 10px;" />
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+              <button id="btn-auth-login" class="inline-btn inline-btn-accent" style="padding: 6px 12px; font-size: 0.78rem; flex: 1;">
+                Iniciar Sesión
+              </button>
+              <button id="btn-auth-register" class="inline-btn inline-btn-secondary" style="padding: 6px 12px; font-size: 0.78rem; flex: 1;">
+                Registrarse
+              </button>
+            </div>
+            <div id="auth-feedback-msg" style="font-size: 0.75rem; margin-top: 8px; font-weight: 500;"></div>
+          </div>
+
+          <!-- Columna 2: Cuentas Registradas en el Dispositivo -->
+          <div>
+            <div style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: var(--text-main); margin-bottom: 8px;">
+              Cuentas Registradas en este Móvil/PC:
+            </div>
+            <div id="accounts-registered-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 160px; overflow-y: auto;">
+              <!-- Se puebla dinámicamente -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Main Dynamic Content Area -->
     <main class="content-area">
@@ -93,6 +147,6 @@
   </div>
 
   <!-- ES Module Script Entry Point -->
-  <script type="module" src="js/app.js?v=9.0"></script>
+  <script type="module" src="js/app.js?v=10.0"></script>
 </body>
 </html>

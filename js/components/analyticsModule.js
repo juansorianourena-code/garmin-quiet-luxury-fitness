@@ -1,25 +1,64 @@
 /**
- * Módulo 4: Descanso, Salud y Analítica
- * Mapa de Impacto Muscular 2D Vectorial en Trazo Fijo, Analítica Cruzada (Sueño vs 1RM) y Seguimiento Corporal.
+ * Módulo 4: Descanso, Salud, Analítica e Histórico Persistente (IndexedDB)
+ * Estética Quiet Luxury estricta: 0 emojis.
  */
 
 import { appState } from '../appState.js';
 import { garminState } from '../garminState.js';
+import { authService } from '../services/authService.js';
+import { dbService } from '../services/dbService.js';
 
-export function renderAnalyticsModule(container) {
+export async function renderAnalyticsModule(container) {
   const aState = appState.analytics;
   const gData = garminState.getData();
+  const currentUser = authService.getCurrentUser();
+
+  // Save current active day state to permanent DB on view
+  appState.saveCurrentStateToHistory();
+
+  // Load historical records from IndexedDB
+  const workoutLogs = await dbService.getWorkoutLogs(currentUser.id);
+  const nutritionLogs = await dbService.getNutritionLogs(currentUser.id);
+  const biometricLogs = await dbService.getBiometricLogs(currentUser.id);
 
   container.innerHTML = `
     <!-- Header -->
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;">
       <div>
         <div class="card-title-sm">Módulo 4: Descanso, Salud & Analítica</div>
-        <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Analítica de Rendimiento Cruzado</h2>
+        <h2 style="font-size: 1.4rem; font-weight: 500; color: var(--text-main);">Analítica e Histórico Inalterable</h2>
       </div>
       <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-muted); background: var(--bg-card); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border-line);">
-        Garmin Sleep: ${gData.sleepScore}/100
+        Usuario: ${currentUser.name}
       </span>
+    </div>
+
+    <!-- SECCIÓN: HISTÓRICO PERSISTENTE E INALTERABLE (INDEXEDDB) -->
+    <div class="card" style="border: 1px solid var(--border-line-strong); margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div class="card-title-sm" style="margin-bottom: 0;">Histórico Permanente de Entrenamientos y Nutrición (${workoutLogs.length} Registros)</div>
+        <span style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--accent-optimal);">Base de Datos Nativa Protegida</span>
+      </div>
+
+      ${workoutLogs.length === 0 ? `
+        <div style="font-size: 0.82rem; color: var(--text-muted); padding: 14px; text-align: center; background: var(--bg-main); border-radius: var(--radius-sm);">
+          Los datos que registres en tus sesiones de entrenamiento y comidas se guardarán de forma inalterable en este histórico.
+        </div>
+      ` : `
+        <div style="display: flex; flex-direction: column; gap: 10px; max-height: 260px; overflow-y: auto;">
+          ${workoutLogs.map(log => `
+            <div style="background: var(--bg-main); padding: 12px 14px; border: 1px solid var(--border-line); border-radius: var(--radius-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.78rem; font-weight: 600; font-family: var(--font-mono); color: var(--text-main);">${log.dateStr}</span>
+                <span style="font-size: 0.75rem; color: var(--accent-optimal); font-weight: 500;">${log.dayName || 'Sesión Registrada'}</span>
+              </div>
+              <div style="margin-top: 6px; font-size: 0.78rem; color: var(--text-muted);">
+                ${(log.exercises || []).map(ex => `${ex.name} (${(ex.sets || []).filter(s => s.completed).length} series)`).join(' · ')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `}
     </div>
 
     <!-- MAPA DE IMPACTO MUSCULAR VECTORIAL 2D (ILUSTRACIÓN EN TRAZO FINO AZUL MARINO) -->
